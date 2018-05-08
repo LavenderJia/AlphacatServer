@@ -1,116 +1,23 @@
-# 后端API接口文档
+<pre>
+ ______     __         ______   __  __     ______     ______     ______     ______    
+/\  __ \   /\ \       /\  == \ /\ \_\ \   /\  __ \   /\  ___\   /\  __ \   /\__  _\   
+\ \  __ \  \ \ \____  \ \  _-/ \ \  __ \  \ \  __ \  \ \ \____  \ \  __ \  \/_/\ \/   
+ \ \_\ \_\  \ \_____\  \ \_\    \ \_\ \_\  \ \_\ \_\  \ \_____\  \ \_\ \_\    \ \_\   
+  \/_/\/_/   \/_____/   \/_/     \/_/\/_/   \/_/\/_/   \/_____/   \/_/\/_/     \/_/   
+</pre>
+# AlphaCat众包数据标注系统
+## [置顶]后端开发须知
+* GET请求一般用@RequestParam接收参数
+* 其他请求可以使用@RequestBody JSONObject接收JSON格式的参数
+* URL中的参数使用@PathParam接收
+* 返回500状态码可以通过自定义异常结合@ResponseStatus实现
+* 请求以及响应格式一律以文档仓库最新的API文档为准  
+**！以上仅供参考，不代表可行做法**
 
-### 约定
-* ~表示此项可选，根据实际情况决定  
-* *表示此项为列表中的一项
-* [|]表示此项能取的值
-* 500状态码返回时附带出错信息
-* GET为param，POST为JSON
-* 返回一律使用JSON
-
-## 登录部分
-### /login[POST]
-* 传递登录动作的相关参数  
-* 请求格式   
-{   
-name: 用户名,  
-key: 密码,  
-type: [requester|worker|admin]用户身份  
-}  
-* 响应格式  
-{  
-result: [success|failed|error][登录成功|用户状态不正常|登录失败],  
-~id: 用户id,  
-~name: 用户名,  
-type: [requester|worker|admin]用户身份  
-}  
-登录成功时返回用户id与用户名
-
-## 发起者部分
-### /requester[POST]
-* 新增一个发起者的信息
-* 请求格式  
-{  
-name: 用户名,  
-brith: [yyyy-MM-dd]出生日期,  
-sex: [ 0 | 1 ][ 男 | 女 ]性别,  
-email: 邮箱,  
-occupation: 职务,  
-company: 所属公司,  
-}  
-* 响应格式  
-200，500  
-
-### /requester/{id}[GET]
-* 获取一位发起者的基本信息
-* 响应格式  
-{  
-id: 用户标识,  
-name: 用户名,  
-brith: [yyyy-MM-dd]出生日期,  
-sex: [ 0 | 1 ][ 男 | 女 ]性别,  
-email: 邮箱,  
-occupation: 职务,  
-company: 所属公司,  
-state: 用户状态  
-}  
-
-### /requester/{id}[PUT]
-* 更新一位发起者的基本信息
-* 请求格式  
-{  
-id: 用户标识,  
-name: 用户名,  
-brith: [yyyy-MM-dd]出生日期,  
-sex: [ 0 | 1 ][ 男 | 女 ]性别,  
-email: 邮箱,  
-occupation: 职务,  
-company: 所属公司,  
-state: 用户状态  
-}  
-* 响应格式  
-200，500   
-
-### /requester/check[POST]
-* 审核一位发起者的信息
-* 请求格式  
-{  
-id: 发起者的id,  
-isChecked: [true | false]是否审核通过  
-}  
-* 响应格式  
-200，500
-
-### /requester[GET]
-* 获取符合条件的requester对象  
-* 请求格式  
-state: [all | checked | unchecked][所有 | 通过审核 | 未通过审核]  
-* 响应格式  
-{  
-*{  
-id: 用户标识,  
-name: 用户名,  
-brith: [yyyy-MM-dd]出生日期,  
-sex: [ 0 | 1 ][ 男 | 女 ]性别,  
-email: 邮箱,  
-occupation: 职务,  
-company: 所属公司,  
-state: 用户状态  
-}  
-}
-
-### /requester/{id}/setKey[POST]
-* 修改发起者密码
-* 请求格式  
-{  
-key: 密码,  
-}  
-* 响应格式  
-200，500  
-
-### /requester/statics[GET]
-* 获取与发起者相关的统计数据
-* 响应格式  
-{  
-//TODO 待定  
-}  
+---
+## 任务计划
+|预计DDL|实际DDL|计划内容|
+|---|----|:--|
+|2018-05-11| |完成发起者和工人的迭代二已知的API|
+|2018-05-13| |完成管理员的迭代二已知的API|
+**注：日期均包含当天在内**
