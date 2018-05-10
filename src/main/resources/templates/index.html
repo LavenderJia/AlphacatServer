@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Test</title>
+	<meta charset="utf-8">
+</head>
+<body>
+</body>
+<script src="http://cdn.bootcss.com/jquery/2.0.3/jquery.min.js"></script>
+<script>
+var d = {
+	name: 'r1',
+	key: '1234',
+	type: 'requester'
+};
+$.ajax({
+	url: '/loginAction',
+	type: 'POST',
+	data: JSON.stringify(d),
+	dataType: 'json',
+	contentType: 'application/json;charset=utf-8',
+	success: function(res) {
+		console.log(res);
+	}
+});
+</script>
+</html>
