@@ -22,16 +22,16 @@ public class WorkerServiceImpl implements WorkerService {
     private DailyRegisterMapper dailyRegisterMapper;
 
     @Override
-    public List<WorkerVO> getNormalWorkers() {
-        return workerMapper.getByState(0).stream()
-                .map(BeanMapper::toWorkerVO)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<WorkerVO> getBannedWorkers() {
-        return workerMapper.getByState(1).stream()
-                .map(BeanMapper::toWorkerVO)
+    public List<WorkerVO> getNormalWorkers(int state) {
+		List<Worker> ws;
+		if(state == -1) {
+			ws = workerMapper.getAll();
+		} else if(state == 0 || state == 1) {
+			ws = workerMapper.getByState(state);
+		} else {
+			return new List<>();
+		}
+        return ws.stream().map(BeanMapper::toWorkerVO)
                 .collect(Collectors.toList());
     }
 
@@ -51,6 +51,11 @@ public class WorkerServiceImpl implements WorkerService {
     public WorkerVO getWorkerByName(String name) {
         return BeanMapper.toWorkerVO(workerMapper.getByName(name));
     }
+
+	@Override
+	public WorkerVO get(int id) {
+		return BeanMapper.toWorkerVO(workerMapper.get(id));
+	}
 
     @Override
     public void addWorker(WorkerVO workerVO) {

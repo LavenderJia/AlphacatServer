@@ -34,12 +34,12 @@ public class RequesterController {
 			r.setOccupation("occupation");
 			r.setCompany("company");
 			r.setState(1);
-			requesterService.addRequester(requester);
-			securityService.setRequesterPassword(r.getName(), jo.getString("password"));
+			requesterService.addRequester(r);
+			securityService.setRequesterPassword(r.getName(), jo.getString("key"));
 			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return e.getSource().getMessage();
+			return "抱歉，无法添加发布者。";
 		}
     }
 
@@ -48,24 +48,28 @@ public class RequesterController {
 	 */
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public RequesterVO get(@PathVariable("id") int id) {
-		return requesterService.get(id);
+	public Object get(@PathVariable("id") int id) {
+		try{
+			return requesterService.get(id);
+		} catch(Exception e) {
+			e.printStackTrace();
+			return "抱歉，无法获取发布者信息。";
+		}
 	}
 
     /**
      * Update a requester. 
+	 * Cannot update one that has not been passed by admin. 
      */
     @RequestMapping(value="/{id}", method=RequestMethod.PUT)
 	@ResponseBody
     public String updateRequester(@RequestBody JSONObject jo, @PathVariable("id") int id) {
 		try{
+			// Check for state. Only passed account can update info.
 			RequesterVO original = requesterService.get(id);
 			if(original.getState() == 1) {
-				System.out.print("-------------------------------");
-				System.out.print("Warning in Requester Controller's updateRequester(..): Requester is not active. ");
-				System.out.print("Inactive requester not processed.");
-				System.out.println("-------------------------------");
-				return "Requester " + id + " is inactive.";
+				System.out.println("Inactive requester not processed.");
+				return "该发布者账户还未被管理员审核。";
 			}
 			String name = jo.getString("name");
 			RequesterVO r = new RequesterVO();
@@ -82,7 +86,7 @@ public class RequesterController {
 			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return e.getSource().getMessage();
+			return "抱歉，无法更新发布者信息。";
 		}
     }
 
@@ -98,7 +102,7 @@ public class RequesterController {
 			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return e.getSource().getMessage();
+			return "抱歉，无法通过该发布者。";
 		}
     }
 
@@ -106,38 +110,43 @@ public class RequesterController {
 	 * Get an array of requesters of a certain state. 
 	 * @param state [all|checked|unchecked]
 	 */
-	public JSONArray get(@RequestParam("state") String state) {
-		JSONArray result = new JSONArray();
-		int stateInt;
-		if(state.equals("all")){
-			stateInt = -1;
-		} else if(state.equals("checked")) {
-			stateInt = 0;
-		} else if(state.equals("unchecked")) {
-			stateInt = 1;
-		} else {
-			System.out.print("-----------------------------");
-			System.out.print("State " + state + " cannot be processed. Aborted.");
-			System.out.println("-----------------------------");
+	public Object get(@RequestParam("state") String state) {
+		try{
+			JSONArray result = new JSONArray();
+			int stateInt;
+			if(state.equals("all")){
+				stateInt = -1;
+			} else if(state.equals("checked")) {
+				stateInt = 0;
+			} else if(state.equals("unchecked")) {
+				stateInt = 1;
+			} else {
+				System.out.print("-----------------------------");
+				System.out.print("State " + state + " cannot be processed. Aborted.");
+				System.out.println("-----------------------------");
+				return result;
+			}
+			List<RequesterVO> rs = requesterService.getByState(stateInt);
+			if(stateInt == -1) {
+				result.addAll(rs);
+			} else {
+				rs.forEach(e -> {
+					JSONObject r = new JSONObject();
+					r.put("id", e.getId());
+					r.put("name", e.getName());
+					r.put("birth", e.getBirth());
+					r.put("sex", e.getSex());
+					r.put("email", e.getEmail());
+					r.put("occupation", e.getOccupation());
+					r.put("company", e.getCompany());
+					result.add(r);
+				});
+			}
 			return result;
+		} catch(Exception e) {
+			e.printStackTrace();
+			return "抱歉，无法获取请求的发布者列表。";
 		}
-		List<RequesterVO> rs = requesterService.getByState(stateInt);
-		if(stateInt == -1) {
-			result.addAll(rs);
-		} else {
-			rs.forEach(e -> {
-				JSONObject r = new JSONObject();
-				r.put("id", e.getId());
-				r.put("name", e.getName());
-				r.put("birth", e.getBirth());
-				r.put("sex", e.getSex());
-				r.put("email", e.getEmail());
-				r.put("occupation", e.getOccupation());
-				r.put("company", e.getCompany());
-				result.add(r);
-			});
-		}
-		return result;
 	}
 
     /**

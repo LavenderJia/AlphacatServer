@@ -44,6 +44,9 @@ public interface WorkerMapper {
     @Select("SELECT * FROM worker WHERE name=#{name}")
     Worker getByName(@Param("name") String name);
 
+	@Select("SELECT * FROM worker WHERE id=#{id}")
+	Worker get(@Param("id") int id);
+
     @Delete("DELETE FROM worker WHERE id=#{workerId}")
     void delete(int workerId);
 }

@@ -10,9 +10,10 @@ import java.util.List;
  */
 public interface WorkerService {
 
-    List<WorkerVO> getNormalWorkers();
-
-    List<WorkerVO> getBannedWorkers();
+	/**
+	 * @param state -1 for all, 0 for active, 1 for locked
+	 */
+    List<WorkerVO> getByState(int state);
 
     /**
      * 获取经过排序的工人列表，按积分排序
@@ -22,6 +23,11 @@ public interface WorkerService {
 
     WorkerVO getWorkerByName(String name);
 
+	WorkerVO get(int id);
+
+	/**
+	 * Add a worker account and set up its id. 
+	 */
     void addWorker(WorkerVO worker);
 
     void updateWorker(WorkerVO worker);
