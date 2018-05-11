@@ -17,6 +17,9 @@ public interface RequesterMapper {
 	@Select("SELECT * FROM requester WHERE name=#{name}")
 	Requester getByName(@Param("name") String name);
 
+	@Select("SELECT * FROM requester WHERE id=#{id}")
+	Requester get(@Param("id") int id);
+
 	@Insert("INSERT INTO requester(id, name, birth, sex, email, occupation, company, state) " +
 			"VALUES(#{id}, #{name}, #{birth}, #{sex}, #{email}, #{occupation}, #{company}, #{state})")
 	void add(Requester r);

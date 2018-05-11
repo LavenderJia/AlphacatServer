@@ -52,7 +52,6 @@ public class MyShiroRealm extends AuthorizingRealm {
         String password = new String(token.getPassword());
         switch (username.charAt(0)) {
             case 'r' :
-				System.out.println("\n\n" + securityService + "\n\n");
                 Requester requester = securityService.requesterLogin(username.substring(1), password);
                 subject.getSession().setAttribute("id", requester.getId());
 				subject.getSession().setAttribute("name", requester.getName());

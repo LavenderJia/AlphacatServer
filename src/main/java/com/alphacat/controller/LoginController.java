@@ -64,9 +64,6 @@ public class LoginController {
 			result.put("result", "error");
 			result.put("info", e.getCause().getMessage());
 		} finally {
-			System.out.println("\n\n\n\n");
-			System.out.println(result);
-			System.out.println("\n\n\n\n");
 			return result;
 		}
     }

@@ -10,17 +10,10 @@ import java.util.List;
  */
 public interface RequesterService {
 
-    /**
-     * 管理员获取所有经过审核的发起者列表
-     * @return 经过审核的发起者数组
-     */
-    List<RequesterVO> getAllRequesters();
-
-    /**
-     * 管理员获取所有待审核的发起者列表
-     * @return 待审核的发起者数组
-     */
-    List<RequesterVO> getUncheckedRequesters();
+	/**
+	 * @param state -1 for all, 0 for active, 1 for inactive
+	 */
+    List<RequesterVO> getByState(int state);
 
     /**
      * 发起者获取自己的个人信息
@@ -28,6 +21,11 @@ public interface RequesterService {
      * @return 一个发起者对象
      */
     RequesterVO getByName(String name);
+
+	/**
+	 * Get a requester vo by its id.
+	 */
+	RequesterVO get(int id);
 
     /**
      * 审核一位发起者的注册请求
@@ -37,7 +35,7 @@ public interface RequesterService {
     void checkRequester(int id, boolean isChecked);
 
     /**
-     * 新发起者注册
+     * It will generate a new id for this requester.
      * @param requesterVO 新增的发起者对象
      */
     void addRequester(RequesterVO requesterVO);

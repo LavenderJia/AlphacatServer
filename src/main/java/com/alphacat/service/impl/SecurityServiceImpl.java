@@ -20,11 +20,6 @@ public class SecurityServiceImpl implements SecurityService {
     @Autowired
     private WorkerMapper workerMapper;
 
-	public SecurityServiceImpl() {
-		System.out.println("\n\n" + requesterMapper + "\n\n");
-		System.out.println("\n\n" + workerMapper+ "\n\n");
-	}
-
     @Override
     public Requester requesterLogin(String name, String password) throws AuthenticationException {
 		System.out.println("\n\n" + requesterMapper + "\n\n");
