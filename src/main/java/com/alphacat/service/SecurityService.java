@@ -1,5 +1,6 @@
 package com.alphacat.service;
 
+import com.alphacat.pojo.Admin;
 import com.alphacat.pojo.Requester;
 import com.alphacat.pojo.Worker;
 import org.apache.shiro.authc.AuthenticationException;
@@ -23,12 +24,8 @@ public interface SecurityService {
      * @return 正确登录的对象
      */
     Worker workerLogin(String name, String password) throws AuthenticationException;
-    /**
-     * 工人登录
-     * @param password 明文密码
-     * @return 暂时随便返回一个字符串
-     */
-    String adminLogin(String password) throws AuthenticationException;
+
+    Admin adminLogin(String name, String password) throws AuthenticationException;
     /**
      * 设置发起者的密码
      * @param name 用户名
@@ -41,4 +38,6 @@ public interface SecurityService {
      * @param password 明文密码
      */
     void setWorkerPassword(String name, String password);
+
+	void setAdminPassword(String name, String password);
 }

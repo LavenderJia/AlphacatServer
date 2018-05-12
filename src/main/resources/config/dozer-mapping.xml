@@ -99,4 +99,8 @@
         <class-a>com.alphacat.pojo.IrregularTag</class-a>
         <class-b>com.alphacat.vo.IrregularTagVO</class-b>
     </mapping>
+	<mapping>
+		<class-a>com.alphacat.pojo.Admin</class-a>
+		<class-b>com.alphacat.vo.AdminVO</class-b>
+	</mapping>
 </mappings>

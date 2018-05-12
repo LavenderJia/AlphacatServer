@@ -31,10 +31,10 @@ public class LoginController {
     @RequestMapping("/loginAction")
     public JSONObject loginAction(@RequestBody JSONObject jo) {
 		JSONObject result = new JSONObject();
+        String type = jo.getString("type");
 		try{
 			String name = jo.getString("name");
 			String pwd = jo.getString("key");
-			String type = jo.getString("type");
 			AuthenticationToken token = new UsernamePasswordToken(type.charAt(0) + name, pwd);
 			Subject subject = SecurityUtils.getSubject();
 			// this method can save user's id, name, and type as "id", 
@@ -47,19 +47,21 @@ public class LoginController {
 			result.put("type", String.valueOf(s.getAttribute("role")));
 		} catch(DisabledAccountException e) {
 			result.put("result", "failed");
-			result.put("info", e.getMessage());
+			if("requester".equals(type)) {
+			    result.put("info", "抱歉，该发布者还未被审核通过。");
+            } else if("worker".equals(type)) {
+			    result.put("info", "抱歉，该工人账户已被管理员禁用。");
+            }
 		} catch(UnknownAccountException e) {
 			result.put("result", "failed");
-			result.put("info", e.getMessage());
+			result.put("info", "未知账户");
 		} catch(AccountException e) {
 			result.put("result", "failed");
-			result.put("info", e.getMessage());
+			result.put("info", "密码错误");
 		} catch(Exception e) {
-			System.out.println("\n------------------LoginAction Error--------------------");
 			e.printStackTrace();
-			System.out.println();
 			result.put("result", "error");
-			result.put("info", e.getCause().getMessage());
+			result.put("info", "抱歉，由于未知原因，无法登陆。");
 		} finally {
 			return result;
 		}

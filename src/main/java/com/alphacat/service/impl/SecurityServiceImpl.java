@@ -4,6 +4,8 @@ import com.alphacat.mapper.RequesterMapper;
 import com.alphacat.pojo.Requester;
 import com.alphacat.mapper.WorkerMapper;
 import com.alphacat.pojo.Worker;
+import com.alphacat.mapper.AdminMapper;
+import com.alphacat.pojo.Admin;
 import com.alphacat.service.SecurityService;
 import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authc.AuthenticationException;
@@ -19,6 +21,8 @@ public class SecurityServiceImpl implements SecurityService {
     private RequesterMapper requesterMapper;
     @Autowired
     private WorkerMapper workerMapper;
+	@Autowired
+	private AdminMapper adminMapper;
 
     @Override
     public Requester requesterLogin(String name, String password) throws AuthenticationException {
@@ -40,8 +44,15 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public String adminLogin(String password) throws AuthenticationException {
-        return null;
+    public Admin adminLogin(String name, String password) throws AuthenticationException {
+		Admin admin = adminMapper.getByName(name);
+		if(admin == null) {
+			throw new UnknownAccountException("No such administrator.");
+		}
+		if(!adminMapper.checkPwd(name, password)) {
+			throw new AccountException("Wrong password.");
+		}
+        return admin;
     }
 
     @Override
@@ -53,4 +64,9 @@ public class SecurityServiceImpl implements SecurityService {
     public void setWorkerPassword(String name, String password) {
         workerMapper.setPwd(name, password);
     }
+
+	@Override
+	public void setAdminPassword(String name, String password) {
+		adminMapper.setPwd(name, password);
+	}
 }

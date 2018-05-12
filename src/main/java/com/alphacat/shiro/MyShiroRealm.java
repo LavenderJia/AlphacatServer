@@ -1,5 +1,6 @@
 package com.alphacat.shiro;
 
+import com.alphacat.pojo.Admin;
 import com.alphacat.pojo.Requester;
 import com.alphacat.pojo.Worker;
 import com.alphacat.service.SecurityService;
@@ -64,10 +65,11 @@ public class MyShiroRealm extends AuthorizingRealm {
 				subject.getSession().setAttribute("role", "worker");
                 return new SimpleAuthenticationInfo(worker, password, username);
             case 'a' :
-                securityService.adminLogin(password);
-				subject.getSession().setAttribute("name", "admin");
+                Admin admin = securityService.adminLogin(username.substring(1), password);
+                subject.getSession().setAttribute("id", admin.getId());
+				subject.getSession().setAttribute("name", admin.getName());
 				subject.getSession().setAttribute("role", "admin");
-                return new SimpleAuthenticationInfo("Admin", password, "Admin");
+                return new SimpleAuthenticationInfo(admin, password, username);
         }
         return null;
     }
