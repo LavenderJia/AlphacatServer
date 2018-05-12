@@ -96,7 +96,7 @@ public class WorkerController {
 	 * Update a worker account. Only active account can be updated. 
 	 */
     @RequestMapping(value="/{id}", method=RequestMethod.PUT)
-    public String updateWorker(@RequestBody WorkerVO worker, @PathVariable("id") int id) {
+    public String updateWorker(@RequestBody JSONObject jo, @PathVariable("id") int id) {
 		try{
 			// check the state
 			WorkerVO original = workerService.get(id);
@@ -139,6 +139,7 @@ public class WorkerController {
     public String unlockWorker(@PathVariable("id") int id) {
 		try{
 			workerService.setWorkerState(id, false);
+			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
 			return "抱歉，由于未知错误，无法解禁该工人账户。";
@@ -163,7 +164,7 @@ public class WorkerController {
      * 以name为昵称的工人有权限修改自己的密码
      * @param name 昵称
      * @param password 设定的密码
-	 * @Deprecated Use updateWorker(..) instead.
+	 * @deprecated Use updateWorker(..) instead.
      */
     @RequestMapping("/{name}/setPassword")
     public void setPassword(@PathVariable("name") String name, @ModelAttribute("password") String password) {

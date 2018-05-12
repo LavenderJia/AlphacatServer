@@ -26,7 +26,7 @@ public class RequesterController {
 	@ResponseBody
     public String addRequester(@RequestBody JSONObject jo) {
 		try{
-			RequestVO r = new RequesterVO();
+			RequesterVO r = new RequesterVO();
 			r.setName(jo.getString("name"));
 			r.setBirth(jo.getString("birth"));
 			r.setSex(jo.getIntValue("sex"));
@@ -97,7 +97,7 @@ public class RequesterController {
     public String checkRequester(@RequestBody JSONObject jo) {
 		try{
 			int id = jo.getIntValue("id");
-			int isChecked = jo.getBooleanValue("isChecked");
+			boolean isChecked = jo.getBooleanValue("isChecked");
 			requesterService.checkRequester(id, isChecked);
 			return null;
 		} catch(Exception e) {
@@ -110,6 +110,7 @@ public class RequesterController {
 	 * Get an array of requesters of a certain state. 
 	 * @param state [all|checked|unchecked]
 	 */
+	@RequestMapping(value="", method=RequestMethod.GET)
 	public Object get(@RequestParam("state") String state) {
 		try{
 			JSONArray result = new JSONArray();
@@ -163,7 +164,7 @@ public class RequesterController {
      * 以name为昵称的用户有权限修改自己的密码
      * @param name 昵称
      * @param password 设定的密码
-	 * @Deprecated Use updateRequester(..) instead.
+	 * @deprecated Use updateRequester(..) instead.
      */
     @RequestMapping("/{name}/setPassword")
     public void setPassword(@PathVariable("name") String name, @ModelAttribute("password") String password) {
