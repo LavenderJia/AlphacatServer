@@ -31,8 +31,8 @@ public class RequesterController {
 			r.setBirth(jo.getString("birth"));
 			r.setSex(jo.getIntValue("sex"));
 			r.setEmail(jo.getString("email"));
-			r.setOccupation("occupation");
-			r.setCompany("company");
+			r.setOccupation(jo.getString("occupation"));
+			r.setCompany(jo.getString("company"));
 			r.setState(1);
 			requesterService.addRequester(r);
 			securityService.setRequesterPassword(r.getName(), jo.getString("key"));

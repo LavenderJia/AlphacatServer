@@ -22,14 +22,14 @@ public class WorkerServiceImpl implements WorkerService {
     private DailyRegisterMapper dailyRegisterMapper;
 
     @Override
-    public List<WorkerVO> getNormalWorkers(int state) {
+    public List<WorkerVO> getByState(int state) {
 		List<Worker> ws;
 		if(state == -1) {
 			ws = workerMapper.getAll();
 		} else if(state == 0 || state == 1) {
 			ws = workerMapper.getByState(state);
 		} else {
-			return new List<>();
+			return new ArrayList<>();
 		}
         return ws.stream().map(BeanMapper::toWorkerVO)
                 .collect(Collectors.toList());

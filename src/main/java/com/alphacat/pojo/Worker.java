@@ -2,6 +2,7 @@ package com.alphacat.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
@@ -11,6 +12,7 @@ import java.sql.Date;
  * @author 161250102
  */
 @Data
+@EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
 public class Worker {
