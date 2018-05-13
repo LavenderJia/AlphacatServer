@@ -181,21 +181,29 @@ public class WorkerController {
         return workerService.hasSameName(name);
     }
 
-    @RequestMapping("/sign")
-    public void signIn() {
-        int id = (int) SecurityUtils.getSubject().getSession().getAttribute("id");
-        workerService.signIn(id);
+    @RequestMapping(value="/{id}/signup", method = RequestMethod.POST)
+    public String signUp(@PathVariable("id") int id) {
+        try {
+            workerService.signIn(id);
+            return null;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return "抱歉，由于未知原因，无法签到。";
+        }
     }
 
-    @RequestMapping("/signDays")
-    public int getSignDays() {
-        int id = (int) SecurityUtils.getSubject().getSession().getAttribute("id");
-        return workerService.getSignDays(id);
+    @RequestMapping(value="/{id}/signup", method = RequestMethod.GET)
+    public Object getSignUpInfo(@PathVariable("id") int id) {
+        try{
+            int days = workerService.getSignDays(id);
+            boolean hasSign = workerService.hasSigned(id);
+            JSONObject response = new JSONObject();
+            response.fluentPut("daysNum", days).fluentPut("hasSign", hasSign);
+            return response;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return "抱歉，无法获取用户的签到信息。";
+        }
     }
 
-    @RequestMapping("/hasSign")
-    public boolean hasSignIn() {
-        int id = (int) SecurityUtils.getSubject().getSession().getAttribute("id");
-        return workerService.hasSigned(id);
-    }
 }
