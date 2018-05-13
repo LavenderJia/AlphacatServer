@@ -1,4 +1,4 @@
-package com.alphacat.shiro;
+package com.alphacat.user.login;
 
 import com.alphacat.pojo.Admin;
 import com.alphacat.pojo.Requester;

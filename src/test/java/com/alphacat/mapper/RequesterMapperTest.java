@@ -1,7 +1,6 @@
 package com.alphacat.mapper;
 
 import com.alphacat.pojo.Requester;
-import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;

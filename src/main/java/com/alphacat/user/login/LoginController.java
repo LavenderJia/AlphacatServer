@@ -1,4 +1,4 @@
-package com.alphacat.restController;
+package com.alphacat.user.login;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;

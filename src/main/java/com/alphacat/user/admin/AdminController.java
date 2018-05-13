@@ -1,10 +1,9 @@
-package com.alphacat.restController;
+package com.alphacat.user.admin;
 
 import com.alphacat.service.AdminService;
 import com.alphacat.service.SecurityService;
 import com.alphacat.vo.AdminVO;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

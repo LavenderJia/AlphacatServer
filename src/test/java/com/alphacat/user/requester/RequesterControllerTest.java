@@ -1,4 +1,4 @@
-package com.alphacat.restController;
+package com.alphacat.user.requester;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alphacat.mapper.RequesterMapper;
 import com.alphacat.pojo.Requester;
 import com.alphacat.vo.RequesterVO;
-import com.alphacat.util.BeanMapper;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -15,15 +14,11 @@ import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.util.LinkedList;
-import java.util.List;
 
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
@@ -39,6 +34,8 @@ public class RequesterControllerTest {
 
     @Autowired
     private RequesterController requesterController;
+    @Autowired
+    private RequesterConverter requesterConverter;
     @Autowired
     private RequesterMapper requesterMapper;
     private MockMvc mvc;
@@ -80,7 +77,7 @@ public class RequesterControllerTest {
         mvc.perform(request).andExpect(status().isOk());
         // test for its existence
         Requester actual = requesterMapper.getByName(name);
-        Requester expected = BeanMapper.toRequesterPOJO(req);
+        Requester expected = requesterConverter.toPOJO(req);
         assertEquals(expected, actual);
         assertTrue(requesterMapper.checkPwd(name, pwd));
     }
@@ -167,7 +164,7 @@ public class RequesterControllerTest {
         mvc.perform(request).andExpect(status().isOk());
         // check for its function
         Requester actual = requesterMapper.get(5);
-        Requester expected = BeanMapper.toRequesterPOJO(req);
+        Requester expected = requesterConverter.toPOJO(req);
         assertEquals(expected, actual);
         assertTrue(requesterMapper.checkPwd("r5", "new-key"));
     }

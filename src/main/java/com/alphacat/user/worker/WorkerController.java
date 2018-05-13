@@ -1,10 +1,10 @@
-package com.alphacat.restController;
+package com.alphacat.user.worker;
 
 import com.alphacat.service.SecurityService;
 import com.alphacat.service.WorkerService;
-import com.alphacat.vo.WorkerVO;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
+import com.alphacat.vo.WorkerVO;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -45,11 +45,11 @@ public class WorkerController {
     public Object getByState(@RequestParam("type") String type) {
 		try{
 			int state;
-			if(type.equals("all")) {
+			if("all".equals(type)) {
 				state = -1;
-			} else if(type.equals("active")) {
+			} else if("active".equals(type)) {
 				state = 0;
-			} else if(type.equals("locked")) {
+			} else if("locked".equals(type)) {
 				state = 1;
 			} else {
 				System.out.print("--------------------");

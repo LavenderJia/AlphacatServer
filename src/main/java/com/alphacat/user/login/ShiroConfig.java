@@ -1,4 +1,4 @@
-package com.alphacat.shiro;
+package com.alphacat.user.login;
 
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;

@@ -1,10 +1,9 @@
-package com.alphacat.service.impl;
+package com.alphacat.user.admin;
 
 import com.alphacat.service.AdminService;
 import com.alphacat.mapper.AdminMapper;
 import com.alphacat.pojo.Admin;
 import com.alphacat.vo.AdminVO;
-import com.alphacat.util.BeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,25 +15,27 @@ public class AdminServiceImpl implements AdminService{
 
 	@Autowired
 	private AdminMapper adminMapper;
+	@Autowired
+	private AdminConverter adminConverter;
 
 	@Override
 	public List<AdminVO> getAll() {
 		List<Admin> admins = adminMapper.getAll();
-		return admins.stream().map(BeanMapper::toAdminVO)
+		return admins.stream().map(a -> adminConverter.toVO(a))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public List<AdminVO> getByAuth(int auth) {
 		List<Admin> admins = adminMapper.getByAuth(auth);
-		return admins.stream().map(BeanMapper::toAdminVO)
+		return admins.stream().map(a -> adminConverter.toVO(a))
 				.collect(Collectors.toList());
 	}
 
 	@Override
 	public AdminVO get(int id) {
 		Admin admin = adminMapper.get(id);
-		return BeanMapper.toAdminVO(admin);
+		return adminConverter.toVO(admin);
 	}
 
 	@Override
@@ -44,13 +45,13 @@ public class AdminServiceImpl implements AdminService{
 			id = 1;
 		}
 		adminVO.setId(id);
-		Admin admin = BeanMapper.toAdminPOJO(adminVO);
+		Admin admin = adminConverter.toPOJO(adminVO);
 		adminMapper.add(admin);
 	}
 
 	@Override
 	public void update(AdminVO adminVO) {
-		Admin admin = BeanMapper.toAdminPOJO(adminVO);
+		Admin admin = adminConverter.toPOJO(adminVO);
 		adminMapper.update(admin);
 	}
 

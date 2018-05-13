@@ -1,9 +1,8 @@
-package com.alphacat.service.impl;
+package com.alphacat.user.requester;
 
 import com.alphacat.mapper.RequesterMapper;
 import com.alphacat.pojo.Requester;
 import com.alphacat.service.RequesterService;
-import com.alphacat.util.BeanMapper;
 import com.alphacat.vo.RequesterVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +15,8 @@ public class RequesterServiceImpl implements RequesterService{
 
     @Autowired
     private RequesterMapper requesterMapper;
+    @Autowired
+    private RequesterConverter requesterConverter;
 
     @Override
     public List<RequesterVO> getByState(int state) {
@@ -27,18 +28,18 @@ public class RequesterServiceImpl implements RequesterService{
 		} else {
 			return null;
 		}
-        return rs.stream().map(BeanMapper::toRequesterVO)
+        return rs.stream().map(r -> requesterConverter.toVO(r))
                 .collect(Collectors.toList());
     }
 
     @Override
     public RequesterVO getByName(String name) {
-        return BeanMapper.toRequesterVO(requesterMapper.getByName(name));
+        return requesterConverter.toVO(requesterMapper.getByName(name));
     }
 
 	@Override
 	public RequesterVO get(int id) {
-		return BeanMapper.toRequesterVO(requesterMapper.get(id));
+		return requesterConverter.toVO(requesterMapper.get(id));
 	}
 
     @Override
@@ -49,7 +50,7 @@ public class RequesterServiceImpl implements RequesterService{
 
     @Override
     public void addRequester(RequesterVO requesterVO) {
-        Requester requester = BeanMapper.toRequesterPOJO(requesterVO);
+        Requester requester = requesterConverter.toPOJO(requesterVO);
         int id = requesterMapper.getNewId() == null ? 1 : requesterMapper.getNewId();
         requester.setId(id);
         requesterMapper.add(requester);
@@ -57,7 +58,7 @@ public class RequesterServiceImpl implements RequesterService{
 
     @Override
     public void updateRequester(RequesterVO requesterVO) {
-        requesterMapper.update(BeanMapper.toRequesterPOJO(requesterVO));
+        requesterMapper.update(requesterConverter.toPOJO(requesterVO));
     }
 
     @Override

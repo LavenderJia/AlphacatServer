@@ -1,10 +1,9 @@
-package com.alphacat.service.impl;
+package com.alphacat.user.worker;
 
 import com.alphacat.mapper.DailyRegisterMapper;
 import com.alphacat.mapper.WorkerMapper;
 import com.alphacat.pojo.Worker;
 import com.alphacat.service.WorkerService;
-import com.alphacat.util.BeanMapper;
 import com.alphacat.vo.WorkerVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +18,8 @@ public class WorkerServiceImpl implements WorkerService {
     @Autowired
     private WorkerMapper workerMapper;
     @Autowired
+    private WorkerConverter workerConverter;
+    @Autowired
     private DailyRegisterMapper dailyRegisterMapper;
 
     @Override
@@ -31,7 +32,7 @@ public class WorkerServiceImpl implements WorkerService {
 		} else {
 			return new ArrayList<>();
 		}
-        return ws.stream().map(BeanMapper::toWorkerVO)
+        return ws.stream().map(w -> workerConverter.toVO(w))
                 .collect(Collectors.toList());
     }
 
@@ -42,24 +43,24 @@ public class WorkerServiceImpl implements WorkerService {
         int length = workers.size() > 10 ? 10 : workers.size();
         List<WorkerVO> results = new LinkedList<>();
         for (int i = 0; i < length; i++) {
-            results.add(BeanMapper.toWorkerVO(workers.get(i)));
+            results.add(workerConverter.toVO(workers.get(i)));
         }
         return results;
     }
 
     @Override
     public WorkerVO getWorkerByName(String name) {
-        return BeanMapper.toWorkerVO(workerMapper.getByName(name));
+        return workerConverter.toVO(workerMapper.getByName(name));
     }
 
 	@Override
 	public WorkerVO get(int id) {
-		return BeanMapper.toWorkerVO(workerMapper.get(id));
+		return workerConverter.toVO(workerMapper.get(id));
 	}
 
     @Override
     public void addWorker(WorkerVO workerVO) {
-        Worker worker = BeanMapper.toWorkerPOJO(workerVO);
+        Worker worker = workerConverter.toPOJO(workerVO);
         int id = workerMapper.getNewId() == null ? 1 : workerMapper.getNewId();
         worker.setId(id);
         workerMapper.add(worker);
@@ -67,7 +68,7 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     public void updateWorker(WorkerVO worker) {
-        workerMapper.update(BeanMapper.toWorkerPOJO(worker));
+        workerMapper.update(workerConverter.toPOJO(worker));
     }
 
     @Override
