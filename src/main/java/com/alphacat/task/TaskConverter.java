@@ -1,19 +1,15 @@
 package com.alphacat.task;
 
 import com.alphacat.mapper.LabelMapper;
-import com.alphacat.pojo.HistoryTask;
-import com.alphacat.pojo.Label;
-import com.alphacat.pojo.Task;
-import com.alphacat.vo.HistoryTaskVO;
-import com.alphacat.vo.LabelVO;
-import com.alphacat.vo.R_TaskVO;
-import com.alphacat.vo.TaskVO;
+import com.alphacat.mapper.PictureMapper;
+import com.alphacat.mapper.TaskRecordMapper;
+import com.alphacat.pojo.*;
+import com.alphacat.vo.*;
 import org.dozer.DozerBeanMapperBuilder;
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,6 +18,10 @@ public class TaskConverter {
 
     @Autowired
     private LabelMapper labelMapper;
+    @Autowired
+    private TaskRecordMapper taskRecordMapper;
+    @Autowired
+    private PictureMapper pictureMapper;
 
     private Mapper mapper = DozerBeanMapperBuilder.create()
             .withMappingFiles("config/dozer-mapping.xml").build();
@@ -40,6 +40,38 @@ public class TaskConverter {
         List<Label> labels = labelMapper.get(id);
         result.setLabels(toLabelVOList(labels));
         return result;
+    }
+
+    public IdleTaskVO toVO(IdleTask task) {
+        return mapper.map(task, IdleTaskVO.class);
+    }
+
+    public List<IdleTaskVO> toIdleVOList(List<IdleTask> tasks) {
+        return tasks.stream().map(t -> toVO(t))
+                .collect(Collectors.toList());
+    }
+
+    public UnderwayTaskVO toUnderwayVO(UnderwayTask task) {
+        if(task.getTagRate() == null) {
+            String errMsg = "Cannot generate tagRate: the task has no picture.";
+            throw new NullPointerException(errMsg);
+        }
+        UnderwayTaskVO result = mapper.map(task, UnderwayTaskVO.class);
+        return result;
+    }
+
+    public List<UnderwayTaskVO> toUnderwayVOList(List<UnderwayTask> tasks) {
+        return tasks.stream().map(t -> toUnderwayVO(t))
+                .collect(Collectors.toList());
+    }
+
+    public EndedTaskVO toEndedVO(EndedTask task) {
+        return mapper.map(task, EndedTaskVO.class);
+    }
+
+    public List<EndedTaskVO> toEndedVOList(List<EndedTask> tasks) {
+        return tasks.stream().map(t -> toEndedVO(t))
+                .collect(Collectors.toList());
     }
 
     public Label toPOJO(LabelVO labelVO, int taskId) {
@@ -70,25 +102,26 @@ public class TaskConverter {
                 .collect(Collectors.toList());
     }
 
-    public R_TaskVO toRVO(Task task) {
-        R_TaskVO result = mapper.map(task, R_TaskVO.class);
+    public W_TaskVO toWVO(Task task, int workerId) {
+        W_TaskVO result = mapper.map(task, W_TaskVO.class);
         // set up its state
-        Date now = new Date();
-        int comparedNum = now.compareTo(task.getStartTime()) + now.compareTo(task.getEndTime());
-        if(comparedNum == -2) { // -1 + -1: task hasn't started
+        TaskRecord record = taskRecordMapper.get(task.getId(), workerId);
+        if(record == null) {
             result.setState(0);
-            result.setWorkerCount(0);
-            result.setTagRate(0);
-            return result;
-        }
-        if(comparedNum == 2) { // 1 + 1: task has ended
-            result.setState(2);
         } else {
-            result.setState(1);
+            Integer picNum = pictureMapper.count(task.getId());
+            if(picNum == null || picNum == 0) {
+                throw new RuntimeException("No picture in task: " + task.getId());
+            }
+            if(record.getPicDoneNum() == picNum) {
+                result.setState(2);
+            } else {
+                result.setState(1);
+            }
         }
-        // set up its worker count
-        Integer workerCount = 0;
-        // TODO
+        // set up its workerCount
+        Integer workerCount = taskRecordMapper.getWorkerNum(task.getId());
+        result.setWorkerCount(workerCount == null ? 0 : workerCount);
         return result;
     }
 

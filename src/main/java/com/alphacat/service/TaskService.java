@@ -1,20 +1,16 @@
 package com.alphacat.service;
 
-import com.alphacat.vo.HistoryTaskVO;
-import com.alphacat.vo.R_TaskVO;
-import com.alphacat.vo.TaskVO;
-import com.alphacat.vo.W_TaskVO;
+import com.alphacat.vo.*;
 
 import java.util.List;
 
 public interface TaskService {
 
-    /**
-     * 获取发起者自己发布的任务列表
-     * @param requesterId 发起者的ID
-     * @return 任务列表
-     */
-    List<R_TaskVO> getR(int requesterId);
+    List<IdleTaskVO> getIdle(int requesterId);
+
+    List<UnderwayTaskVO> getUnderway(int requesterId);
+
+    List<EndedTaskVO> getEnded(int requesterId);
 
     /**
      * 发起者修改已有任务时获取任务对象

@@ -2,12 +2,12 @@ package com.alphacat.task;
 
 import com.alphacat.mapper.LabelMapper;
 import com.alphacat.mapper.TaskMapper;
+import com.alphacat.pojo.EndedTask;
+import com.alphacat.pojo.IdleTask;
 import com.alphacat.pojo.Task;
+import com.alphacat.pojo.UnderwayTask;
 import com.alphacat.service.TaskService;
-import com.alphacat.vo.HistoryTaskVO;
-import com.alphacat.vo.R_TaskVO;
-import com.alphacat.vo.TaskVO;
-import com.alphacat.vo.W_TaskVO;
+import com.alphacat.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,9 +24,21 @@ public class TaskServiceImpl implements TaskService {
     private LabelMapper labelMapper;
 
     @Override
-    public List<R_TaskVO> getR(int requesterId) {
-        // TODO
-        return null;
+    public List<IdleTaskVO> getIdle(int requesterId) {
+        List<IdleTask> tasks = taskMapper.getIdleTasks(requesterId);
+        return taskConverter.toIdleVOList(tasks);
+    }
+
+    @Override
+    public List<UnderwayTaskVO> getUnderway(int requesterId) {
+        List<UnderwayTask> tasks = taskMapper.getUnderwayTasks(requesterId);
+        return taskConverter.toUnderwayVOList(tasks);
+    }
+
+    @Override
+    public List<EndedTaskVO> getEnded(int requesterId) {
+        List<EndedTask> tasks = taskMapper.getEndedTask(requesterId);
+        return taskConverter.toEndedVOList(tasks);
     }
 
     @Override

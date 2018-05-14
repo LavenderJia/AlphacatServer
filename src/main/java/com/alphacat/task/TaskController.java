@@ -48,7 +48,18 @@ public class TaskController {
     @RequestMapping(value="", method=RequestMethod.GET)
     public Object getR(@RequestParam("requesterId") int id,
                        @RequestParam("type") String type) {
-        // TODO
+        try {
+            if ("notstart".equals(type)) {
+                return taskService.getIdle(id);
+            } else if ("underway".equals(type)) {
+                return taskService.getUnderway(id);
+            } else if ("history".equals(type)) {
+                return taskService.getEnded(id);
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            return "抱歉，由于未知原因，无法获取发布者的任务列表。";
+        }
         return null;
     }
 

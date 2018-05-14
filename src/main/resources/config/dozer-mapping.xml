@@ -43,8 +43,44 @@
         </field>
     </mapping>
     <mapping>
+        <class-a>com.alphacat.pojo.IdleTask</class-a>
+        <class-b>com.alphacat.vo.IdleTaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">startTime</a>
+            <b>startTime</b>
+        </field>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.UnderwayTask</class-a>
+        <class-b>com.alphacat.vo.UnderwayTaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">startTime</a>
+            <b>startTime</b>
+        </field>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.EndedTask</class-a>
+        <class-b>com.alphacat.vo.EndedTaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">startTime</a>
+            <b>startTime</b>
+        </field>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
         <class-a>com.alphacat.pojo.Task</class-a>
-        <class-b>com.alphacat.vo.R_TaskVO</class-b>
+        <class-b>com.alphacat.vo.UnderwayTaskVO</class-b>
         <field>
             <a date-format="yyyy-MM-dd">startTime</a>
             <b>startTime</b>

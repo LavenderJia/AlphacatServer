@@ -1,7 +1,6 @@
 package com.alphacat.mapper;
 
-import com.alphacat.pojo.HistoryTask;
-import com.alphacat.pojo.Task;
+import com.alphacat.pojo.*;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
@@ -22,16 +21,54 @@ public interface TaskMapper {
     @Select("SELECT * FROM task WHERE requesterId=#{requesterId}")
     List<Task> getByRequester(@Param("requesterId") int requesterId);
 
+    @Select("SELECT id, name, creditPerPic, creditFinished, method, startTime, endTime " +
+            "FROM task WHERE requesterId = #{requesterId} AND NOW() < startTime")
+    List<IdleTask> getIdleTasks(@Param("requesterId") int requesterId);
+
+    @Select("SELECT id, name, startTime, endTime, workerCount, a.tagCount/count(p.index) tagRate " +
+            "FROM (" +
+                "SELECT id, name, startTime, endTime, COUNT(workerId) workerCount, " +
+                    "IFNULL(SUM(picDoneNum), 0) tagCount " +
+                "FROM ( " +
+                    "SELECT * FROM task WHERE requesterId = #{requesterId} AND " +
+                        "NOW() > startTime AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)" +
+                ") t LEFT JOIN task_record ON id = taskId " +
+                "GROUP BY id" +
+            ") a LEFT JOIN picture p ON id = taskId " +
+            "GROUP BY id")
+    List<UnderwayTask> getUnderwayTasks(@Param("requesterId") int requesterId);
+
+    @Select("SELECT id, name, startTime, endTime, workerCount, tagRate, costCredit " +
+            "FROM (" +
+                "SELECT id, name, startTime, endTime, workerCount, a.tagCount/COUNT(p.index) tagRate " +
+                "FROM (" +
+                    "SELECT id, name, startTime, endTime, COUNT(workerId) workerCount, " +
+                        "IFNULL(SUM(picDoneNum), 0) tagCount " +
+                    "FROM (" +
+                        "SELECT * FROM task WHERE requesterId = #{requesterId} AND " +
+                            "CURDATE() > endTime" +
+                    ") t LEFT JOIN task_record ON id = taskId" +
+                ") a LEFT JOIN picture p ON id = taskId " +
+                "GROUP BY id" +
+            ") b LEFT JOIN (" +
+                "SELECT taskId, IFNULL(SUM(valueChange), 0) costCredit " +
+                "FROM worker_credit " +
+                "GROUP BY taskId" +
+            ") c ON id = taskId")
+    List<EndedTask> getEndedTask(@Param("requesterId") int requesterId);
+
     /**
      * Get available tasks of 'today'.
      */
-    @Select("SELECT * FROM task WHERE NOW()>startTime AND endTime>DATE_SUB(CURDATE(),INTERVAL 1 DAY)")
+    @Select("SELECT * FROM task WHERE NOW()>startTime AND " +
+            "endTime>DATE_SUB(CURDATE(),INTERVAL 1 DAY)")
     List<Task> getAvailableTask();
 
     /**
      * Get all tasks that has been finished by a worker.
      */
-    @Select("SELECT A.id, A.name, A.startTime, A.endTime, B.creditEarned " +
+    @Select("SELECT A.id AS id, A.name AS name, A.startTime AS startTime, " +
+                "A.endTime AS endTime, B.creditEarned AS creditEarned" +
             "FROM task AS A JOIN (" +
                 "SELECT taskId AS id, SUM(valueChanged) AS creditEarned " +
                 "FROM worker_credit WHERE workerId=#{workerId} AND taskId=#{id}" +
@@ -60,7 +97,4 @@ public interface TaskMapper {
     @Delete("DELETE FROM task WHERE id=#{taskId}")
     void delete(@Param("taskId") int taskId);
 
-    @Select("SELECT * FROM task WHERE requesterId=#{requesterId} AND " +
-            "endTime<DATE_SUB(CURDATE(),INTERVAL 1 DAY)")
-    List<Task> getFinishedByRequester(@Param("requesterId") int requesterId);
 }

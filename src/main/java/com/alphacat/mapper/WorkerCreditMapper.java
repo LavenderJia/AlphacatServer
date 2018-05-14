@@ -2,6 +2,7 @@ package com.alphacat.mapper;
 
 import com.alphacat.pojo.WorkerCredit;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
@@ -14,5 +15,5 @@ public interface WorkerCreditMapper {
     void add(WorkerCredit record);
     /** 获取工人的历史明细记录 */
     @Select("SELECT * FROM worker_credit WHERE workerId=#{workerId}")
-    List<WorkerCredit> get(int workerId);
+    List<WorkerCredit> get(@Param("workerId") int workerId);
 }
