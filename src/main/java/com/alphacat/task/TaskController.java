@@ -60,14 +60,23 @@ public class TaskController {
             e.printStackTrace();
             return "抱歉，由于未知原因，无法获取发布者的任务列表。";
         }
-        return null;
+        return "不支持的任务类型：" + type;
     }
 
     @RequestMapping(value="", method=RequestMethod.GET)
     public Object getW(@RequestParam("workerId") int id,
                        @RequestParam("type") String type) {
-        // TODO
-        return null;
+        try{
+            if("available".equals(type)) {
+                return taskService.getAvailable(id);
+            } else if("history".equals(type)) {
+                return taskService.getHistory(id);
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            return "抱歉，由于未知原因，无法获取相关工人任务。";
+        }
+        return "不支持的任务类型：" + type;
     }
 
 }

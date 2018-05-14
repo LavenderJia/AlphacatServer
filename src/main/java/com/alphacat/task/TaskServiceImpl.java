@@ -2,10 +2,7 @@ package com.alphacat.task;
 
 import com.alphacat.mapper.LabelMapper;
 import com.alphacat.mapper.TaskMapper;
-import com.alphacat.pojo.EndedTask;
-import com.alphacat.pojo.IdleTask;
-import com.alphacat.pojo.Task;
-import com.alphacat.pojo.UnderwayTask;
+import com.alphacat.pojo.*;
 import com.alphacat.service.TaskService;
 import com.alphacat.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,20 +39,20 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<W_TaskVO> getW(int workerId) {
-        // TODO
-        return null;
-    }
-
-    @Override
     public TaskVO get(int id) {
         return taskConverter.toVO(taskMapper.get(id));
     }
 
     @Override
-    public List<HistoryTaskVO> getHistoryTasks(int workerId) {
-        // TODO
-        return null;
+    public List<AvailableTaskVO> getAvailable(int workerId) {
+        List<AvailableTask> tasks = taskMapper.getAvailableTask(workerId);
+        return taskConverter.toAvailableVOList(tasks);
+    }
+
+    @Override
+    public List<HistoryTaskVO> getHistory(int workerId) {
+        List<HistoryTask> tasks = taskMapper.getHistoryTasks(workerId);
+        return taskConverter.toHistoryVOList(tasks);
     }
 
     @Override
@@ -70,7 +67,7 @@ public class TaskServiceImpl implements TaskService {
         taskMapper.add(task);
         // add labels
         taskVO.getLabels().forEach(l -> labelMapper.add(taskConverter.toPOJO(l, id)));
-        return id.intValue();
+        return id;
     }
 
     @Override

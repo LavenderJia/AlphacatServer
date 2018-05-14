@@ -9,6 +9,7 @@ import java.util.Date;
 
 /**
  * 工人-历史任务显示，只显示自己参与过的任务
+ * @see com.alphacat.pojo.HistoryTask
  */
 @Data
 @NoArgsConstructor
@@ -20,6 +21,6 @@ public class HistoryTaskVO {
     private String name;
     private String startTime;
     private String endTime;
-    private int earnedCredit; //赚取的积分
+    private int earnedCredit;
 
 }

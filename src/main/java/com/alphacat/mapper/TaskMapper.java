@@ -57,24 +57,36 @@ public interface TaskMapper {
             ") c ON id = taskId")
     List<EndedTask> getEndedTask(@Param("requesterId") int requesterId);
 
-    /**
-     * Get available tasks of 'today'.
-     */
-    @Select("SELECT * FROM task WHERE NOW()>startTime AND " +
-            "endTime>DATE_SUB(CURDATE(),INTERVAL 1 DAY)")
-    List<Task> getAvailableTask();
+    @Select("SELECT id, name, creditPerPic, creditFinished, method, endTime, progress " +
+            "FROM (" +
+                "SELECT a.taskId, picDoneNum/picCount as progress " +
+                "FROM (" +
+                    "SELECT taskId, picDoneNum FROM task_record " +
+                    "WHERE workerId = #{workerId}" +
+                ") a LEFT JOIN (" +
+                    "SELECT taskId, COUNT(p.index) picCount FROM picture " +
+                    "GROUP BY taskId" +
+                ") b ON a.taskId = b.taskId" +
+            ") c RIGHT JOIN (" +
+                "SELECT * FROM task WHERE NOW() > startTime " +
+                    "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)" +
+            ") d ON taskId = id")
+    List<AvailableTask> getAvailableTask(@Param("workerId") int workerId);
 
-    /**
-     * Get all tasks that has been finished by a worker.
-     */
-    @Select("SELECT A.id AS id, A.name AS name, A.startTime AS startTime, " +
-                "A.endTime AS endTime, B.creditEarned AS creditEarned" +
-            "FROM task AS A JOIN (" +
-                "SELECT taskId AS id, SUM(valueChanged) AS creditEarned " +
-                "FROM worker_credit WHERE workerId=#{workerId} AND taskId=#{id}" +
-            ") AS B ON A.id=B.id")
-    List<HistoryTask> getHistoryTasks(@Param("taskId") int taskId,
-                                      @Param("workerId") int workerId);
+    @Select("SELECT id, name, endTime, earnedCredit, correctRate " +
+            "FROM (" +
+                "SELECT * FROM (" +
+                    "SELECT * FROM task WHERE CURDATE() > endTime" +
+                ") a JOIN (" +
+                    "SELECT taskId, correctRate FROM task_record " +
+                    "WHERE workerId = #{workerId} AND correctRate IS NOT NULL" +
+                ") b ON id = taskId" +
+            ") c JOIN (" +
+                "SELECT taskId, SUM(valueChange) earnedCredit " +
+                "FROM worker_credit WHERE workerId = #{workerId}" +
+                "GROUP BY taskId" +
+            ") d ON id = d.taskId")
+    List<HistoryTask> getHistoryTasks(@Param("workerId") int workerId);
 
     /**
      * Get a task by its id.

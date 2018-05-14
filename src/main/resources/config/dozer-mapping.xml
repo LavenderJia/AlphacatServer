@@ -79,12 +79,8 @@
         </field>
     </mapping>
     <mapping>
-        <class-a>com.alphacat.pojo.Task</class-a>
-        <class-b>com.alphacat.vo.UnderwayTaskVO</class-b>
-        <field>
-            <a date-format="yyyy-MM-dd">startTime</a>
-            <b>startTime</b>
-        </field>
+        <class-a>com.alphacat.pojo.AvailableTask</class-a>
+        <class-b>com.alphacat.vo.AvailableTaskVO</class-b>
         <field>
             <a date-format="yyyy-MM-dd">endTime</a>
             <b>endTime</b>
@@ -93,10 +89,6 @@
     <mapping>
         <class-a>com.alphacat.pojo.HistoryTask</class-a>
         <class-b>com.alphacat.vo.HistoryTaskVO</class-b>
-        <field>
-            <a date-format="yyyy-MM-dd">startTime</a>
-            <b>startTime</b>
-        </field>
         <field>
             <a date-format="yyyy-MM-dd">endTime</a>
             <b>endTime</b>

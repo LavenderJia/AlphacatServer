@@ -18,17 +18,9 @@ public class TaskConverter {
 
     @Autowired
     private LabelMapper labelMapper;
-    @Autowired
-    private TaskRecordMapper taskRecordMapper;
-    @Autowired
-    private PictureMapper pictureMapper;
 
     private Mapper mapper = DozerBeanMapperBuilder.create()
             .withMappingFiles("config/dozer-mapping.xml").build();
-
-    public TaskConverter() {
-        System.out.println("Task Converter constructed.");
-    }
 
     public Task toPOJO(TaskVO taskVO) {
         return mapper.map(taskVO, Task.class);
@@ -47,7 +39,7 @@ public class TaskConverter {
     }
 
     public List<IdleTaskVO> toIdleVOList(List<IdleTask> tasks) {
-        return tasks.stream().map(t -> toVO(t))
+        return tasks.stream().map(this::toVO)
                 .collect(Collectors.toList());
     }
 
@@ -61,7 +53,7 @@ public class TaskConverter {
     }
 
     public List<UnderwayTaskVO> toUnderwayVOList(List<UnderwayTask> tasks) {
-        return tasks.stream().map(t -> toUnderwayVO(t))
+        return tasks.stream().map(this::toUnderwayVO)
                 .collect(Collectors.toList());
     }
 
@@ -70,7 +62,7 @@ public class TaskConverter {
     }
 
     public List<EndedTaskVO> toEndedVOList(List<EndedTask> tasks) {
-        return tasks.stream().map(t -> toEndedVO(t))
+        return tasks.stream().map(this::toEndedVO)
                 .collect(Collectors.toList());
     }
 
@@ -85,44 +77,34 @@ public class TaskConverter {
     }
 
     public List<LabelVO> toLabelVOList(List<Label> labels) {
-        return labels.stream().map(l -> toVO(l))
+        return labels.stream().map(this::toVO)
                 .collect(Collectors.toList());
     }
 
-    public HistoryTask toPOJO(HistoryTaskVO historyTaskVO) {
-        return mapper.map(historyTaskVO, HistoryTask.class);
+    public AvailableTaskVO toAvailableVO(AvailableTask task) {
+        AvailableTaskVO result = mapper.map(task, AvailableTaskVO.class);
+        if(task.getProgress() == null) {
+            result.setState(1);
+        } else if(task.getProgress() == 1.0D) {
+            result.setState(3);
+        } else {
+            result.setState(2);
+        }
+        return result;
     }
 
-    public HistoryTaskVO toVO(HistoryTask historyTask) {
+    public List<AvailableTaskVO> toAvailableVOList(List<AvailableTask> tasks) {
+        return tasks.stream().map(this::toAvailableVO)
+                .collect(Collectors.toList());
+    }
+
+    public HistoryTaskVO toHistoryVO(HistoryTask historyTask) {
         return mapper.map(historyTask, HistoryTaskVO.class);
     }
 
-    public List<HistoryTaskVO> toHistoryTaskVOList(List<HistoryTask> historyTasks) {
-        return historyTasks.stream().map(t -> toVO(t))
+    public List<HistoryTaskVO> toHistoryVOList(List<HistoryTask> historyTasks) {
+        return historyTasks.stream().map(this::toHistoryVO)
                 .collect(Collectors.toList());
-    }
-
-    public W_TaskVO toWVO(Task task, int workerId) {
-        W_TaskVO result = mapper.map(task, W_TaskVO.class);
-        // set up its state
-        TaskRecord record = taskRecordMapper.get(task.getId(), workerId);
-        if(record == null) {
-            result.setState(0);
-        } else {
-            Integer picNum = pictureMapper.count(task.getId());
-            if(picNum == null || picNum == 0) {
-                throw new RuntimeException("No picture in task: " + task.getId());
-            }
-            if(record.getPicDoneNum() == picNum) {
-                result.setState(2);
-            } else {
-                result.setState(1);
-            }
-        }
-        // set up its workerCount
-        Integer workerCount = taskRecordMapper.getWorkerNum(task.getId());
-        result.setWorkerCount(workerCount == null ? 0 : workerCount);
-        return result;
     }
 
 }

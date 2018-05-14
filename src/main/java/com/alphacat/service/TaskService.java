@@ -12,26 +12,16 @@ public interface TaskService {
 
     List<EndedTaskVO> getEnded(int requesterId);
 
+    List<AvailableTaskVO> getAvailable(int workerId);
+
+    List<HistoryTaskVO> getHistory(int workerId);
+
     /**
      * 发起者修改已有任务时获取任务对象
      * @param taskId 任务ID
      * @return 返回的任务对象
      */
     TaskVO get(int taskId);
-
-    /**
-     * 获取工人可以参与的任务列表
-     * @param workerId 工人的Id
-     * @return 任务列表
-     */
-    List<W_TaskVO> getW(int workerId);
-
-    /**
-     * 获取工人参与过的历史任务列表
-     * @param workerId 工人ID
-     * @return 任务列表
-     */
-    List<HistoryTaskVO> getHistoryTasks(int workerId);
 
     /**
      * Allocate a new task id and add this task, along with its labels.
