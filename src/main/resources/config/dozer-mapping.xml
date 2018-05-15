@@ -22,4 +22,76 @@
 		<class-a>com.alphacat.pojo.Admin</class-a>
 		<class-b>com.alphacat.vo.AdminVO</class-b>
 	</mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.Label</class-a>
+        <class-b>com.alphacat.vo.LabelVO</class-b>
+        <field>
+            <a>label</a>
+            <b>title</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.Task</class-a>
+        <class-b>com.alphacat.vo.TaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">startTime</a>
+            <b>startTime</b>
+        </field>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.IdleTask</class-a>
+        <class-b>com.alphacat.vo.IdleTaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">startTime</a>
+            <b>startTime</b>
+        </field>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.UnderwayTask</class-a>
+        <class-b>com.alphacat.vo.UnderwayTaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">startTime</a>
+            <b>startTime</b>
+        </field>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.EndedTask</class-a>
+        <class-b>com.alphacat.vo.EndedTaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">startTime</a>
+            <b>startTime</b>
+        </field>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.AvailableTask</class-a>
+        <class-b>com.alphacat.vo.AvailableTaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.HistoryTask</class-a>
+        <class-b>com.alphacat.vo.HistoryTaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
 </mappings>
