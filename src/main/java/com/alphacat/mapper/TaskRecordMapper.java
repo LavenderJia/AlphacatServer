@@ -16,7 +16,7 @@ public interface TaskRecordMapper {
      * Get all task records of a worker.
      */
     @Select("SELECT * FROM task_record WHERE workerId=#{workerId}")
-    List<TaskRecord> get(int workerId);
+    List<TaskRecord> getByWorker(int workerId);
 
     /**
      * Get all task ids of tasks that the worker did.

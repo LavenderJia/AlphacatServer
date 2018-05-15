@@ -45,16 +45,27 @@ public class TaskController {
         }
     }
 
-    @RequestMapping(value="", method=RequestMethod.GET)
-    public Object getR(@RequestParam("requesterId") int id,
-                       @RequestParam("type") String type) {
+    @RequestMapping(value="/task", method=RequestMethod.GET)
+    public Object get(@RequestParam("requesterId") Integer requesterId,
+                      @RequestParam("workerId") Integer workerId,
+                      @RequestParam("type") String type) {
+        if(requesterId != null) {
+            return getR(requesterId, type);
+        }
+        if(workerId != null) {
+            return getW(workerId, type);
+        }
+        return "发布者和工人的编号均无法接收，无法回应。";
+    }
+
+    public Object getR(int requesterId, String type) {
         try {
             if ("notstart".equals(type)) {
-                return taskService.getIdle(id);
+                return taskService.getIdle(requesterId);
             } else if ("underway".equals(type)) {
-                return taskService.getUnderway(id);
+                return taskService.getUnderway(requesterId);
             } else if ("history".equals(type)) {
-                return taskService.getEnded(id);
+                return taskService.getEnded(requesterId);
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -63,9 +74,7 @@ public class TaskController {
         return "不支持的任务类型：" + type;
     }
 
-    @RequestMapping(value="", method=RequestMethod.GET)
-    public Object getW(@RequestParam("workerId") int id,
-                       @RequestParam("type") String type) {
+    public Object getW(int id, String type) {
         try{
             if("available".equals(type)) {
                 return taskService.getAvailable(id);
