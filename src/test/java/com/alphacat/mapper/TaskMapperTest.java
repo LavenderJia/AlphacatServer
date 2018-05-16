@@ -24,8 +24,8 @@ public class TaskMapperTest {
     public void A_add() {
         Date s4=Date.valueOf("2018-03-29");
         Date e4=Date.valueOf("2018-04-15");
-        Date s5=Date.valueOf("2018-04-15");
-        Date e5=Date.valueOf("2018-04-27");
+        Date s5=Date.valueOf("2018-06-15");
+        Date e5=Date.valueOf("2018-06-27");
         taskMapper.add(new Task(4,3,"t4","ttt",2,30,2,true,s4,e4));
         taskMapper.add(new Task(5,3,"t5","ttt",2,30,2,true,s5,e5));
 
@@ -42,17 +42,40 @@ public class TaskMapperTest {
     }
 
     @Test
-    public void B_findAvailableTask() {
+    public void D_getIdleTasks() {
+        Assert.assertEquals(0,taskMapper.getIdleTasks(1).size());
+        Assert.assertEquals(1,taskMapper.getIdleTasks(3).size());
+    }
+
+    @Test
+    public void E_getUnderwayTasks() {
+        Assert.assertEquals(1,taskMapper.getUnderwayTasks(1).size());
+        Assert.assertEquals(0,taskMapper.getUnderwayTasks(3).size());
+    }
+
+    @Test
+    public void F_getEndedTasks() {
+        Assert.assertEquals(1,taskMapper.getEndedTask(1).size());
+        Assert.assertEquals(1,taskMapper.getEndedTask(3).size());
+    }
+
+    @Test
+    public void G_getAvailableTask() {
         Assert.assertEquals(1,taskMapper.getAvailableTask(1).size());
     }
 
     @Test
-    public void B_getTaskById() {
+    public void H_getHistoryTasks() {
+        Assert.assertEquals(0,taskMapper.getHistoryTasks(1).size());
+    }
+
+    @Test
+    public void I_get() {
         Assert.assertTrue("t4".equals(taskMapper.getByRequester(3).get(0).getName()));
     }
 
     @Test
-    public void C_updateTask() {
+    public void J_update() {
         Date s4=Date.valueOf("2018-03-29");
         Date e4=Date.valueOf("2018-04-15");
         taskMapper.update(new Task(4,3,"t4","TTT",2,30,2,true,s4,e4));
@@ -60,7 +83,7 @@ public class TaskMapperTest {
     }
 
     @Test
-    public void D_deleteTask() {
+    public void K_delete() {
         taskMapper.delete(4);
         taskMapper.delete(5);
 
