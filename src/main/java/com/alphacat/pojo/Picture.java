@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Picture {
 
-    private int index;
+    private int pidx; // picture index
     private int taskId;
 
 }

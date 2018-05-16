@@ -91,7 +91,7 @@ public class PictureServiceImpl implements PictureService {
     public boolean delete(int taskId) {
         try {
             Files.delete(Paths.get("/pic", taskId+""));
-            pictureMapper.delete(taskId);
+            pictureMapper.multiDelete(taskId);
             return true;
         } catch (IOException e) {
             e.printStackTrace();

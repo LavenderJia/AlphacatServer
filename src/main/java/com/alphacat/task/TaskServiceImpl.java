@@ -80,7 +80,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     /**
-     * Just delete the task. Mysql will delete other related data for you.
+     * Just multiDelete the task. Mysql will multiDelete other related data for you.
      */
     @Override
     public void delete(int id) {

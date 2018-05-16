@@ -25,7 +25,7 @@ public interface TaskMapper {
             "FROM task WHERE requesterId = #{requesterId} AND NOW() < startTime")
     List<IdleTask> getIdleTasks(@Param("requesterId") int requesterId);
 
-    @Select("SELECT id, name, startTime, endTime, workerCount, a.tagCount/count(p.index) tagRate " +
+    @Select("SELECT id, name, startTime, endTime, workerCount, a.tagCount/count(p.pidx) tagRate " +
             "FROM (" +
                 "SELECT id, name, startTime, endTime, COUNT(workerId) workerCount, " +
                     "IFNULL(SUM(picDoneNum), 0) tagCount " +
@@ -40,7 +40,7 @@ public interface TaskMapper {
 
     @Select("SELECT id, name, startTime, endTime, workerCount, tagRate, costCredit " +
             "FROM (" +
-                "SELECT id, name, startTime, endTime, workerCount, a.tagCount/COUNT(p.index) tagRate " +
+                "SELECT id, name, startTime, endTime, workerCount, a.tagCount/COUNT(p.pidx) tagRate " +
                 "FROM (" +
                     "SELECT id, name, startTime, endTime, COUNT(workerId) workerCount, " +
                         "IFNULL(SUM(picDoneNum), 0) tagCount " +
@@ -64,7 +64,7 @@ public interface TaskMapper {
                     "SELECT taskId, picDoneNum FROM task_record " +
                     "WHERE workerId = #{workerId}" +
                 ") a LEFT JOIN (" +
-                    "SELECT taskId, COUNT(p.index) picCount FROM picture " +
+                    "SELECT taskId, COUNT(pidx) picCount FROM picture " +
                     "GROUP BY taskId" +
                 ") b ON a.taskId = b.taskId" +
             ") c RIGHT JOIN (" +
@@ -83,7 +83,7 @@ public interface TaskMapper {
                 ") b ON id = taskId" +
             ") c JOIN (" +
                 "SELECT taskId, SUM(valueChange) earnedCredit " +
-                "FROM worker_credit WHERE workerId = #{workerId}" +
+                "FROM worker_credit WHERE workerId = #{workerId} " +
                 "GROUP BY taskId" +
             ") d ON id = d.taskId")
     List<HistoryTask> getHistoryTasks(@Param("workerId") int workerId);
