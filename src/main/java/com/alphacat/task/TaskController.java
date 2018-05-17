@@ -1,7 +1,9 @@
 package com.alphacat.task;
 
+import com.alphacat.service.PictureService;
 import com.alphacat.service.TaskService;
 import com.alphacat.vo.TaskVO;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,6 +13,8 @@ public class TaskController {
 
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private PictureService pictureService;
 
     @RequestMapping(value="", method= RequestMethod.POST)
     public String add(TaskVO taskVO) {
@@ -88,6 +92,18 @@ public class TaskController {
             return "抱歉，由于未知原因，无法获取相关工人任务。";
         }
         return "不支持的任务类型：" + type;
+    }
+
+    @RequestMapping(value="{id}/picOrder", method = RequestMethod.GET)
+    public Object getPicOrder(@PathVariable("id") int id) {
+        try {
+            int workerId = (Integer) SecurityUtils.getSubject()
+                    .getSession().getAttribute("id");
+            return pictureService.getPicOrder(id, workerId);
+        } catch(Exception e) {
+            e.printStackTrace();
+            return "抱歉，由于未知原因，无法获取图片顺序。";
+        }
     }
 
 }

@@ -9,6 +9,13 @@ import org.springframework.web.multipart.MultipartFile;
 public interface PictureService {
 
     /**
+     * Get the picture order of a task for a worker.
+     * If there is no order in database, then generate a new one.
+     * Every number is in the form of %02d.
+     */
+    int[] getPicOrder(int taskId, int workerId);
+
+    /**
      * 获取任务的首张图片
      * 如果是个新参与任务则自动生成图片队列并返回第一张的序号
      * 如果任务已经全部完成则返回第一张序号

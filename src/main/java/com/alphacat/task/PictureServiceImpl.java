@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -22,20 +23,24 @@ public class PictureServiceImpl implements PictureService {
     private TaskRecordMapper taskRecordMapper;
 
     @Override
+    public int[] getPicOrder(int taskId, int workerId) {
+        TaskRecord record = taskRecordMapper.get(workerId, taskId);
+        String picOrder;
+        if(record == null) {
+            picOrder = genPicOrder(taskId);
+            taskRecordMapper.add(new TaskRecord(
+                    workerId, taskId, picOrder, 0));
+        } else {
+            picOrder = record.getPicOrder();
+        }
+        return convertPicOrder(picOrder);
+    }
+
+    @Override
     public int getFirstPic(int taskId, int workerId) {
         TaskRecord taskRecord = taskRecordMapper.get(workerId, taskId);
         if (taskRecord == null) { // task has not been started
-            int count = pictureMapper.count(taskId);
-            String picOrder = "";
-            for (int i = 0; i < count; i++) {
-                picOrder += String.format("%02d", i);
-            }
-            // generate random order
-            for (int i = 0; i < count; i++) {
-                int p = (int) (Math.random()*count);
-                p *= 2;
-                picOrder = picOrder.substring(p) + picOrder.substring(0, p);
-            }
+            String picOrder = genPicOrder(taskId);
             taskRecordMapper.add(new TaskRecord(workerId, taskId, picOrder, 0));
             return Integer.parseInt(picOrder.substring(0, 2));
         } else {
@@ -106,4 +111,42 @@ public class PictureServiceImpl implements PictureService {
         }
         return index;
     }
+
+    private String genPicOrder(int taskId) {
+        int count = pictureMapper.count(taskId);
+        StringBuffer picOrder = new StringBuffer();
+        for (int i = 0; i < count; i++) {
+            picOrder.append(String.format("%02d", i));
+        }
+        // generate random order
+        for (int i = 0; i < count; i++) {
+            int p = (int) (Math.random()*count);
+            p *= 2;
+            reverse(picOrder, 0, p);
+            reverse(picOrder, p, count * 2);
+            reverse(picOrder, 0, count * 2);
+        }
+        return picOrder.toString();
+    }
+
+    private void reverse(StringBuffer buffer, int from, int to) {
+        to--;
+        while(from < to) {
+            char c = buffer.charAt(from);
+            buffer.setCharAt(from, buffer.charAt(to));
+            buffer.setCharAt(to, c);
+            from++;
+            to--;
+        }
+    }
+
+    private int[] convertPicOrder(String picOrder) {
+        int len = picOrder.length();
+        int[] result = new int[len / 2];
+        for(int i = 0; i < len / 2; i++) {
+            result[i] = Integer.parseInt(picOrder.substring(i*2, i*2+2));
+        }
+        return result;
+    }
+
 }
