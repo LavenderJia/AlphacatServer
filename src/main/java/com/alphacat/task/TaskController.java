@@ -94,7 +94,7 @@ public class TaskController {
         return "不支持的任务类型：" + type;
     }
 
-    @RequestMapping(value="{id}/picOrder", method = RequestMethod.GET)
+    @RequestMapping(value="/{id}/picOrder", method = RequestMethod.GET)
     public Object getPicOrder(@PathVariable("id") int id) {
         try {
             int workerId = (Integer) SecurityUtils.getSubject()
