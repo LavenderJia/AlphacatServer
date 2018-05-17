@@ -94,4 +94,13 @@
             <b>endTime</b>
         </field>
     </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.SquareTag</class-a>
+        <class-b>com.alphacat.vo.SquareVO</class-b>
+        <field>
+            <a>labelData</a>
+            <b>labelData</b>
+            <b-hint>java.util.HashMap</b-hint>
+        </field>
+    </mapping>
 </mappings>

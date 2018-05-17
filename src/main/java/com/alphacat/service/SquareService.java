@@ -16,9 +16,16 @@ public interface SquareService {
     List<SquareVO> getSquares(int workerId, int taskId, int picIndex);
 
     /**
-     * 保存工人在图片上的标注
+     * Save workers square tags and if it is the first time that the worker
+     * has tagged this picture, the worker gains credits and update worker's
+     * record.
      * @param squares 标注列表
      */
-    void saveSqaures(List<SquareVO> squares, int workerId, int taskId, int picIndex);
+    void saveSquares(List<SquareVO> squares, int workerId, int taskId, int picIndex);
+
+    /**
+     * Clear square data of the certain worker in the certain task on the certain picture.
+     */
+    void deleteSquares(int workerId, int taskId, int picIndex);
 
 }
