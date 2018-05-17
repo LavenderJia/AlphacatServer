@@ -46,10 +46,10 @@ public interface WorkerService {
     boolean hasSameName(String name);
 
     /**
-     * 签到一天
+     * Sign up and add 10 exp.
      * @param id 工人id
      */
-    void signIn(int id);
+    void signUp(int id);
 
     /**
      * 获取当天是否已经签到

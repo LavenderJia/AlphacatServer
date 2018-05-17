@@ -5,7 +5,6 @@ import com.alphacat.service.WorkerService;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
 import com.alphacat.vo.WorkerVO;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -93,7 +92,8 @@ public class WorkerController {
 	}
 
 	/**
-	 * Update a worker account. Only active account can be updated. 
+	 * Update a worker account. Only active account can be updated.
+     * Cannot update its exp and credit.
 	 */
     @RequestMapping(value="/{id}", method=RequestMethod.PUT)
     public String updateWorker(@RequestBody JSONObject jo, @PathVariable("id") int id) {
@@ -112,8 +112,6 @@ public class WorkerController {
 			w.setSex(jo.getIntValue("sex"));
 			w.setEmail(jo.getString("email"));
 			w.setSignature(jo.getString("signature"));
-			w.setExp(jo.getIntValue("exp"));
-			w.setCredit(jo.getIntValue("credit"));
 			w.setState(0);
 			workerService.updateWorker(w);
 			securityService.setWorkerPassword(name, jo.getString("key"));
@@ -181,10 +179,14 @@ public class WorkerController {
         return workerService.hasSameName(name);
     }
 
+    /**
+     * Sign up can gain the worker 10 exp.
+     * @see WorkerService#signUp(int)
+     */
     @RequestMapping(value="/{id}/signup", method = RequestMethod.POST)
     public String signUp(@PathVariable("id") int id) {
         try {
-            workerService.signIn(id);
+            workerService.signUp(id);
             return null;
         } catch(Exception e) {
             e.printStackTrace();

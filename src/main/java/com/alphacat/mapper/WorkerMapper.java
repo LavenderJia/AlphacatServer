@@ -17,7 +17,7 @@ public interface WorkerMapper {
     void add(Worker worker);
 
     @Update("UPDATE worker SET name=#{name}, birth=#{birth}, sex=#{sex}, email=#{email}, " +
-			"signature=#{signature}, exp=#{exp}, state=#{state} WHERE id=#{id}")
+			"signature=#{signature} WHERE id=#{id}")
     void update(Worker worker);
 
     @Update("UPDATE worker SET state=#{state} WHERE id=#{workerId}")
@@ -32,8 +32,11 @@ public interface WorkerMapper {
     @Select("SELECT COUNT(*) FROM worker WHERE name=#{name}")
     boolean checkName(String name);
 
-    @Update("UPDATE worker SET exp=#{exp} WHERE id=#{workerId}")
+    @Update("UPDATE worker SET exp = exp + #{exp} WHERE id=#{workerId}")
     void addExp(@Param("workerId") int workerId, @Param("exp") int exp);
+
+    @Update("UPDATE worker SET credit = credit + #{credit} WHERE id=#{id}")
+    void addCredit(@Param("id") int id, @Param("credit") int credit);
 
     @Select("SELECT MAX(id)+1 FROM worker")
     Integer getNewId();

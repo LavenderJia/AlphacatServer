@@ -83,8 +83,9 @@ public class WorkerServiceImpl implements WorkerService {
     }
 
     @Override
-    public void signIn(int id) {
+    public void signUp(int id) {
         dailyRegisterMapper.addRecord(id);
+        workerMapper.addExp(id, 10);
     }
 
     @Override
