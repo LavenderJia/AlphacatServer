@@ -19,6 +19,6 @@ public class Admin {
 	private String name;
 	private String actualName;
 	private int sex; // 0 male, 1 female
-	private int auth; // TODO
+	private int auth; // 0 superAdmin, 1 requesterAdmin, 2 workerAdmin,
 
 }
