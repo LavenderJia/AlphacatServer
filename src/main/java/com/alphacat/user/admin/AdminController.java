@@ -19,7 +19,7 @@ public class AdminController {
 	private SecurityService securityService;
 
 	@RequestMapping(value="", method=RequestMethod.POST)
-	public String addAdmin(@RequestBody JSONObject jo) {
+	public void addAdmin(@RequestBody JSONObject jo) {
 		try{
 			String name = jo.getString("name");
 			AdminVO admin = new AdminVO();
@@ -30,37 +30,36 @@ public class AdminController {
 			adminService.add(admin);
 			String pwd = jo.getString("key");
 			securityService.setAdminPassword(name, pwd);
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，由于未知原因，无法添加该管理员。";
+			throw new RuntimeException("抱歉，由于未知原因，无法添加该管理员。");
 		}
 	}
 
 	@RequestMapping(value="", method=RequestMethod.GET)
+	@ResponseBody
 	public Object getAll() {
 		try{
 			List<AdminVO> admins = adminService.getAll();
 			return admins;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，由于未知原因，无法获取管理员列表。";
+			throw new RuntimeException("抱歉，由于未知原因，无法获取管理员列表。");
 		}
 	}
 
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
-	public String delete(@PathVariable("id") int id) {
+	public void delete(@PathVariable("id") int id) {
 		try{
 			adminService.delete(id);
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，由于未知原因，无法删除该管理员账户。";
+			throw new RuntimeException("抱歉，由于未知原因，无法删除该管理员账户。");
 		}
 	}
 
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
-	public String update(@RequestBody JSONObject jo, @PathVariable("id") int id) {
+	public void update(@RequestBody JSONObject jo, @PathVariable("id") int id) {
 		try{
 			String name = jo.getString("name");
 			String pwd = jo.getString("key");
@@ -71,22 +70,20 @@ public class AdminController {
 			admin.setActualName(jo.getString("actualName"));
 			admin.setSex(jo.getIntValue("sex"));
 			adminService.update(admin);
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，由于未知原因，无法更新该管理员账户。";
+			throw new RuntimeException("抱歉，由于未知原因，无法更新该管理员账户。");
 		}
 	}
 
 	@RequestMapping(value="/{id}/setauth", method=RequestMethod.PUT)
-	public String setAuth(@PathVariable("id") int id, @RequestBody JSONObject jo) {
+	public void setAuth(@PathVariable("id") int id, @RequestBody JSONObject jo) {
 		try{
 			int auth = jo.getIntValue("auth");
 			adminService.setAuth(id, auth);
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，由于未知原因，无法更改该管理员的权限。";
+			throw new RuntimeException("抱歉，由于未知原因，无法更改该管理员的权限。");
 		}
 	}
 

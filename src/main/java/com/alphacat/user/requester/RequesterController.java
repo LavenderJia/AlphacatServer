@@ -23,8 +23,7 @@ public class RequesterController {
      * Add a not-passed requester and set up its password. 
      */
     @RequestMapping(value="", method=RequestMethod.POST)
-	@ResponseBody
-    public String addRequester(@RequestBody JSONObject jo) {
+    public void addRequester(@RequestBody JSONObject jo) {
 		try{
 			RequesterVO r = new RequesterVO();
 			r.setName(jo.getString("name"));
@@ -36,10 +35,9 @@ public class RequesterController {
 			r.setState(1);
 			requesterService.addRequester(r);
 			securityService.setRequesterPassword(r.getName(), jo.getString("key"));
-			return null;
 		} catch(Exception e) {
-			e.printStackTrace();
-			return "抱歉，无法添加发布者。";
+		    e.printStackTrace();
+			throw new RuntimeException("抱歉，无法添加发布者。");
 		}
     }
 
@@ -53,7 +51,7 @@ public class RequesterController {
 			return requesterService.get(id);
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，无法获取发布者信息。";
+			throw new RuntimeException("抱歉，无法获取发布者信息。");
 		}
 	}
 
@@ -62,14 +60,13 @@ public class RequesterController {
 	 * Cannot update one that has not been passed by admin. 
      */
     @RequestMapping(value="/{id}", method=RequestMethod.PUT)
-	@ResponseBody
-    public String updateRequester(@RequestBody JSONObject jo, @PathVariable("id") int id) {
+    public void updateRequester(@RequestBody JSONObject jo, @PathVariable("id") int id) {
 		try{
 			// Check for state. Only passed account can update info.
 			RequesterVO original = requesterService.get(id);
 			if(original.getState() == 1) {
 				System.out.println("Inactive requester not processed.");
-				return "该发布者账户还未被管理员审核。";
+				throw new RuntimeException("该发布者账户还未被管理员审核。");
 			}
 			String name = jo.getString("name");
 			RequesterVO r = new RequesterVO();
@@ -83,10 +80,9 @@ public class RequesterController {
 			r.setState(0);
 			requesterService.updateRequester(r);
 			securityService.setRequesterPassword(name, jo.getString("key"));
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，无法更新发布者信息。";
+			throw new RuntimeException("抱歉，无法更新发布者信息。");
 		}
     }
 
@@ -94,15 +90,14 @@ public class RequesterController {
      * Pass or unpass a requester. 
      */
     @RequestMapping(value="/check", method=RequestMethod.POST)
-    public String checkRequester(@RequestBody JSONObject jo) {
+    public void checkRequester(@RequestBody JSONObject jo) {
 		try{
 			int id = jo.getIntValue("id");
 			boolean isChecked = jo.getBooleanValue("isChecked");
 			requesterService.checkRequester(id, isChecked);
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，无法通过该发布者。";
+			throw new RuntimeException("抱歉，无法通过该发布者。");
 		}
     }
 
@@ -111,6 +106,7 @@ public class RequesterController {
 	 * @param state [all|checked|unchecked]
 	 */
 	@RequestMapping(value="", method=RequestMethod.GET)
+    @ResponseBody
 	public Object get(@RequestParam("state") String state) {
 		try{
 			JSONArray result = new JSONArray();
@@ -122,10 +118,7 @@ public class RequesterController {
 			} else if(state.equals("unchecked")) {
 				stateInt = 1;
 			} else {
-				System.out.print("-----------------------------");
-				System.out.print("State " + state + " cannot be processed. Aborted.");
-				System.out.println("-----------------------------");
-				return result;
+			    throw new RuntimeException("无法识别该发起者状态：" + state);
 			}
 			List<RequesterVO> rs = requesterService.getByState(stateInt);
 			if(stateInt == -1) {
@@ -146,7 +139,7 @@ public class RequesterController {
 			return result;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，无法获取请求的发布者列表。";
+			throw new RuntimeException("抱歉，无法获取请求的发布者列表。");
 		}
 	}
 
@@ -156,8 +149,14 @@ public class RequesterController {
      * @return true=有
      */
     @RequestMapping("/checkName")
+    @ResponseBody
     public boolean checkName(@ModelAttribute("name")String name) {
-        return requesterService.hasSameName(name);
+        try {
+            return requesterService.hasSameName(name);
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法查询发布者昵称。");
+        }
     }
 
     /**
@@ -168,6 +167,11 @@ public class RequesterController {
      */
     @RequestMapping("/{name}/setPassword")
     public void setPassword(@PathVariable("name") String name, @ModelAttribute("password") String password) {
-        securityService.setRequesterPassword(name, password);
+        try{
+            securityService.setRequesterPassword(name, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法设置密码。");
+        }
     }
 }

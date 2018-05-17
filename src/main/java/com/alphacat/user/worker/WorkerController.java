@@ -20,20 +20,19 @@ public class WorkerController {
     private SecurityService securityService;
 
     @RequestMapping(value="", method=RequestMethod.POST)
-    public String addWorker(@RequestBody JSONObject jo) {
+    public void addWorker(@RequestBody JSONObject jo) {
 		try{
 			WorkerVO w = new WorkerVO();
 			w.setName(jo.getString("name"));
 			w.setBirth(jo.getString("birth"));
 			w.setSex(jo.getIntValue("sex"));
 			w.setEmail(jo.getString("email"));
-			w.setSignature(jo.getString("signatrue"));
+			w.setSignature(jo.getString("signature"));
 			workerService.addWorker(w);
 			securityService.setWorkerPassword(w.getName(), jo.getString("key"));
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，添加工人账户失败。";
+			throw new RuntimeException("抱歉，添加工人账户失败。");
 		}
     }
 
@@ -41,6 +40,7 @@ public class WorkerController {
 	 * @param type [all|active|locked]
 	 */
     @RequestMapping(value="", method=RequestMethod.GET)
+    @ResponseBody
     public Object getByState(@RequestParam("type") String type) {
 		try{
 			int state;
@@ -51,10 +51,7 @@ public class WorkerController {
 			} else if("locked".equals(type)) {
 				state = 1;
 			} else {
-				System.out.print("--------------------");
-				System.out.print("Type " + type + " cannot been processed.");
-				System.out.println("---------------------");
-				return "抱歉，不存在该状态的工人账户。";
+				throw new RuntimeException("抱歉，不存在该状态的工人账户。");
 			}
 			List<WorkerVO> ws = workerService.getByState(state);
 			JSONArray result = new JSONArray();
@@ -77,17 +74,18 @@ public class WorkerController {
 			return result;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，无法查找相关工人账户。";
+			throw new RuntimeException("抱歉，无法查找相关工人账户。");
 		}
     }
 
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
+    @ResponseBody
 	public Object get(@PathVariable("id") int id) {
 		try{
 			return workerService.get(id);
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，无法获取工人信息。";
+			throw new RuntimeException("抱歉，无法获取工人信息。");
 		}
 	}
 
@@ -96,13 +94,12 @@ public class WorkerController {
      * Cannot update its exp and credit.
 	 */
     @RequestMapping(value="/{id}", method=RequestMethod.PUT)
-    public String updateWorker(@RequestBody JSONObject jo, @PathVariable("id") int id) {
+    public void updateWorker(@RequestBody JSONObject jo, @PathVariable("id") int id) {
 		try{
 			// check the state
 			WorkerVO original = workerService.get(id);
 			if(original.getState() == 1) {
-				System.out.println("Inactive worker not processed.");
-				return "该工人账户已被管理员封禁，无法更新。";
+				throw new RuntimeException("该工人账户已被管理员封禁，无法更新。");
 			}
 			String name = jo.getString("name");
 			WorkerVO w = new WorkerVO();
@@ -115,32 +112,29 @@ public class WorkerController {
 			w.setState(0);
 			workerService.updateWorker(w);
 			securityService.setWorkerPassword(name, jo.getString("key"));
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，无法更新该工人账户。";
+			throw new RuntimeException("抱歉，无法更新该工人账户。");
 		}
     }
 
     @RequestMapping(value="/lock/{id}", method=RequestMethod.POST)
-    public String lockWorker(@PathVariable("id") int id) {
+    public void lockWorker(@PathVariable("id") int id) {
 		try{
 			workerService.setWorkerState(id, true);
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，由于未知错误，无法封禁该工人账户。";
+			throw new RuntimeException("抱歉，由于未知错误，无法封禁该工人账户。");
 		}
     }
 
     @RequestMapping(value="/unlock/{id}", method=RequestMethod.POST)
-    public String unlockWorker(@PathVariable("id") int id) {
+    public void unlockWorker(@PathVariable("id") int id) {
 		try{
 			workerService.setWorkerState(id, false);
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，由于未知错误，无法解禁该工人账户。";
+			throw new RuntimeException("抱歉，由于未知错误，无法解禁该工人账户。");
 		}
     }
 
@@ -149,13 +143,25 @@ public class WorkerController {
      * @return 经过排序的结果
      */
     @RequestMapping("/getSorted")
+    @ResponseBody
     public List<WorkerVO> getSortedWorkers() {
-        return workerService.getSortedWorkers();
+        try {
+            return workerService.getSortedWorkers();
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法获取排行。");
+        }
     }
 
     @RequestMapping("/getWorker")
+    @ResponseBody
     public WorkerVO getWorker(@ModelAttribute("name") String name) {
-        return workerService.getWorkerByName(name);
+        try {
+            return workerService.getWorkerByName(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法获取该工人。");
+        }
     }
 
     /**
@@ -166,7 +172,12 @@ public class WorkerController {
      */
     @RequestMapping("/{name}/setPassword")
     public void setPassword(@PathVariable("name") String name, @ModelAttribute("password") String password) {
-        securityService.setWorkerPassword(name, password);
+        try{
+            securityService.setWorkerPassword(name, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法设置该工人的密码。");
+        }
     }
 
     /**
@@ -175,8 +186,14 @@ public class WorkerController {
      * @return true=有
      */
     @RequestMapping("/checkName")
+    @ResponseBody
     public boolean checkName(@ModelAttribute("name")String name) {
-        return workerService.hasSameName(name);
+        try {
+            return workerService.hasSameName(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，无法检查昵称。");
+        }
     }
 
     /**
@@ -184,17 +201,17 @@ public class WorkerController {
      * @see WorkerService#signUp(int)
      */
     @RequestMapping(value="/{id}/signup", method = RequestMethod.POST)
-    public String signUp(@PathVariable("id") int id) {
+    public void signUp(@PathVariable("id") int id) {
         try {
             workerService.signUp(id);
-            return null;
         } catch(Exception e) {
             e.printStackTrace();
-            return "抱歉，由于未知原因，无法签到。";
+            throw new RuntimeException("抱歉，由于未知原因，无法签到。");
         }
     }
 
     @RequestMapping(value="/{id}/signup", method = RequestMethod.GET)
+    @ResponseBody
     public Object getSignUpInfo(@PathVariable("id") int id) {
         try{
             int days = workerService.getSignDays(id);
@@ -204,7 +221,7 @@ public class WorkerController {
             return response;
         } catch(Exception e) {
             e.printStackTrace();
-            return "抱歉，无法获取用户的签到信息。";
+            throw new RuntimeException("抱歉，无法获取用户的签到信息。");
         }
     }
 
