@@ -8,7 +8,8 @@ import lombok.NoArgsConstructor;
 import java.sql.Date;
 
 /**
- * An available task for a worker to do.
+ * An available task for a worker to do. Including
+ * what a worker does or does not take part in.
  * This is a type of worker's task.
  * @see HistoryTask the other type
  * @see Task the original type, or database type

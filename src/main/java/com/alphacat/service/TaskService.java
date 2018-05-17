@@ -1,5 +1,6 @@
 package com.alphacat.service;
 
+import com.alphacat.pojo.AvailableTask;
 import com.alphacat.vo.*;
 
 import java.util.List;
@@ -12,7 +13,15 @@ public interface TaskService {
 
     List<EndedTaskVO> getEnded(int requesterId);
 
+    /**
+     * Get tasks that's available but the worker DOES NOT take part in.
+     */
     List<AvailableTaskVO> getAvailable(int workerId);
+
+    /**
+     * Get tasks that the worker is taking part in.
+     */
+    List<AvailableTaskVO> getPartaking(int workerId);
 
     List<HistoryTaskVO> getHistory(int workerId);
 

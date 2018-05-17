@@ -57,21 +57,31 @@ public interface TaskMapper {
             ") c ON id = taskId")
     List<EndedTask> getEndedTask(@Param("requesterId") int requesterId);
 
-    @Select("SELECT id, name, creditPerPic, creditFinished, method, endTime, progress " +
+    /**
+     * Retrieve tasks that the worker DOES NOT take part in.
+     * @see #getPartakingTask(int)
+     */
+    @Select("SELECT id, name, creditPerPic, creditFinished, method, endTime " +
             "FROM (" +
-                "SELECT a.taskId, picDoneNum/picCount as progress " +
-                "FROM (" +
-                    "SELECT taskId, picDoneNum FROM task_record " +
-                    "WHERE workerId = #{workerId}" +
-                ") a LEFT JOIN (" +
-                    "SELECT taskId, COUNT(pidx) picCount FROM picture " +
-                    "GROUP BY taskId" +
-                ") b ON a.taskId = b.taskId" +
-            ") c RIGHT JOIN (" +
                 "SELECT * FROM task WHERE NOW() > startTime " +
-                    "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)" +
-            ") d ON taskId = id")
+                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)" +
+            ") a WHERE id NOT IN(" +
+                "SELECT taskId FROM task_record WHERE workerId=#{workerId}" +
+            ")")
     List<AvailableTask> getAvailableTask(@Param("workerId") int workerId);
+
+    /**
+     * Retrieve tasks that the worker DOES take part in.
+     * @see #getAvailableTask(int)
+     */
+    @Select("SELECT id, name, creditPerPic, creditFinished, method, endTime " +
+            "FROM (" +
+                "SELECT taskId FROM task_record WHERE workerId=#{workerId}" +
+            ") a JOIN (" +
+                "SELECT * FROM task WHERE NOW() > startTime " +
+                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)" +
+            ") b ON taskId = id")
+    List<AvailableTask> getPartakingTask(@Param("workerId") int workerId);
 
     @Select("SELECT id, name, endTime, earnedCredit, correctRate " +
             "FROM (" +

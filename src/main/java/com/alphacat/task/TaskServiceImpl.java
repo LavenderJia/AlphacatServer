@@ -50,6 +50,12 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<AvailableTaskVO> getPartaking(int workerId) {
+        List<AvailableTask> tasks = taskMapper.getPartakingTask(workerId);
+        return taskConverter.toAvailableVOList(tasks);
+    }
+
+    @Override
     public List<HistoryTaskVO> getHistory(int workerId) {
         List<HistoryTask> tasks = taskMapper.getHistoryTasks(workerId);
         return taskConverter.toHistoryVOList(tasks);

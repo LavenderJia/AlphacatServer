@@ -78,7 +78,9 @@ public class TaskController {
         try{
             if("available".equals(type)) {
                 return taskService.getAvailable(id);
-            } else if("history".equals(type)) {
+            } else if("doing".equals(type)) {
+                return taskService.getPartaking(id);
+            }else if("history".equals(type)) {
                 return taskService.getHistory(id);
             }
         } catch(Exception e) {

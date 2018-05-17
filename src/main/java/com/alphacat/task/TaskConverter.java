@@ -82,15 +82,7 @@ public class TaskConverter {
     }
 
     public AvailableTaskVO toAvailableVO(AvailableTask task) {
-        AvailableTaskVO result = mapper.map(task, AvailableTaskVO.class);
-        if(task.getProgress() == null) {
-            result.setState(1);
-        } else if(task.getProgress() == 1.0D) {
-            result.setState(3);
-        } else {
-            result.setState(2);
-        }
-        return result;
+        return mapper.map(task, AvailableTaskVO.class);
     }
 
     public List<AvailableTaskVO> toAvailableVOList(List<AvailableTask> tasks) {
