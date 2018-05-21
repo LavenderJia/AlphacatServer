@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.*;
 @RunWith(SpringRunner.class)
@@ -39,9 +41,11 @@ public class LabelMapperTest {
         choices2.add("van");
         choices2.add("billy");
         choices2.add("duang");
-        Assert.assertEquals("bestmatch",labelMapper.get(2).get(0).getLabel());
-        Assert.assertEquals(choices2,labelMapper.get(2).get(1).getChoices());
-
+        Collections.sort(choices2);
+        assertEquals("bestMatch",labelMapper.get(2).get(0).getLabel());
+        List<String> actualChoices = labelMapper.get(2).get(1).getChoices();
+        Collections.sort(actualChoices);
+        assertEquals(choices2, actualChoices);
     }
 
 
@@ -49,4 +53,5 @@ public class LabelMapperTest {
     public void C_deleteLabels() {
         labelMapper.delete(2);
     }
+
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.alphacat.mapper.LabelMapper">
+    <resultMap id="LabelResultMap" type="com.alphacat.pojo.Label">
+        <result column="taskId" property="taskId" javaType="int" jdbcType="INTEGER"/>
+        <result column="label"  property="label" javaType="String" jdbcType="VARCHAR"/>
+        <collection property="choices" resultMap="ChoicesResultMap"/>
+    </resultMap>
+
+    <resultMap id="ChoicesResultMap" type="java.lang.String">
+        <result column="choice" property="choices" jdbcType="VARCHAR" javaType="String"/>
+    </resultMap>
+
+    <insert id="add" parameterType="com.alphacat.pojo.Label">
+        INSERT INTO label(taskId, label, choice) VALUES
+        <foreach collection="choices" item="item" index="index" separator=",">
+            (#{taskId},#{label},#{item})
+        </foreach>
+    </insert>
+
+    <select id="get" parameterType="int" resultMap="LabelResultMap">
+        SELECT * FROM label WHERE taskId=#{taskId}
+    </select>
+
+</mapper>
