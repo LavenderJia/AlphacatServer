@@ -1,4 +1,4 @@
-package com.alphacat.tag;
+package com.alphacat.tag.square;
 
 import com.alphacat.service.SquareService;
 import com.alphacat.vo.SquareVO;

@@ -1,4 +1,4 @@
-package com.alphacat.tag;
+package com.alphacat.tag.square;
 
 import com.alphacat.pojo.SquareTag;
 import com.alphacat.vo.SquareVO;
