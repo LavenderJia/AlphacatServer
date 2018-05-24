@@ -32,20 +32,19 @@ public class WorkerServiceImpl implements WorkerService {
 		} else {
 			return new ArrayList<>();
 		}
-        return ws.stream().map(w -> workerConverter.toVO(w))
-                .collect(Collectors.toList());
+        return workerConverter.toVOList(ws);
     }
 
     @Override
-    public List<WorkerVO> getSortedWorkers() {
-        List<Worker> workers = workerMapper.getByState(0);
-        workers.sort(Comparator.comparing(Worker::getCredit));
-        int length = workers.size() > 10 ? 10 : workers.size();
-        List<WorkerVO> results = new LinkedList<>();
-        for (int i = 0; i < length; i++) {
-            results.add(workerConverter.toVO(workers.get(i)));
-        }
-        return results;
+    public List<WorkerVO> getSortedByCredit(int number) {
+        List<Worker> workers = workerMapper.getSortedByCredit(number);
+        return workerConverter.toVOList(workers);
+    }
+
+    @Override
+    public List<WorkerVO> getSortedByExp(int number) {
+        List<Worker> workers = workerMapper.getSortedByExp(number);
+        return workerConverter.toVOList(workers);
     }
 
     @Override

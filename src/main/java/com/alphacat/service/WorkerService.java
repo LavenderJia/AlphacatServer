@@ -16,10 +16,14 @@ public interface WorkerService {
     List<WorkerVO> getByState(int state);
 
     /**
-     * 获取经过排序的工人列表，按积分排序
-     * @return 最多返回工人列表前十位
+     * @param num  length of the list returned
      */
-    List<WorkerVO> getSortedWorkers();
+    List<WorkerVO> getSortedByCredit(int num);
+
+    /**
+     * @param num  length of the list returned
+     */
+    List<WorkerVO> getSortedByExp(int num);
 
     WorkerVO getWorkerByName(String name);
 

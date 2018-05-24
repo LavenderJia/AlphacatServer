@@ -1,5 +1,6 @@
 package com.alphacat.user.worker;
 
+import com.alibaba.fastjson.JSON;
 import com.alphacat.service.SecurityService;
 import com.alphacat.service.WorkerService;
 import com.alibaba.fastjson.JSONObject;
@@ -139,14 +140,35 @@ public class WorkerController {
     }
 
     /**
-     * 获取工人排行，按照积分大小，最多取前十名
-     * @return 经过排序的结果
+     * Get the first 10 workers in order of <code>by</code>.
+     * @param by the order by which workers are sorted
+     * @return an array of json object in the form of {
+     *     id, name, birth, sex, email, signature,
+     *     exp(if #by is exp), credit(if #by is credit)
+     * }
      */
-    @RequestMapping("/getSorted")
+    @RequestMapping(value = "/data/rank", method = RequestMethod.GET)
     @ResponseBody
-    public List<WorkerVO> getSortedWorkers() {
+    public Object getSortedWorkers(@RequestParam("sorted") String by) {
         try {
-            return workerService.getSortedWorkers();
+            List<WorkerVO> workers = null;
+            String removeKey = "";
+            if("exp".equals(by)) {
+                workers = workerService.getSortedByExp(10);
+                removeKey = "credit";
+            }
+            if ("credit".equals(by)) {
+                workers = workerService.getSortedByCredit(10);
+                removeKey = "exp";
+            }
+            // to fit the response pattern
+            JSONArray result = new JSONArray();
+            if(workers != null) for(WorkerVO w: workers) {
+                JSONObject jo = JSON.parseObject(JSON.toJSONString(w));
+                jo.fluentRemove(removeKey).fluentRemove("state");
+                result.add(jo);
+            }
+            return result;
         } catch(Exception e) {
             e.printStackTrace();
             throw new RuntimeException("抱歉，由于未知原因，无法获取排行。");

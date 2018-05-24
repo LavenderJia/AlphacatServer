@@ -6,6 +6,9 @@ import org.dozer.DozerBeanMapperBuilder;
 import org.dozer.Mapper;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Component
 public class WorkerConverter {
 
@@ -18,6 +21,11 @@ public class WorkerConverter {
 
     public WorkerVO toVO(Worker worker) {
         return mapper.map(worker, WorkerVO.class);
+    }
+
+    public List<WorkerVO> toVOList(List<Worker> workers) {
+        return workers.stream().map(this::toVO)
+                .collect(Collectors.toList());
     }
 
 }

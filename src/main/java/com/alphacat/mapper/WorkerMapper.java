@@ -52,4 +52,13 @@ public interface WorkerMapper {
 
     @Delete("DELETE FROM worker WHERE id=#{workerId}")
     void delete(int workerId);
+
+    @Select("SELECT DISTINCT * FROM worker WHERE state = 0 " +
+            "ORDER BY credit DESC LIMIT #{num}")
+    List<Worker> getSortedByCredit(@Param("num") int num);
+
+    @Select("SELECT DISTINCT * FROM worker WHERE state = 0 " +
+            "ORDER BY exp DESC LIMIT #{num}")
+    List<Worker> getSortedByExp(@Param("num") int num);
+
 }
