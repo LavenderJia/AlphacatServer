@@ -61,4 +61,23 @@ public interface WorkerMapper {
             "ORDER BY exp DESC LIMIT #{num}")
     List<Worker> getSortedByExp(@Param("num") int num);
 
+    /**
+     * This method cannot verify whether #id is valid.
+     * Please verify #id before calling this method.
+     * @param id a valid workerId
+     */
+    @Select("SELECT COUNT(*)+1 FROM worker w1 CROSS JOIN (" +
+                "SELECT * FROM worker WHERE id = #{id}" +
+            ") w2 WHERE w1.credit > w2.credit w1.state = 0")
+    int getCreditRank(@Param("id") int id);
+
+    /**
+     * This method cannot verify whether #id is valid.
+     * Please verify #id before calling this method.
+     * @param id a valid workerId
+     */
+    @Select("SELECT COUNT(*)+1 FROM worker w1 CROSS JOIN worker w2 " +
+            "WHERE w1.exp > w2.exp AND w2.id = #{id} AND w1.state = 0")
+    int getExpRank(@Param("id") int id);
+
 }

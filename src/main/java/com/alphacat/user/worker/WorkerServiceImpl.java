@@ -57,6 +57,22 @@ public class WorkerServiceImpl implements WorkerService {
 		return workerConverter.toVO(workerMapper.get(id));
 	}
 
+	@Override
+    public int getCreditRank(int id) {
+        Worker worker = workerMapper.get(id);
+        if(worker == null) return -1;
+        if(worker.getState() == 1) return 0;
+        return workerMapper.getCreditRank(id);
+    }
+
+    @Override
+    public int getExpRank(int id) {
+        Worker worker = workerMapper.get(id);
+        if(worker == null) return -1;
+        if(worker.getState() == 1) return 0;
+        return workerMapper.getExpRank(id);
+    }
+
     @Override
     public void addWorker(WorkerVO workerVO) {
         Worker worker = workerConverter.toPOJO(workerVO);

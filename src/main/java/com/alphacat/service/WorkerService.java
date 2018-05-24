@@ -30,6 +30,20 @@ public interface WorkerService {
 	WorkerVO get(int id);
 
 	/**
+     * Get credit ranking info of a worker.
+     * @return the worker's rank by credit, starting from 1;
+     * -1 if worker not found, 0 if worker banned.
+     */
+	int getCreditRank(int id);
+
+    /**
+     * Get exp ranking info of a worker.
+     * @return the worker's rank by exp, starting from 1;
+     * -1 if worker not found, 0 if worker banned.
+     */
+	int getExpRank(int id);
+
+	/**
 	 * Add a worker account and set up its id. 
 	 */
     void addWorker(WorkerVO worker);

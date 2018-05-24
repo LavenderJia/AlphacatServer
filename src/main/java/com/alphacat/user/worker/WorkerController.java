@@ -247,4 +247,48 @@ public class WorkerController {
         }
     }
 
+    @RequestMapping(value = "/{id}/rankData", method = RequestMethod.GET)
+    public Object getRank(@PathVariable("id") int id) {
+        try{
+            JSONObject result = new JSONObject();
+            int creditRank = workerService.getCreditRank(id);
+            if(creditRank == -1) {
+                throw new WorkerNotFoundException(id);
+            }
+            if(creditRank == 0) {
+                throw new WorkerBannedException(id);
+            }
+            int expRank = workerService.getExpRank(id);
+            if(expRank == -1) {
+                throw new WorkerNotFoundException(id);
+            }
+            if(expRank == 0) {
+                throw new WorkerBannedException(id);
+            }
+            result.fluentPut("exp", expRank).fluentPut("credit", creditRank);
+            return result;
+        } catch(WorkerNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，该用户不存在。");
+        } catch (WorkerBannedException e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，该用户已被禁用。");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法获取该用户的排名信息。");
+        }
+    }
+
+    private class WorkerNotFoundException extends Exception {
+        WorkerNotFoundException(int id) {
+            super("Worker not found: " + id);
+        }
+    }
+
+    private class WorkerBannedException extends Exception {
+        WorkerBannedException(int id) {
+            super("Worker has been banned: " + id);
+        }
+    }
+
 }
