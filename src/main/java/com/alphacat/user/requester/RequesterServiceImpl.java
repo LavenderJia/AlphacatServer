@@ -53,6 +53,7 @@ public class RequesterServiceImpl implements RequesterService{
         Requester requester = requesterConverter.toPOJO(requesterVO);
         int id = requesterMapper.getNewId() == null ? 1 : requesterMapper.getNewId();
         requester.setId(id);
+        requester.setState(1);
         requesterMapper.add(requester);
     }
 
