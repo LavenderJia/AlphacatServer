@@ -39,6 +39,14 @@ public interface TaskService {
      */
     int add(TaskVO taskVO);
 
+    /**
+     * If this task has not started:
+     *      almost everything can be changed except for id.
+     * If it has started but not ended:
+     *      only name, description and endTime can be changed.
+     * If it has ended:
+     *      nothing can be changed.
+     */
     void update(TaskVO taskVO);
 
     void delete(int taskId);

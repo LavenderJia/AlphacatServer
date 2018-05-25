@@ -8,8 +8,14 @@ import com.alphacat.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+/**
+ * This class also uses java.sql.Date.
+ */
 @Service
 public class TaskServiceImpl implements TaskService {
 
@@ -79,10 +85,25 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void update(TaskVO taskVO) {
         int id = taskVO.getId();
-        Task task = taskConverter.toPOJO(taskVO);
-        taskMapper.update(task);
-        labelMapper.delete(taskVO.getId());
-        taskVO.getLabels().forEach(l -> labelMapper.add(taskConverter.toPOJO(l, id)));
+        Task origin = taskMapper.get(id);
+        Date now = new Date();
+        if(now.before(origin.getStartTime())) {
+            // change everything if it's not started
+            Task task = taskConverter.toPOJO(taskVO);
+            taskMapper.update(task);
+            labelMapper.delete(taskVO.getId());
+            taskVO.getLabels().
+                    forEach(l -> labelMapper.add(taskConverter.toPOJO(l, id)));
+            return;
+        }
+        if(now.after(origin.getStartTime()) && now.before(origin.getEndTime())) {
+            // change only name, description and endTime if underway
+            origin.setName(taskVO.getName());
+            origin.setDescription(taskVO.getDescription());
+            origin.setEndTime(java.sql.Date.valueOf(taskVO.getEndTime()));
+            taskMapper.update(origin);
+        }
+        // change nothing if ended
     }
 
     /**
