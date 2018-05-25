@@ -16,34 +16,6 @@ public interface PictureService {
     int[] getPicOrder(int taskId, int workerId);
 
     /**
-     * 获取任务的首张图片
-     * 如果是个新参与任务则自动生成图片队列并返回第一张的序号
-     * 如果任务已经全部完成则返回第一张序号
-     * @param taskId 任务Id
-     * @param workerId 工人Id
-     * @return 第一张图片的序号
-     */
-    int getFirstPic(int taskId, int workerId);
-
-    /**
-     *
-     * @param taskId 任务Id
-     * @param workerId 工人Id
-     * @param picIndex 当前图片序号
-     * @return 上一张图片的序号，如果已经是第一张返回负数
-     */
-    int getPrePic(int taskId, int workerId, int picIndex);
-
-    /**
-     *
-     * @param taskId 任务Id
-     * @param workerId 工人Id
-     * @param picIndex 当前图片序号
-     * @return 下一张图片的序号，如果已经是最后一张返回负数
-     */
-    int getNextPic(int taskId, int workerId, int picIndex);
-
-    /**
      * 保存上传的文件对象
      * @param file 文件
      * @param taskId 任务Id

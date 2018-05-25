@@ -36,40 +36,6 @@ public class PictureServiceImpl implements PictureService {
         return convertPicOrder(picOrder);
     }
 
-    @Override
-    public int getFirstPic(int taskId, int workerId) {
-        TaskRecord taskRecord = taskRecordMapper.get(workerId, taskId);
-        if (taskRecord == null) { // task has not been started
-            String picOrder = genPicOrder(taskId);
-            taskRecordMapper.add(new TaskRecord(workerId, taskId, picOrder, 0));
-            return Integer.parseInt(picOrder.substring(0, 2));
-        } else {
-            String picOrder = taskRecord.getPicOrder();
-            int num = taskRecord.getPicDoneNum();
-            if (num == picOrder.length() / 2) { // task has been done
-                return Integer.parseInt(picOrder.substring(0, 2));
-            }
-            return Integer.parseInt(picOrder.substring(num*2, num*2+2));
-        }
-    }
-
-    @Override
-    public int getPrePic(int taskId, int workerId, int picIndex) {
-        TaskRecord taskRecord = taskRecordMapper.get(workerId, taskId);
-        String picOrder = taskRecord.getPicOrder();
-        int n = indexOf(picOrder, picIndex);
-        if (n == 0) return -1;
-        else return Integer.parseInt(picOrder.substring(n-2, n));
-    }
-
-    @Override
-    public int getNextPic(int taskId, int workerId, int picIndex) {
-        TaskRecord taskRecord = taskRecordMapper.get(workerId, taskId);
-        String picOrder = taskRecord.getPicOrder();
-        int n = indexOf(picOrder, picIndex);
-        if (n == picOrder.length() - 2) return -1;
-        else return Integer.parseInt(picOrder.substring(n+2, n+4));
-    }
 
     @Override
     public boolean uploadPic(MultipartFile file, int taskId, int picIndex) {
@@ -102,14 +68,6 @@ public class PictureServiceImpl implements PictureService {
             e.printStackTrace();
             return false;
         }
-    }
-
-    private int indexOf(String order, int num) {
-        int index = 0;
-        for (;index < order.length(); index += 2) {
-            if (Integer.parseInt(order.substring(index, index+2)) == num) break;
-        }
-        return index;
     }
 
     private String genPicOrder(int taskId) {
