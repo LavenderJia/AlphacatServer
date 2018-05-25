@@ -78,6 +78,7 @@ public class WorkerServiceImpl implements WorkerService {
         Worker worker = workerConverter.toPOJO(workerVO);
         int id = workerMapper.getNewId() == null ? 1 : workerMapper.getNewId();
         worker.setId(id);
+        worker.setState(0);
         workerMapper.add(worker);
     }
 
@@ -99,6 +100,9 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     public void signUp(int id) {
+        if(hasSigned(id)) {
+            return;
+        }
         dailyRegisterMapper.addRecord(id);
         workerMapper.addExp(id, 10);
     }

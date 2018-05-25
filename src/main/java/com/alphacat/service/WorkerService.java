@@ -4,10 +4,6 @@ import com.alphacat.vo.WorkerVO;
 
 import java.util.List;
 
-/**
- * 工人服务接口
- * @author 161250102
- */
 public interface WorkerService {
 
 	/**
@@ -44,10 +40,15 @@ public interface WorkerService {
 	int getExpRank(int id);
 
 	/**
-	 * Add a worker account and set up its id. 
+	 * Add a worker account and set up its id.
+     * And set its state to 0.
 	 */
     void addWorker(WorkerVO worker);
 
+    /**
+     * Update a worker's name, birth, sex, email and signature here.
+     * Cannot change anything else.
+     */
     void updateWorker(WorkerVO worker);
 
     /**

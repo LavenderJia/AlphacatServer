@@ -16,6 +16,9 @@ public interface WorkerMapper {
             "VALUES(#{id},#{name},#{birth},#{sex},#{email},#{signature},#{exp},#{credit},#{state})")
     void add(Worker worker);
 
+    /**
+     * Update a worker's name, birth, sex, email and signature.
+     */
     @Update("UPDATE worker SET name=#{name}, birth=#{birth}, sex=#{sex}, email=#{email}, " +
 			"signature=#{signature} WHERE id=#{id}")
     void update(Worker worker);
