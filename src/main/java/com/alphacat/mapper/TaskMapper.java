@@ -58,6 +58,13 @@ public interface TaskMapper {
     List<EndedTask> getEndedTask(@Param("requesterId") int requesterId);
 
     /**
+     * This method is not requester-related. It retrieves all data.
+     * It is meant to get used to add schedule jobs.
+     */
+    @Select("SELECT * FROM task WHERE endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)")
+    List<Task> getNotEnded();
+
+    /**
      * Retrieve tasks that the worker DOES NOT take part in.
      * @see #getPartakingTask(int)
      */
