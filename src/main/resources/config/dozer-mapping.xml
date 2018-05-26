@@ -103,4 +103,36 @@
             <b-hint>java.util.HashMap</b-hint>
         </field>
     </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.Email</class-a>
+        <class-b>com.alphacat.vo.EmailVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd hh:mm:ss">time</a>
+            <b>date</b>
+        </field>
+        <field>
+            <a>scope</a>
+            <b>type</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.UserEmailBrief</class-a>
+        <class-b>com.alphacat.vo.UserEmailBriefVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd hh:mm:ss">time</a>
+            <b>date</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.AdminEmailBrief</class-a>
+        <class-b>com.alphacat.vo.AdminEmailBriefVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd hh:mm:ss">time</a>
+            <b>date</b>
+        </field>
+        <field>
+            <a>scope</a>
+            <b>type</b>
+        </field>
+    </mapping>
 </mappings>
