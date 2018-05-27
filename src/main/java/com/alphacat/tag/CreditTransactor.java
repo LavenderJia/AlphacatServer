@@ -1,10 +1,9 @@
 package com.alphacat.tag;
 
 import com.alphacat.mapper.TaskMapper;
-import com.alphacat.mapper.WorkerCreditMapper;
+import com.alphacat.mapper.CreditMapper;
 import com.alphacat.mapper.WorkerMapper;
 import com.alphacat.pojo.Task;
-import com.alphacat.pojo.WorkerCredit;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,7 @@ public class CreditTransactor {
     @Autowired
     private WorkerMapper workerMapper;
     @Autowired
-    private WorkerCreditMapper creditMapper;
+    private CreditMapper creditMapper;
     @Autowired
     private TaskMapper taskMapper;
 
@@ -34,8 +33,8 @@ public class CreditTransactor {
         }
         workerMapper.addCredit(workerId, value);
         Timestamp now = new Timestamp(Calendar.getInstance().getTimeInMillis());
-        WorkerCredit credit = new WorkerCredit(workerId, taskId, value, now);
-        creditMapper.add(credit);
+//        WorkerCredit credit = new WorkerCredit(workerId, taskId, value, now);
+//        creditMapper.add(credit);
     }
 
     /**
@@ -47,8 +46,8 @@ public class CreditTransactor {
         Task task = taskMapper.get(taskId);
         workerMapper.addCredit(workerId, task.getCreditFinished());
         Timestamp now = new Timestamp(Calendar.getInstance().getTimeInMillis());
-        WorkerCredit credit = new WorkerCredit(workerId, taskId, task.getCreditFinished(), now);
-        creditMapper.add(credit);
+//        WorkerCredit credit = new WorkerCredit(workerId, taskId, task.getCreditFinished(), now);
+//        creditMapper.add(credit);
     }
 
 }

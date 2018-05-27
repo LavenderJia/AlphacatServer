@@ -15,12 +15,6 @@ public interface SquareService {
      */
     List<SquareVO> getSquares(int workerId, int taskId, int picIndex);
 
-    /**
-     * Save workers square tags and if it is the first time that the worker
-     * has tagged this picture, the worker gains credits and update worker's
-     * record.
-     * @param squares 标注列表
-     */
     void saveSquares(List<SquareVO> squares, int workerId, int taskId, int picIndex);
 
     /**

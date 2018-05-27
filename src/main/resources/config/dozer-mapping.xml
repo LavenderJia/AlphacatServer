@@ -131,4 +131,20 @@
             <b>date</b>
         </field>
     </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.WorkerCredit</class-a>
+        <class-b>com.alphacat.vo.WorkerCreditVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">date</a>
+            <b>date</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.RequesterCredit</class-a>
+        <class-b>com.alphacat.vo.RequesterCreditVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">date</a>
+            <b>date</b>
+        </field>
+    </mapping>
 </mappings>

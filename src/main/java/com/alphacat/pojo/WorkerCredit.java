@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.sql.Timestamp;
+import java.sql.Date;
 
 /**
  * 记录积分的历史明细
@@ -19,7 +19,12 @@ public class WorkerCredit {
 
     private int workerId;
     private int taskId;
-    private int valueChange;
-    private Timestamp date;
+    private String taskName;
+    private int change;
+    private Date date;
+    /**
+     * credit value after changed
+     */
+    private int credit;
 
 }

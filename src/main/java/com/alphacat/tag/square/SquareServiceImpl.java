@@ -20,8 +20,6 @@ public class SquareServiceImpl implements SquareService {
     private TaskRecordMapper taskRecordMapper;
     @Autowired
     private SquareTagConverter squareTagConverter;
-    @Autowired
-    private CreditTransactor creditTransactor;
 
     @Override
     public List<SquareVO> getSquares(int workerId, int taskId, int picIndex) {
@@ -37,12 +35,6 @@ public class SquareServiceImpl implements SquareService {
             // case 1.1: the first time to tag this picture: add record and credit
             if(!exist) {
                 taskRecordMapper.incPicDoneNum(workerId, taskId);
-                creditTransactor.picTransact(taskId, workerId, false);
-                TaskRecord record = taskRecordMapper.get(workerId, taskId);
-                if(record.getPicDoneNum() == record.getPicOrder().length() / 2) {
-                    // the last picture: gained creditFinished
-                    creditTransactor.taskTransact(taskId, workerId, false);
-                }
             }
             // Delete original data first, and then store new data.
             // Even if there's no data to delete, it will not cause error.
@@ -68,12 +60,7 @@ public class SquareServiceImpl implements SquareService {
         }
         squareTagMapper.delete(workerId, taskId, picIndex);
         TaskRecord record = taskRecordMapper.get(workerId, taskId);
-        if(record.getPicDoneNum() == record.getPicOrder().length() / 2) {
-            // lost the creditFinished
-            creditTransactor.taskTransact(taskId, workerId, true);
-        }
         taskRecordMapper.decPicDoneNum(workerId, taskId);
-        creditTransactor.picTransact(taskId, workerId, true);
     }
 
 }

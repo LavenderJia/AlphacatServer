@@ -19,8 +19,6 @@ public class IrregularTagServiceImpl implements IrregularTagService {
     private TaskRecordMapper recordMapper;
     @Autowired
     private IrregularTagConverter converter;
-    @Autowired
-    private CreditTransactor transactor;
 
     @Override
     public void save(IrregularTagVO tag, int workerId, int taskId, int picIndex) {
@@ -31,12 +29,6 @@ public class IrregularTagServiceImpl implements IrregularTagService {
 
             if(!exist) { // 1A. the first time to store
                 recordMapper.incPicDoneNum(workerId, taskId);
-                transactor.picTransact(taskId, workerId, false);
-                TaskRecord record = recordMapper.get(workerId, taskId);
-                if(record.getPicDoneNum() == record.getPicOrder().length() / 2) {
-                    // worker finished the task, and creditFinished gained
-                    transactor.taskTransact(taskId, workerId, false);
-                }
                 tagMapper.add(iTag);
             } else { // 1B. not the first time
                 tagMapper.update(iTag);
@@ -53,13 +45,7 @@ public class IrregularTagServiceImpl implements IrregularTagService {
             return;
         }
         tagMapper.delete(workerId, taskId, picIndex);
-        TaskRecord record = recordMapper.get(workerId, taskId);
-        if(record.getPicDoneNum() == record.getPicOrder().length() / 2) {
-            // lost the creditFinished
-            transactor.taskTransact(taskId, workerId, true);
-        }
         recordMapper.decPicDoneNum(workerId, taskId);
-        transactor.picTransact(taskId, workerId, true);
     }
 
     @Override

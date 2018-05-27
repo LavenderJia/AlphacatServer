@@ -51,8 +51,8 @@ public interface TaskMapper {
                 ") a LEFT JOIN picture p ON id = taskId " +
                 "GROUP BY id" +
             ") b LEFT JOIN (" +
-                "SELECT taskId, IFNULL(SUM(valueChange), 0) costCredit " +
-                "FROM worker_credit " +
+                "SELECT taskId, IFNULL(SUM(`change`), 0) costCredit " +
+                "FROM credit_transaction " +
                 "GROUP BY taskId" +
             ") c ON id = taskId")
     List<EndedTask> getEndedTask(@Param("requesterId") int requesterId);
@@ -99,8 +99,8 @@ public interface TaskMapper {
                     "WHERE workerId = #{workerId} AND correctRate IS NOT NULL" +
                 ") b ON id = taskId" +
             ") c JOIN (" +
-                "SELECT taskId, SUM(valueChange) earnedCredit " +
-                "FROM worker_credit WHERE workerId = #{workerId} " +
+                "SELECT taskId, SUM(`change`) earnedCredit " +
+                "FROM credit_transaction WHERE workerId = #{workerId} " +
                 "GROUP BY taskId" +
             ") d ON id = d.taskId")
     List<HistoryTask> getHistoryTasks(@Param("workerId") int workerId);
