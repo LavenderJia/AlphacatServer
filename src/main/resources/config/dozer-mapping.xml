@@ -127,7 +127,7 @@
         <class-a>com.alphacat.pojo.UserNoticeBrief</class-a>
         <class-b>com.alphacat.vo.UserNoticeBriefVO</class-b>
         <field>
-            <a date-format="yyyy-MM-dd hh:mm:ss">startDate</a>
+            <a date-format="yyyy-MM-dd hh:mm:ss">date</a>
             <b>date</b>
         </field>
     </mapping>
