@@ -20,15 +20,15 @@ public interface RequesterMapper {
 	@Select("SELECT * FROM requester WHERE id=#{id}")
 	Requester get(@Param("id") int id);
 
-	@Insert("INSERT INTO requester(id, name, birth, sex, notice, occupation, company, state) " +
-			"VALUES(#{id}, #{name}, #{birth}, #{sex}, #{notice}, #{occupation}, #{company}, #{state})")
+	@Insert("INSERT INTO requester(id, name, birth, sex, email, occupation, company, state) " +
+			"VALUES(#{id}, #{name}, #{birth}, #{sex}, #{email}, #{occupation}, #{company}, #{state})")
 	void add(Requester r);
 
 	/**
      * This method does NOT change a requester's state.
      * If #r.id not exist, it will do nothing.
      */
-	@Update("UPDATE requester SET name=#{name}, birth=#{birth}, sex=#{sex}, notice=#{notice}, " +
+	@Update("UPDATE requester SET name=#{name}, birth=#{birth}, sex=#{sex}, email=#{email}, " +
 			"occupation=#{occupation}, company=#{company} WHERE id=#{id}")
 	void update(Requester r);
 
