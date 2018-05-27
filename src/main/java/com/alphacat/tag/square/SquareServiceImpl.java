@@ -34,7 +34,7 @@ public class SquareServiceImpl implements SquareService {
         boolean exist = squareTagMapper.isExist(workerId, taskId, picIndex);
         // case 1: 'squares' has data to store
         if(squares != null && !squares.isEmpty()) {
-            // case 1.1: the first time to tag this picture: add record and credit
+            // case 1.1: the first startDate to tag this picture: add record and credit
             if(!exist) {
                 taskRecordMapper.incPicDoneNum(workerId, taskId);
                 creditTransactor.picTransact(taskId, workerId, false);

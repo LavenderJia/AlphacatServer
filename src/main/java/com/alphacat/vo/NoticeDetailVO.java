@@ -7,11 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminEmailBriefVO {
+public class NoticeDetailVO {
 
     private int id;
     private String title;
+    private String content;
+    /**
+     * its start date
+     */
     private String date;
-    private int type; // 0 for all, 1 for requester, 2 for worker
 
 }

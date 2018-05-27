@@ -46,7 +46,7 @@ public interface WorkerService {
     void addWorker(WorkerVO worker);
 
     /**
-     * Update a worker's name, birth, sex, email and signature here.
+     * Update a worker's name, birth, sex, notice and signature here.
      * Cannot change anything else.
      */
     void updateWorker(WorkerVO worker);

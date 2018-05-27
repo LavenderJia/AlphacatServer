@@ -27,7 +27,7 @@ public class WorkerController {
 			w.setName(jo.getString("name"));
 			w.setBirth(jo.getString("birth"));
 			w.setSex(jo.getIntValue("sex"));
-			w.setEmail(jo.getString("email"));
+			w.setEmail(jo.getString("notice"));
 			w.setSignature(jo.getString("signature"));
 			workerService.addWorker(w);
 			securityService.setWorkerPassword(w.getName(), jo.getString("key"));
@@ -65,7 +65,7 @@ public class WorkerController {
 					w.put("name", e.getName());
 					w.put("birth", e.getBirth());
 					w.put("sex", e.getSex());
-					w.put("email", e.getEmail());
+					w.put("notice", e.getEmail());
 					w.put("signature", e.getSignature());
 					w.put("exp", e.getExp());
 					w.put("credit", e.getCredit());
@@ -108,7 +108,7 @@ public class WorkerController {
 			w.setName(name);
 			w.setBirth(jo.getString("birth"));
 			w.setSex(jo.getIntValue("sex"));
-			w.setEmail(jo.getString("email"));
+			w.setEmail(jo.getString("notice"));
 			w.setSignature(jo.getString("signature"));
 			w.setState(0);
 			workerService.updateWorker(w);
@@ -143,7 +143,7 @@ public class WorkerController {
      * Get the first 10 workers in order of <code>by</code>.
      * @param by the order by which workers are sorted
      * @return an array of json object in the form of {
-     *     id, name, birth, sex, email, signature,
+     *     id, name, birth, sex, notice, signature,
      *     exp(if #by is exp), credit(if #by is credit)
      * }
      */

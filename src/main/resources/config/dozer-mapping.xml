@@ -104,35 +104,31 @@
         </field>
     </mapping>
     <mapping>
-        <class-a>com.alphacat.pojo.Email</class-a>
-        <class-b>com.alphacat.vo.EmailVO</class-b>
+        <class-a>com.alphacat.pojo.Notice</class-a>
+        <class-b>com.alphacat.vo.NoticeVO</class-b>
         <field>
-            <a date-format="yyyy-MM-dd hh:mm:ss">time</a>
-            <b>date</b>
+            <a date-format="yyyy-MM-dd hh:mm:ss">startDate</a>
+            <b>startDate</b>
         </field>
         <field>
-            <a>scope</a>
-            <b>type</b>
-        </field>
-    </mapping>
-    <mapping>
-        <class-a>com.alphacat.pojo.UserEmailBrief</class-a>
-        <class-b>com.alphacat.vo.UserEmailBriefVO</class-b>
-        <field>
-            <a date-format="yyyy-MM-dd hh:mm:ss">time</a>
-            <b>date</b>
+            <a date-format="yyyy-MM-dd hh:mm:ss">endDate</a>
+            <b>endDate</b>
         </field>
     </mapping>
     <mapping>
-        <class-a>com.alphacat.pojo.AdminEmailBrief</class-a>
-        <class-b>com.alphacat.vo.AdminEmailBriefVO</class-b>
+        <class-a>com.alphacat.pojo.Notice</class-a>
+        <class-b>com.alphacat.vo.NoticeDetailVO</class-b>
         <field>
-            <a date-format="yyyy-MM-dd hh:mm:ss">time</a>
+            <a date-format="yyyy-MM-dd hh:mm:ss">startDate</a>
             <b>date</b>
         </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.UserNoticeBrief</class-a>
+        <class-b>com.alphacat.vo.UserNoticeBriefVO</class-b>
         <field>
-            <a>scope</a>
-            <b>type</b>
+            <a date-format="yyyy-MM-dd hh:mm:ss">startDate</a>
+            <b>date</b>
         </field>
     </mapping>
 </mappings>

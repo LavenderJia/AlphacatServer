@@ -42,7 +42,7 @@ public class TaskEndScheduler {
         JobDetail jobDetail = JobBuilder.newJob(TaskEndJob.class)
                 .withIdentity(id, group)
                 .build();
-        // trigger time should be the day after task-end day
+        // trigger startDate should be the day after task-end day
         Date endTime = task.getEndTime();
         Calendar c = Calendar.getInstance();
         c.setTime(endTime);

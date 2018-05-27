@@ -29,7 +29,7 @@ public class IrregularTagServiceImpl implements IrregularTagService {
         if(tag != null) { // case 1. tag has data to store
             IrregularTag iTag = converter.toPOJO(tag, taskId, workerId, picIndex);
 
-            if(!exist) { // 1A. the first time to store
+            if(!exist) { // 1A. the first startDate to store
                 recordMapper.incPicDoneNum(workerId, taskId);
                 transactor.picTransact(taskId, workerId, false);
                 TaskRecord record = recordMapper.get(workerId, taskId);
@@ -38,7 +38,7 @@ public class IrregularTagServiceImpl implements IrregularTagService {
                     transactor.taskTransact(taskId, workerId, false);
                 }
                 tagMapper.add(iTag);
-            } else { // 1B. not the first time
+            } else { // 1B. not the first startDate
                 tagMapper.update(iTag);
             }
         } else { // case 2. tag has no data, then delete

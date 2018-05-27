@@ -29,7 +29,7 @@ public class RequesterController {
 			r.setName(jo.getString("name"));
 			r.setBirth(jo.getString("birth"));
 			r.setSex(jo.getIntValue("sex"));
-			r.setEmail(jo.getString("email"));
+			r.setEmail(jo.getString("notice"));
 			r.setOccupation(jo.getString("occupation"));
 			r.setCompany(jo.getString("company"));
 			r.setState(1);
@@ -74,7 +74,7 @@ public class RequesterController {
 			r.setName(name);
 			r.setBirth(jo.getString("birth"));
 			r.setSex(jo.getIntValue("sex"));
-			r.setEmail(jo.getString("email"));
+			r.setEmail(jo.getString("notice"));
 			r.setOccupation(jo.getString("occupation"));
 			r.setCompany(jo.getString("company"));
 			r.setState(0);
@@ -130,7 +130,7 @@ public class RequesterController {
 					r.put("name", e.getName());
 					r.put("birth", e.getBirth());
 					r.put("sex", e.getSex());
-					r.put("email", e.getEmail());
+					r.put("notice", e.getEmail());
 					r.put("occupation", e.getOccupation());
 					r.put("company", e.getCompany());
 					result.add(r);

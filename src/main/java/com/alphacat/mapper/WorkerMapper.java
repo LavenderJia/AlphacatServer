@@ -12,14 +12,14 @@ public interface WorkerMapper {
     @Select("SELECT * FROM worker WHERE state=#{state}")
     List<Worker> getByState(@Param("state") int state);
 
-    @Insert("INSERT INTO worker(id, name, birth, sex, email, signature, exp, credit, state) " +
-            "VALUES(#{id},#{name},#{birth},#{sex},#{email},#{signature},#{exp},#{credit},#{state})")
+    @Insert("INSERT INTO worker(id, name, birth, sex, notice, signature, exp, credit, state) " +
+            "VALUES(#{id},#{name},#{birth},#{sex},#{notice},#{signature},#{exp},#{credit},#{state})")
     void add(Worker worker);
 
     /**
-     * Update a worker's name, birth, sex, email and signature.
+     * Update a worker's name, birth, sex, notice and signature.
      */
-    @Update("UPDATE worker SET name=#{name}, birth=#{birth}, sex=#{sex}, email=#{email}, " +
+    @Update("UPDATE worker SET name=#{name}, birth=#{birth}, sex=#{sex}, notice=#{notice}, " +
 			"signature=#{signature} WHERE id=#{id}")
     void update(Worker worker);
 

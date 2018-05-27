@@ -1,25 +1,21 @@
-package com.alphacat.email;
+package com.alphacat.notice;
 
 import com.alibaba.fastjson.JSONObject;
-import com.alphacat.service.EmailService;
-import com.alphacat.vo.EmailVO;
+import com.alphacat.service.NoticeService;
+import com.alphacat.vo.NoticeVO;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-
 @RestController
 @RequestMapping("/notice")
-public class EmailController {
+public class NoticeController {
 
-    private EmailService service;
+    private NoticeService service;
 
     @Autowired
-    public EmailController(EmailService service) {
+    public NoticeController(NoticeService service) {
         this.service = service;
     }
 
@@ -28,23 +24,23 @@ public class EmailController {
     public Object getNoticeList() {
         try{
             Session session = SecurityUtils.getSubject().getSession();
-            String role = session.getAttribute("role").toString();
+            String role = String.valueOf(session.getAttribute("role"));
             if("worker".equals(role)) {
                 int id = (Integer) session.getAttribute("id");
-                return service.getWorkerEmailList(id);
+                return service.getWorkerNoticeList(id);
             }
             if("requester".equals(role)) {
                 int id = (Integer) session.getAttribute("id");
-                return service.getRequesterEmailList(id);
+                return service.getRequesterNoticeList(id);
             }
             if("superAdmin".equals(role)) {
-                return service.getAdminEmailList(0);
+                return service.getAdminNoticeList(0);
             }
             if("requesterAdmin".equals(role)) {
-                return service.getAdminEmailList(1);
+                return service.getAdminNoticeList(1);
             }
             if("workerAdmin".equals(role)) {
-                return service.getAdminEmailList(2);
+                return service.getAdminNoticeList(2);
             }
             throw new RuntimeException("Cannot resolve user's role" + role);
         } catch(Exception e) {
@@ -59,10 +55,20 @@ public class EmailController {
             String title = jo.getString("title");
             String content = jo.getString("content");
             int type = jo.getIntValue("type");
-            EmailVO email = new EmailVO();
+            String endDate;
+            Integer test = jo.getInteger("endDate");
+            if(test == null) {
+                endDate = jo.getString("endDate");
+            } else if(test == 0) {
+                endDate = NoticeConverter.FOREVER;
+            } else {
+                throw new NullPointerException("End date of notice not specified.");
+            }
+            NoticeVO email = new NoticeVO();
             email.setTitle(title);
             email.setContent(content);
             email.setType(type);
+            email.setEndDate(endDate);
             service.add(email);
         } catch(Exception e) {
             e.printStackTrace();
@@ -87,6 +93,25 @@ public class EmailController {
         } catch(Exception e) {
             e.printStackTrace();
             throw new RuntimeException("抱歉，由于未知原因，无法得到该通知。");
+        }
+    }
+
+    @RequestMapping(value = "/{id}/read", method = RequestMethod.POST)
+    public void addReadRecord(@PathVariable("id") int noticeId) {
+        try{
+            Session session = SecurityUtils.getSubject().getSession();
+            String role = String.valueOf(session.getAttribute("role"));
+            if("requester".equals(role)) {
+                int id = (Integer) session.getAttribute("id");
+                service.addRequesterNoticeRead(id, noticeId);
+            }
+            if("worker".equals(role)) {
+                int id = (Integer) session.getAttribute("id");
+                service.addWorkerNoticeRead(id, noticeId);
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法添加阅读记录。");
         }
     }
 
