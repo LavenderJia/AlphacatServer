@@ -18,10 +18,6 @@
             <b>birth</b>
         </field>
     </mapping>
-	<mapping>
-		<class-a>com.alphacat.pojo.Admin</class-a>
-		<class-b>com.alphacat.vo.AdminVO</class-b>
-	</mapping>
     <mapping>
         <class-a>com.alphacat.pojo.Label</class-a>
         <class-b>com.alphacat.vo.LabelVO</class-b>
