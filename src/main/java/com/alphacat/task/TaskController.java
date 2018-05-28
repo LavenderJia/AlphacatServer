@@ -17,7 +17,7 @@ public class TaskController {
     private PictureService pictureService;
 
     @RequestMapping(value="", method= RequestMethod.POST)
-    public void add(TaskVO taskVO) {
+    public void add(@RequestBody TaskVO taskVO) {
         try{
             taskService.add(taskVO);
         } catch(Exception e) {
@@ -27,7 +27,7 @@ public class TaskController {
     }
 
     @RequestMapping(value="/{id}", method=RequestMethod.PUT)
-    public void update(TaskVO taskVO, @PathVariable("id") int id) {
+    public void update(@RequestBody TaskVO taskVO, @PathVariable("id") int id) {
         try{
             taskVO.setId(id);
             taskService.update(taskVO);
