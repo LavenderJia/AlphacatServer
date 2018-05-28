@@ -4,18 +4,15 @@ import com.alphacat.mapper.LabelMapper;
 import com.alphacat.mapper.TaskMapper;
 import com.alphacat.pojo.*;
 import com.alphacat.service.TaskService;
+import com.alphacat.task.schedule.TaskEndScheduler;
 import com.alphacat.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
-/**
- * This class also uses java.sql.Date.
- */
 @Service
 public class TaskServiceImpl implements TaskService {
 
@@ -25,6 +22,8 @@ public class TaskServiceImpl implements TaskService {
     private TaskMapper taskMapper;
     @Autowired
     private LabelMapper labelMapper;
+    @Autowired
+    private TaskEndScheduler scheduler;
 
     @Override
     public List<IdleTaskVO> getIdle(int requesterId) {
@@ -79,6 +78,8 @@ public class TaskServiceImpl implements TaskService {
         taskMapper.add(task);
         // add labels
         taskVO.getLabels().forEach(l -> labelMapper.add(taskConverter.toPOJO(l, id)));
+        // add a new task end job
+        scheduler.scheduleSingleJob(task);
         return id;
     }
 
@@ -86,7 +87,7 @@ public class TaskServiceImpl implements TaskService {
     public void update(TaskVO taskVO) {
         int id = taskVO.getId();
         Task origin = taskMapper.get(id);
-        Date now = new Date();
+        Date now = new Date(Calendar.getInstance().getTimeInMillis());
         if(now.before(origin.getStartTime())) {
             // change everything if it's not started
             Task task = taskConverter.toPOJO(taskVO);
@@ -94,14 +95,17 @@ public class TaskServiceImpl implements TaskService {
             labelMapper.delete(taskVO.getId());
             taskVO.getLabels().
                     forEach(l -> labelMapper.add(taskConverter.toPOJO(l, id)));
+            // then update the task end job
+            scheduler.scheduleSingleJob(task);
             return;
         }
         if(now.after(origin.getStartTime()) && now.before(origin.getEndTime())) {
             // change only name, description and endTime if underway
             origin.setName(taskVO.getName());
             origin.setDescription(taskVO.getDescription());
-            origin.setEndTime(java.sql.Date.valueOf(taskVO.getEndTime()));
+            origin.setEndTime(Date.valueOf(taskVO.getEndTime()));
             taskMapper.update(origin);
+            scheduler.scheduleSingleJob(origin);
         }
         // change nothing if ended
     }

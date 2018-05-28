@@ -13,6 +13,7 @@ import java.util.List;
 public interface CreditMapper {
     /**
      * Add a worker credit transaction record.
+     * Task name is not needed here.
      */
     @Insert("INSERT INTO credit_transaction(workerId, taskId, `change`, date, credit) " +
             "VALUES(#{workerId}, #{taskId}, #{change}, #{date}, #{credit})")

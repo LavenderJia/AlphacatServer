@@ -4,7 +4,6 @@ import com.alphacat.mapper.*;
 import com.alphacat.pojo.SquareTag;
 import com.alphacat.pojo.TaskRecord;
 import com.alphacat.service.SquareService;
-import com.alphacat.tag.CreditTransactor;
 import com.alphacat.vo.SquareVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

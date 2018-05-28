@@ -27,18 +27,22 @@ public class TaskEndScheduler {
         scheduleJobs();
     }
 
-    private void scheduleJobs() {
-        List<Task> tasks = taskMapper.getNotEnded();
-        tasks.forEach(this::scheduleSingleJob);
-    }
-
     /**
      * This method adds a single job into a schedule.
+     * It deletes the job if exists, and then add it.
      * The job #TaskEndJob itself will self-delete when job is done.
      */
-    private void scheduleSingleJob(Task task) {
+    public void scheduleSingleJob(Task task) {
         String id = task.getId() + "";
         String group = "task-end" + id;
+        JobKey key = new JobKey(id, group);
+        // delete first and then add
+        try{
+            scheduler.deleteJob(key);
+        } catch(SchedulerException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Cannot delete the job: " + key);
+        }
         JobDetail jobDetail = JobBuilder.newJob(TaskEndJob.class)
                 .withIdentity(id, group)
                 .build();
@@ -57,7 +61,13 @@ public class TaskEndScheduler {
             scheduler.start();
         } catch(SchedulerException e) {
             e.printStackTrace();
+            throw new RuntimeException("Cannot add new job: " + key);
         }
+    }
+
+    private void scheduleJobs() {
+        List<Task> tasks = taskMapper.getNotEnded();
+        tasks.forEach(this::scheduleSingleJob);
     }
 
 }
