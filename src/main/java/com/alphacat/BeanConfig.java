@@ -1,6 +1,10 @@
 package com.alphacat;
 
 import java.util.List;
+
+import org.dozer.DozerBeanMapperBuilder;
+import org.dozer.Mapper;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -22,5 +26,12 @@ public class BeanConfig implements WebMvcConfigurer {
 		fsjsConverter.setFastJsonConfig(fsjsConfig);
 		converters.add(fsjsConverter);
 	}
+
+	@Bean
+	public Mapper getMapper() {
+	    return DozerBeanMapperBuilder.create()
+                .withMappingFiles("config/dozer-mapping.xml")
+                .build();
+    }
 
 }

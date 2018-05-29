@@ -4,8 +4,10 @@ import com.alphacat.pojo.SquareTag;
 import com.alphacat.vo.SquareVO;
 import org.dozer.DozerBeanMapperBuilder;
 import org.dozer.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,8 +16,8 @@ import java.util.stream.Collectors;
 @Component
 public class SquareTagConverter {
 
-    private Mapper mapper = DozerBeanMapperBuilder.create()
-            .withMappingFiles("config/dozer-mapping.xml").build();
+    @Autowired
+    private Mapper mapper;
 
     public SquareVO toVO(SquareTag squareTag) {
         SquareVO result = mapper.map(squareTag, SquareVO.class);
@@ -33,6 +35,9 @@ public class SquareTagConverter {
     }
 
     public List<SquareVO> toVOList(List<SquareTag> squareTags) {
+        if(squareTags == null) {
+            return new ArrayList<>();
+        }
         return squareTags.stream().map(this::toVO)
                 .collect(Collectors.toList());
     }

@@ -21,15 +21,13 @@ public class AdminServiceImpl implements AdminService{
 	@Override
 	public List<AdminVO> getAll() {
 		List<Admin> admins = adminMapper.getAll();
-		return admins.stream().map(a -> adminConverter.toVO(a))
-				.collect(Collectors.toList());
+		return adminConverter.toVOList(admins);
 	}
 
 	@Override
 	public List<AdminVO> getByAuth(int auth) {
 		List<Admin> admins = adminMapper.getByAuth(auth);
-		return admins.stream().map(a -> adminConverter.toVO(a))
-				.collect(Collectors.toList());
+		return adminConverter.toVOList(admins);
 	}
 
 	@Override

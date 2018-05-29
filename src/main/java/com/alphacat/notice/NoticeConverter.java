@@ -7,6 +7,7 @@ import com.alphacat.vo.NoticeVO;
 import com.alphacat.vo.UserNoticeBriefVO;
 import org.dozer.DozerBeanMapperBuilder;
 import org.dozer.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -16,8 +17,8 @@ import java.util.stream.Collectors;
 @Component
 public class NoticeConverter {
 
-    private static Mapper mapper = DozerBeanMapperBuilder.create()
-            .withMappingFiles("config/dozer-mapping.xml").build();
+    @Autowired
+    private Mapper mapper;
 
     public static final String FOREVER = "9999-12-31 23:59:59";
 

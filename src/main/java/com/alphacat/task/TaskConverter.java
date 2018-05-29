@@ -10,6 +10,7 @@ import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,9 +19,8 @@ public class TaskConverter {
 
     @Autowired
     private LabelMapper labelMapper;
-
-    private Mapper mapper = DozerBeanMapperBuilder.create()
-            .withMappingFiles("config/dozer-mapping.xml").build();
+    @Autowired
+    private Mapper mapper;
 
     public Task toPOJO(TaskVO taskVO) {
         return mapper.map(taskVO, Task.class);
@@ -39,6 +39,9 @@ public class TaskConverter {
     }
 
     public List<IdleTaskVO> toIdleVOList(List<IdleTask> tasks) {
+        if(tasks == null) {
+            return new ArrayList<>();
+        }
         return tasks.stream().map(this::toVO)
                 .collect(Collectors.toList());
     }
@@ -53,6 +56,9 @@ public class TaskConverter {
     }
 
     public List<UnderwayTaskVO> toUnderwayVOList(List<UnderwayTask> tasks) {
+        if(tasks == null) {
+            return new ArrayList<>();
+        }
         return tasks.stream().map(this::toUnderwayVO)
                 .collect(Collectors.toList());
     }
@@ -62,6 +68,9 @@ public class TaskConverter {
     }
 
     public List<EndedTaskVO> toEndedVOList(List<EndedTask> tasks) {
+        if(tasks == null) {
+            return new ArrayList<>();
+        }
         return tasks.stream().map(this::toEndedVO)
                 .collect(Collectors.toList());
     }
@@ -77,6 +86,9 @@ public class TaskConverter {
     }
 
     public List<LabelVO> toLabelVOList(List<Label> labels) {
+        if(labels == null) {
+            return new ArrayList<>();
+        }
         return labels.stream().map(this::toVO)
                 .collect(Collectors.toList());
     }
@@ -86,6 +98,9 @@ public class TaskConverter {
     }
 
     public List<AvailableTaskVO> toAvailableVOList(List<AvailableTask> tasks) {
+        if(tasks == null) {
+            return new ArrayList<>();
+        }
         return tasks.stream().map(this::toAvailableVO)
                 .collect(Collectors.toList());
     }
@@ -95,6 +110,9 @@ public class TaskConverter {
     }
 
     public List<HistoryTaskVO> toHistoryVOList(List<HistoryTask> historyTasks) {
+        if(historyTasks == null) {
+            return new ArrayList<>();
+        }
         return historyTasks.stream().map(this::toHistoryVO)
                 .collect(Collectors.toList());
     }
