@@ -1,11 +1,11 @@
 package com.alphacat.user.worker;
 
+import com.alibaba.fastjson.JSON;
 import com.alphacat.service.SecurityService;
 import com.alphacat.service.WorkerService;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSONArray;
 import com.alphacat.vo.WorkerVO;
-import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,20 +21,19 @@ public class WorkerController {
     private SecurityService securityService;
 
     @RequestMapping(value="", method=RequestMethod.POST)
-    public String addWorker(@RequestBody JSONObject jo) {
+    public void addWorker(@RequestBody JSONObject jo) {
 		try{
 			WorkerVO w = new WorkerVO();
 			w.setName(jo.getString("name"));
 			w.setBirth(jo.getString("birth"));
 			w.setSex(jo.getIntValue("sex"));
 			w.setEmail(jo.getString("email"));
-			w.setSignature(jo.getString("signatrue"));
+			w.setSignature(jo.getString("signature"));
 			workerService.addWorker(w);
 			securityService.setWorkerPassword(w.getName(), jo.getString("key"));
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，添加工人账户失败。";
+			throw new RuntimeException("抱歉，添加工人账户失败。");
 		}
     }
 
@@ -42,6 +41,7 @@ public class WorkerController {
 	 * @param type [all|active|locked]
 	 */
     @RequestMapping(value="", method=RequestMethod.GET)
+    @ResponseBody
     public Object getByState(@RequestParam("type") String type) {
 		try{
 			int state;
@@ -52,10 +52,7 @@ public class WorkerController {
 			} else if("locked".equals(type)) {
 				state = 1;
 			} else {
-				System.out.print("--------------------");
-				System.out.print("Type " + type + " cannot been processed.");
-				System.out.println("---------------------");
-				return "抱歉，不存在该状态的工人账户。";
+				throw new RuntimeException("抱歉，不存在该状态的工人账户。");
 			}
 			List<WorkerVO> ws = workerService.getByState(state);
 			JSONArray result = new JSONArray();
@@ -78,31 +75,32 @@ public class WorkerController {
 			return result;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，无法查找相关工人账户。";
+			throw new RuntimeException("抱歉，无法查找相关工人账户。");
 		}
     }
 
 	@RequestMapping(value="/{id}", method=RequestMethod.GET)
+    @ResponseBody
 	public Object get(@PathVariable("id") int id) {
 		try{
 			return workerService.get(id);
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，无法获取工人信息。";
+			throw new RuntimeException("抱歉，无法获取工人信息。");
 		}
 	}
 
 	/**
-	 * Update a worker account. Only active account can be updated. 
+	 * Update a worker account. Only active account can be updated.
+     * Cannot update its exp and credit.
 	 */
     @RequestMapping(value="/{id}", method=RequestMethod.PUT)
-    public String updateWorker(@RequestBody JSONObject jo, @PathVariable("id") int id) {
+    public void updateWorker(@RequestBody JSONObject jo, @PathVariable("id") int id) {
 		try{
 			// check the state
 			WorkerVO original = workerService.get(id);
 			if(original.getState() == 1) {
-				System.out.println("Inactive worker not processed.");
-				return "该工人账户已被管理员封禁，无法更新。";
+				throw new RuntimeException("该工人账户已被管理员封禁，无法更新。");
 			}
 			String name = jo.getString("name");
 			WorkerVO w = new WorkerVO();
@@ -112,52 +110,80 @@ public class WorkerController {
 			w.setSex(jo.getIntValue("sex"));
 			w.setEmail(jo.getString("email"));
 			w.setSignature(jo.getString("signature"));
-			w.setExp(jo.getIntValue("exp"));
-			w.setCredit(jo.getIntValue("credit"));
 			w.setState(0);
 			workerService.updateWorker(w);
 			securityService.setWorkerPassword(name, jo.getString("key"));
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，无法更新该工人账户。";
+			throw new RuntimeException("抱歉，无法更新该工人账户。");
 		}
     }
 
     @RequestMapping(value="/lock/{id}", method=RequestMethod.POST)
-    public String lockWorker(@PathVariable("id") int id) {
+    public void lockWorker(@PathVariable("id") int id) {
 		try{
 			workerService.setWorkerState(id, true);
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，由于未知错误，无法封禁该工人账户。";
+			throw new RuntimeException("抱歉，由于未知错误，无法封禁该工人账户。");
 		}
     }
 
     @RequestMapping(value="/unlock/{id}", method=RequestMethod.POST)
-    public String unlockWorker(@PathVariable("id") int id) {
+    public void unlockWorker(@PathVariable("id") int id) {
 		try{
 			workerService.setWorkerState(id, false);
-			return null;
 		} catch(Exception e) {
 			e.printStackTrace();
-			return "抱歉，由于未知错误，无法解禁该工人账户。";
+			throw new RuntimeException("抱歉，由于未知错误，无法解禁该工人账户。");
 		}
     }
 
     /**
-     * 获取工人排行，按照积分大小，最多取前十名
-     * @return 经过排序的结果
+     * Get the first 10 workers in order of <code>by</code>.
+     * @param by the order by which workers are sorted
+     * @return an array of json object in the form of {
+     *     id, name, birth, sex, email, signature,
+     *     exp(if #by is exp), credit(if #by is credit)
+     * }
      */
-    @RequestMapping("/getSorted")
-    public List<WorkerVO> getSortedWorkers() {
-        return workerService.getSortedWorkers();
+    @RequestMapping(value = "/data/rank", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getSortedWorkers(@RequestParam("sorted") String by) {
+        try {
+            List<WorkerVO> workers = null;
+            String removeKey = "";
+            if("exp".equals(by)) {
+                workers = workerService.getSortedByExp(10);
+                removeKey = "credit";
+            }
+            if ("credit".equals(by)) {
+                workers = workerService.getSortedByCredit(10);
+                removeKey = "exp";
+            }
+            // to fit the response pattern
+            JSONArray result = new JSONArray();
+            if(workers != null) for(WorkerVO w: workers) {
+                JSONObject jo = JSON.parseObject(JSON.toJSONString(w));
+                jo.fluentRemove(removeKey).fluentRemove("state");
+                result.add(jo);
+            }
+            return result;
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法获取排行。");
+        }
     }
 
     @RequestMapping("/getWorker")
+    @ResponseBody
     public WorkerVO getWorker(@ModelAttribute("name") String name) {
-        return workerService.getWorkerByName(name);
+        try {
+            return workerService.getWorkerByName(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法获取该工人。");
+        }
     }
 
     /**
@@ -168,7 +194,12 @@ public class WorkerController {
      */
     @RequestMapping("/{name}/setPassword")
     public void setPassword(@PathVariable("name") String name, @ModelAttribute("password") String password) {
-        securityService.setWorkerPassword(name, password);
+        try{
+            securityService.setWorkerPassword(name, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法设置该工人的密码。");
+        }
     }
 
     /**
@@ -177,25 +208,87 @@ public class WorkerController {
      * @return true=有
      */
     @RequestMapping("/checkName")
+    @ResponseBody
     public boolean checkName(@ModelAttribute("name")String name) {
-        return workerService.hasSameName(name);
+        try {
+            return workerService.hasSameName(name);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，无法检查昵称。");
+        }
     }
 
-    @RequestMapping("/sign")
-    public void signIn() {
-        int id = (int) SecurityUtils.getSubject().getSession().getAttribute("id");
-        workerService.signIn(id);
+    /**
+     * Sign up can gain the worker 10 exp.
+     * @see WorkerService#signUp(int)
+     */
+    @RequestMapping(value="/{id}/signup", method = RequestMethod.POST)
+    public void signUp(@PathVariable("id") int id) {
+        try {
+            workerService.signUp(id);
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法签到。");
+        }
     }
 
-    @RequestMapping("/signDays")
-    public int getSignDays() {
-        int id = (int) SecurityUtils.getSubject().getSession().getAttribute("id");
-        return workerService.getSignDays(id);
+    @RequestMapping(value="/{id}/signup", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getSignUpInfo(@PathVariable("id") int id) {
+        try{
+            int days = workerService.getSignDays(id);
+            boolean hasSign = workerService.hasSigned(id);
+            JSONObject response = new JSONObject();
+            response.fluentPut("daysNum", days).fluentPut("hasSign", hasSign);
+            return response;
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，无法获取用户的签到信息。");
+        }
     }
 
-    @RequestMapping("/hasSign")
-    public boolean hasSignIn() {
-        int id = (int) SecurityUtils.getSubject().getSession().getAttribute("id");
-        return workerService.hasSigned(id);
+    @RequestMapping(value = "/{id}/rankData", method = RequestMethod.GET)
+    public Object getRank(@PathVariable("id") int id) {
+        try{
+            JSONObject result = new JSONObject();
+            int creditRank = workerService.getCreditRank(id);
+            if(creditRank == -1) {
+                throw new WorkerNotFoundException(id);
+            }
+            if(creditRank == 0) {
+                throw new WorkerBannedException(id);
+            }
+            int expRank = workerService.getExpRank(id);
+            if(expRank == -1) {
+                throw new WorkerNotFoundException(id);
+            }
+            if(expRank == 0) {
+                throw new WorkerBannedException(id);
+            }
+            result.fluentPut("exp", expRank).fluentPut("credit", creditRank);
+            return result;
+        } catch(WorkerNotFoundException e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，该用户不存在。");
+        } catch (WorkerBannedException e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，该用户已被禁用。");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法获取该用户的排名信息。");
+        }
     }
+
+    private class WorkerNotFoundException extends Exception {
+        WorkerNotFoundException(int id) {
+            super("Worker not found: " + id);
+        }
+    }
+
+    private class WorkerBannedException extends Exception {
+        WorkerBannedException(int id) {
+            super("Worker has been banned: " + id);
+        }
+    }
+
 }

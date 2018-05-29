@@ -28,20 +28,24 @@ public interface RequesterService {
 	RequesterVO get(int id);
 
     /**
-     * 审核一位发起者的注册请求
-     * @param id 发起者的id
-     * @param isChecked 是否通过：true=通过
+     * Pass or not pass a requester.
+     * If to pass a requester, change its state to 0;
+     * If not to pass a requester, delete this requester.
+     * @param id requester's id
+     * @param isChecked true: pass, false: delete
      */
     void checkRequester(int id, boolean isChecked);
 
     /**
+     * This #requesterVO does not have to have an id field or a state field.
      * It will generate a new id for this requester.
+     * On default state will be set to 1.
      * @param requesterVO 新增的发起者对象
      */
     void addRequester(RequesterVO requesterVO);
 
     /**
-     * 发起者修改自己的个人信息
+     * A requester can NOT change id, password or state here.
      * @param requesterVO 修改后的发起者对象
      */
     void updateRequester(RequesterVO requesterVO);

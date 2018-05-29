@@ -4,10 +4,6 @@ import com.alphacat.vo.WorkerVO;
 
 import java.util.List;
 
-/**
- * 工人服务接口
- * @author 161250102
- */
 public interface WorkerService {
 
 	/**
@@ -16,20 +12,43 @@ public interface WorkerService {
     List<WorkerVO> getByState(int state);
 
     /**
-     * 获取经过排序的工人列表，按积分排序
-     * @return 最多返回工人列表前十位
+     * @param num  length of the list returned
      */
-    List<WorkerVO> getSortedWorkers();
+    List<WorkerVO> getSortedByCredit(int num);
+
+    /**
+     * @param num  length of the list returned
+     */
+    List<WorkerVO> getSortedByExp(int num);
 
     WorkerVO getWorkerByName(String name);
 
 	WorkerVO get(int id);
 
 	/**
-	 * Add a worker account and set up its id. 
+     * Get credit ranking info of a worker.
+     * @return the worker's rank by credit, starting from 1;
+     * -1 if worker not found, 0 if worker banned.
+     */
+	int getCreditRank(int id);
+
+    /**
+     * Get exp ranking info of a worker.
+     * @return the worker's rank by exp, starting from 1;
+     * -1 if worker not found, 0 if worker banned.
+     */
+	int getExpRank(int id);
+
+	/**
+	 * Add a worker account and set up its id.
+     * And set its state to 0.
 	 */
     void addWorker(WorkerVO worker);
 
+    /**
+     * Update a worker's name, birth, sex, email and signature here.
+     * Cannot change anything else.
+     */
     void updateWorker(WorkerVO worker);
 
     /**
@@ -46,10 +65,10 @@ public interface WorkerService {
     boolean hasSameName(String name);
 
     /**
-     * 签到一天
+     * Sign up and add 10 exp.
      * @param id 工人id
      */
-    void signIn(int id);
+    void signUp(int id);
 
     /**
      * 获取当天是否已经签到

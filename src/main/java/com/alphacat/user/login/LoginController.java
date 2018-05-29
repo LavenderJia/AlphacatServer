@@ -54,13 +54,13 @@ public class LoginController {
             }
 		} catch(UnknownAccountException e) {
 			result.put("result", "failed");
-			result.put("info", "未知账户");
+			result.put("info", "该账户不存在");
 		} catch(AccountException e) {
 			result.put("result", "failed");
 			result.put("info", "密码错误");
 		} catch(Exception e) {
 			e.printStackTrace();
-			result.put("result", "error");
+			result.put("result", "failed");
 			result.put("info", "抱歉，由于未知原因，无法登陆。");
 		} finally {
 			return result;

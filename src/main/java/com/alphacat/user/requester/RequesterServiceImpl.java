@@ -28,8 +28,7 @@ public class RequesterServiceImpl implements RequesterService{
 		} else {
 			return null;
 		}
-        return rs.stream().map(r -> requesterConverter.toVO(r))
-                .collect(Collectors.toList());
+        return requesterConverter.toVOList(rs);
     }
 
     @Override
@@ -53,6 +52,7 @@ public class RequesterServiceImpl implements RequesterService{
         Requester requester = requesterConverter.toPOJO(requesterVO);
         int id = requesterMapper.getNewId() == null ? 1 : requesterMapper.getNewId();
         requester.setId(id);
+        requester.setState(1);
         requesterMapper.add(requester);
     }
 

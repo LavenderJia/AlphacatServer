@@ -24,8 +24,12 @@ public interface RequesterMapper {
 			"VALUES(#{id}, #{name}, #{birth}, #{sex}, #{email}, #{occupation}, #{company}, #{state})")
 	void add(Requester r);
 
+	/**
+     * This method does NOT change a requester's state.
+     * If #r.id not exist, it will do nothing.
+     */
 	@Update("UPDATE requester SET name=#{name}, birth=#{birth}, sex=#{sex}, email=#{email}, " +
-			"occupation=#{occupation}, company=#{company}, state=#{state} WHERE id=#{id}")
+			"occupation=#{occupation}, company=#{company} WHERE id=#{id}")
 	void update(Requester r);
 
 	@Delete("DELETE FROM requester WHERE id=#{id}")

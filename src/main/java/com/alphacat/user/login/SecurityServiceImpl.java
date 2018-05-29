@@ -26,7 +26,6 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Override
     public Requester requesterLogin(String name, String password) throws AuthenticationException {
-		System.out.println("\n\n" + requesterMapper + "\n\n");
         Requester requester = requesterMapper.getByName(name);
         if (requester == null) throw new UnknownAccountException("No such requester");
         if (requester.getState() == 1) throw new DisabledAccountException("wait to check");

@@ -18,8 +18,129 @@
             <b>birth</b>
         </field>
     </mapping>
-	<mapping>
-		<class-a>com.alphacat.pojo.Admin</class-a>
-		<class-b>com.alphacat.vo.AdminVO</class-b>
-	</mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.Label</class-a>
+        <class-b>com.alphacat.vo.LabelVO</class-b>
+        <field>
+            <a>label</a>
+            <b>title</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.Task</class-a>
+        <class-b>com.alphacat.vo.TaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">startTime</a>
+            <b>startTime</b>
+        </field>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.IdleTask</class-a>
+        <class-b>com.alphacat.vo.IdleTaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">startTime</a>
+            <b>startTime</b>
+        </field>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.UnderwayTask</class-a>
+        <class-b>com.alphacat.vo.UnderwayTaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">startTime</a>
+            <b>startTime</b>
+        </field>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.EndedTask</class-a>
+        <class-b>com.alphacat.vo.EndedTaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">startTime</a>
+            <b>startTime</b>
+        </field>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.AvailableTask</class-a>
+        <class-b>com.alphacat.vo.AvailableTaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.HistoryTask</class-a>
+        <class-b>com.alphacat.vo.HistoryTaskVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">endTime</a>
+            <b>endTime</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.SquareTag</class-a>
+        <class-b>com.alphacat.vo.SquareVO</class-b>
+        <field>
+            <a>labelData</a>
+            <b>labelData</b>
+            <b-hint>java.util.HashMap</b-hint>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.Notice</class-a>
+        <class-b>com.alphacat.vo.NoticeVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd hh:mm:ss">startDate</a>
+            <b>startDate</b>
+        </field>
+        <field>
+            <a date-format="yyyy-MM-dd hh:mm:ss">endDate</a>
+            <b>endDate</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.Notice</class-a>
+        <class-b>com.alphacat.vo.NoticeDetailVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd hh:mm:ss">startDate</a>
+            <b>date</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.UserNoticeBrief</class-a>
+        <class-b>com.alphacat.vo.UserNoticeBriefVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd hh:mm:ss">date</a>
+            <b>date</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.WorkerCredit</class-a>
+        <class-b>com.alphacat.vo.WorkerCreditVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">date</a>
+            <b>date</b>
+        </field>
+    </mapping>
+    <mapping>
+        <class-a>com.alphacat.pojo.RequesterCredit</class-a>
+        <class-b>com.alphacat.vo.RequesterCreditVO</class-b>
+        <field>
+            <a date-format="yyyy-MM-dd">date</a>
+            <b>date</b>
+        </field>
+    </mapping>
 </mappings>

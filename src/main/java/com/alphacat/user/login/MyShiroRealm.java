@@ -66,9 +66,16 @@ public class MyShiroRealm extends AuthorizingRealm {
                 return new SimpleAuthenticationInfo(worker, password, username);
             case 'a' :
                 Admin admin = securityService.adminLogin(username.substring(1), password);
+                String role = null;
+                switch (admin.getAuth()) {
+                    case 0: role = "superAdmin"; break;
+                    case 1: role = "requesterAdmin"; break;
+                    case 2: role = "workerAdmin"; break;
+                    default: throw new NullPointerException("Authority cannot be resolved: " + admin.getAuth());
+                }
                 subject.getSession().setAttribute("id", admin.getId());
 				subject.getSession().setAttribute("name", admin.getName());
-				subject.getSession().setAttribute("role", "admin");
+				subject.getSession().setAttribute("role", role);
                 return new SimpleAuthenticationInfo(admin, password, username);
         }
         return null;

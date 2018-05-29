@@ -16,8 +16,11 @@ public interface WorkerMapper {
             "VALUES(#{id},#{name},#{birth},#{sex},#{email},#{signature},#{exp},#{credit},#{state})")
     void add(Worker worker);
 
+    /**
+     * Update a worker's name, birth, sex, email and signature.
+     */
     @Update("UPDATE worker SET name=#{name}, birth=#{birth}, sex=#{sex}, email=#{email}, " +
-			"signature=#{signature}, exp=#{exp}, state=#{state} WHERE id=#{id}")
+			"signature=#{signature} WHERE id=#{id}")
     void update(Worker worker);
 
     @Update("UPDATE worker SET state=#{state} WHERE id=#{workerId}")
@@ -32,8 +35,11 @@ public interface WorkerMapper {
     @Select("SELECT COUNT(*) FROM worker WHERE name=#{name}")
     boolean checkName(String name);
 
-    @Update("UPDATE worker SET exp=#{exp} WHERE id=#{workerId}")
+    @Update("UPDATE worker SET exp = exp + #{exp} WHERE id=#{workerId}")
     void addExp(@Param("workerId") int workerId, @Param("exp") int exp);
+
+    @Update("UPDATE worker SET credit = credit + #{credit} WHERE id=#{id}")
+    void addCredit(@Param("id") int id, @Param("credit") int credit);
 
     @Select("SELECT MAX(id)+1 FROM worker")
     Integer getNewId();
@@ -49,4 +55,32 @@ public interface WorkerMapper {
 
     @Delete("DELETE FROM worker WHERE id=#{workerId}")
     void delete(int workerId);
+
+    @Select("SELECT DISTINCT * FROM worker WHERE state = 0 " +
+            "ORDER BY credit DESC LIMIT #{num}")
+    List<Worker> getSortedByCredit(@Param("num") int num);
+
+    @Select("SELECT DISTINCT * FROM worker WHERE state = 0 " +
+            "ORDER BY exp DESC LIMIT #{num}")
+    List<Worker> getSortedByExp(@Param("num") int num);
+
+    /**
+     * This method cannot verify whether #id is valid.
+     * Please verify #id before calling this method.
+     * @param id a valid workerId
+     */
+    @Select("SELECT COUNT(*)+1 FROM worker w1 CROSS JOIN (" +
+                "SELECT * FROM worker WHERE id = #{id}" +
+            ") w2 WHERE w1.credit > w2.credit w1.state = 0")
+    int getCreditRank(@Param("id") int id);
+
+    /**
+     * This method cannot verify whether #id is valid.
+     * Please verify #id before calling this method.
+     * @param id a valid workerId
+     */
+    @Select("SELECT COUNT(*)+1 FROM worker w1 CROSS JOIN worker w2 " +
+            "WHERE w1.exp > w2.exp AND w2.id = #{id} AND w1.state = 0")
+    int getExpRank(@Param("id") int id);
+
 }

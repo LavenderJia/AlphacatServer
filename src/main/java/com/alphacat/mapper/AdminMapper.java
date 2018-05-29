@@ -27,7 +27,7 @@ public interface AdminMapper {
      * Add a new admin account without a password.
      * Use <code>setPwd(int, String)</code> to set up its password.
      */
-	@Insert("INSERT INTO admin(id, name, actual_name, sex, auth) " +
+	@Insert("INSERT INTO admin(id, name, actualName, sex, auth) " +
 			"VALUES(#{id}, #{name}, #{actualName}, #{sex}, #{auth})")
 	void add(Admin admin);
 
@@ -36,7 +36,7 @@ public interface AdminMapper {
      * To change its password, use <code>setPwd(int, String)</code> instead.
      * To change its authority, use <code>setAuth(int, int)</code> instead.
 	 */
-	@Update("UPDATE admin SET name=#{name}, actual_name=#{actualName}, sex=#{sex} WHERE id=#{id}")
+	@Update("UPDATE admin SET name=#{name}, actualName=#{actualName}, sex=#{sex} WHERE id=#{id}")
 	void update(Admin admin);
 
 	@Delete("DELETE FROM admin WHERE id=#{id}")

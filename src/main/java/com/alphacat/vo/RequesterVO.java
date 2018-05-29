@@ -22,6 +22,6 @@ public class RequesterVO {
     private String email;
     private String occupation;
     private String company;
-    private int state;
+    private int state; // 0 - not checked, 1 - passed
 
 }

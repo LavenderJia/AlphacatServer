@@ -15,6 +15,9 @@ public class AdminVO {
 	private String name;
 	private String actualName;
 	private int sex; // 0 male, 1 female
-	private int auth; // TODO
+    /**
+     * 0 for super admin, 1 for requester admin, 2 for worker admin
+     */
+	private int auth;
 
 }
