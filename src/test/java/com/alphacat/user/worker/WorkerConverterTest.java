@@ -19,10 +19,6 @@ public class WorkerConverterTest {
     @Autowired
     private WorkerConverter workerConverter;
 
-    public WorkerConverterTest() {
-        workerConverter = new WorkerConverter();
-    }
-
     @Test
     public void toWorkerVO() {
         Date date = Date.valueOf("1995-11-18");

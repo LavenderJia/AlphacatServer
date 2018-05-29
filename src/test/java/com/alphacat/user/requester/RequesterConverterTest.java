@@ -19,10 +19,6 @@ public class RequesterConverterTest {
     @Autowired
     private RequesterConverter requesterConverter;
 
-    public RequesterConverterTest() {
-        requesterConverter = new RequesterConverter();
-    }
-
     @Test
     public void toRequesterVO() {
         Date date = Date.valueOf("1995-11-18");
