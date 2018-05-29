@@ -50,8 +50,8 @@ public class TaskController {
 
     @RequestMapping(value="", method=RequestMethod.GET)
     @ResponseBody
-    public Object get(@RequestParam("requesterId") Integer requesterId,
-                      @RequestParam("workerId") Integer workerId,
+    public Object get(@RequestParam(value = "requesterId", required = false) Integer requesterId,
+                      @RequestParam(value = "workerId", required = false) Integer workerId,
                       @RequestParam("type") String type) {
         if(requesterId != null) {
             return getR(requesterId, type);
