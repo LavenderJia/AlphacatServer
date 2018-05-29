@@ -26,21 +26,27 @@ public class TaskServiceImpl implements TaskService {
     private TaskEndScheduler scheduler;
 
     @Override
-    public List<IdleTaskVO> getIdle(int requesterId) {
-        List<IdleTask> tasks = taskMapper.getIdleTasks(requesterId);
-        return taskConverter.toIdleVOList(tasks);
+    public List<RequesterTaskVO> getIdle(int requesterId) {
+        List<RequesterTask> tasks = taskMapper.getIdleTasks(requesterId);
+        return taskConverter.toRequesterVOList(tasks);
     }
 
     @Override
-    public List<UnderwayTaskVO> getUnderway(int requesterId) {
-        List<UnderwayTask> tasks = taskMapper.getUnderwayTasks(requesterId);
-        return taskConverter.toUnderwayVOList(tasks);
+    public List<RequesterTaskVO> getUnderway(int requesterId) {
+        List<RequesterTask> tasks = taskMapper.getUnderwayTasks(requesterId);
+        return taskConverter.toRequesterVOList(tasks);
     }
 
     @Override
-    public List<EndedTaskVO> getEnded(int requesterId) {
-        List<EndedTask> tasks = taskMapper.getEndedTask(requesterId);
-        return taskConverter.toEndedVOList(tasks);
+    public List<RequesterTaskVO> getEnded(int requesterId) {
+        List<RequesterTask> tasks = taskMapper.getEndedTask(requesterId);
+        return taskConverter.toRequesterVOList(tasks);
+    }
+
+    @Override
+    public List<RequesterTaskVO> getRequesterTasks(int requesterId) {
+        List<RequesterTask> tasks = taskMapper.getByRequester(requesterId);
+        return taskConverter.toRequesterVOList(tasks);
     }
 
     @Override

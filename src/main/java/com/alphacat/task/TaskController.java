@@ -70,6 +70,8 @@ public class TaskController {
                 return taskService.getUnderway(requesterId);
             } else if ("history".equals(type)) {
                 return taskService.getEnded(requesterId);
+            } else if("all".equals(type)) {
+                return taskService.getRequesterTasks(requesterId);
             }
         } catch(Exception e) {
             e.printStackTrace();

@@ -18,44 +18,36 @@ public interface TaskMapper {
     /**
      * Get all tasks published by a given requester.
      */
-    @Select("SELECT * FROM task WHERE requesterId=#{requesterId}")
-    List<Task> getByRequester(@Param("requesterId") int requesterId);
-
-    @Select("SELECT id, name, creditPerPic, creditFinished, method, startTime, endTime " +
-            "FROM task WHERE requesterId = #{requesterId} AND NOW() < startTime")
-    List<IdleTask> getIdleTasks(@Param("requesterId") int requesterId);
-
-    @Select("SELECT id, name, startTime, endTime, workerCount, a.tagCount/count(p.pidx) tagRate " +
-            "FROM (" +
-                "SELECT id, name, startTime, endTime, COUNT(workerId) workerCount, " +
-                    "IFNULL(SUM(picDoneNum), 0) tagCount " +
-                "FROM ( " +
-                    "SELECT * FROM task WHERE requesterId = #{requesterId} AND " +
-                        "NOW() > startTime AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)" +
-                ") t LEFT JOIN task_record ON id = taskId " +
-                "GROUP BY id" +
-            ") a LEFT JOIN picture p ON id = taskId " +
+    @Select("SELECT id, name, (" +
+                "CASE " +
+                "WHEN NOW() < startTime THEN 0 " +
+                "WHEN NOW() > startTime AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY) " +
+                    "THEN 100 * DATEDIFF(CURDATE(), startTime) / DATEDIFF(endTime, startTime) " +
+                "WHEN endTime < DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN 100 " +
+                "END" +
+            ") state, COUNT(workerId) workerCount " +
+            "FROM task LEFT JOIN task_record ON id = taskId " +
+            "WHERE requesterId = #{requesterId}" +
             "GROUP BY id")
-    List<UnderwayTask> getUnderwayTasks(@Param("requesterId") int requesterId);
+    List<RequesterTask> getByRequester(@Param("requesterId") int requesterId);
 
-    @Select("SELECT id, name, startTime, endTime, workerCount, tagRate, costCredit " +
-            "FROM (" +
-                "SELECT id, name, startTime, endTime, workerCount, a.tagCount/COUNT(p.pidx) tagRate " +
-                "FROM (" +
-                    "SELECT id, name, startTime, endTime, COUNT(workerId) workerCount, " +
-                        "IFNULL(SUM(picDoneNum), 0) tagCount " +
-                    "FROM (" +
-                        "SELECT * FROM task WHERE requesterId = #{requesterId} AND " +
-                            "CURDATE() > endTime" +
-                    ") t LEFT JOIN task_record ON id = taskId" +
-                ") a LEFT JOIN picture p ON id = taskId " +
-                "GROUP BY id" +
-            ") b LEFT JOIN (" +
-                "SELECT taskId, IFNULL(SUM(`change`), 0) costCredit " +
-                "FROM credit_transaction " +
-                "GROUP BY taskId" +
-            ") c ON id = taskId")
-    List<EndedTask> getEndedTask(@Param("requesterId") int requesterId);
+    @Select("SELECT id, name, 0 state, 0 workerCount FROM task " +
+            "WHERE requesterId = #{requesterId} AND NOW() < startTime")
+    List<RequesterTask> getIdleTasks(@Param("requesterId") int requesterId);
+
+    @Select("SELECT id, name, (100 * DATEDIFF(CURDATE(), startTime) / DATEDIFF(endTime, startTime)) state, " +
+                "COUNT(workerId) workerCount " +
+            "FROM task LEFT JOIN task_record ON id = taskId " +
+            "WHERE requesterId = #{requesterId} AND NOW() > startTime " +
+                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY) " +
+            "GROUP BY id")
+    List<RequesterTask> getUnderwayTasks(@Param("requesterId") int requesterId);
+
+    @Select("SELECT id, name, 100 state, COUNT(workerId) workerCount " +
+            "FROM task LEFT JOIN task_record ON id = taskId " +
+            "WHERE requesterId = #{requesterId} AND endTime < DATE_SUB(CURDATE(), INTERVAL 1 DAY) " +
+            "GROUP BY id")
+    List<RequesterTask> getEndedTask(@Param("requesterId") int requesterId);
 
     /**
      * This method is not requester-related. It retrieves all data.

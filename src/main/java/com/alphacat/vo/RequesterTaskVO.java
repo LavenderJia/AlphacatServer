@@ -2,23 +2,16 @@ package com.alphacat.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-/**
- * @see com.alphacat.pojo.UnderwayTask
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-public class UnderwayTaskVO {
+public class RequesterTaskVO {
 
     private int id;
     private String name;
-    private String startTime;
-    private String endTime;
+    private double state;
     private int workerCount;
-    private double tagRate;
 
 }

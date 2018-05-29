@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface TaskService {
 
-    List<IdleTaskVO> getIdle(int requesterId);
+    List<RequesterTaskVO> getIdle(int requesterId);
 
-    List<UnderwayTaskVO> getUnderway(int requesterId);
+    List<RequesterTaskVO> getUnderway(int requesterId);
 
-    List<EndedTaskVO> getEnded(int requesterId);
+    List<RequesterTaskVO> getEnded(int requesterId);
+
+    List<RequesterTaskVO> getRequesterTasks(int requesterId);
 
     /**
      * Get tasks that's available but the worker DOES NOT take part in.

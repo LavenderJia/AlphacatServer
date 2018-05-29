@@ -34,44 +34,15 @@ public class TaskConverter {
         return result;
     }
 
-    public IdleTaskVO toVO(IdleTask task) {
-        return mapper.map(task, IdleTaskVO.class);
+    public RequesterTaskVO toVO(RequesterTask task) {
+        return mapper.map(task, RequesterTaskVO.class);
     }
 
-    public List<IdleTaskVO> toIdleVOList(List<IdleTask> tasks) {
+    public List<RequesterTaskVO> toRequesterVOList(List<RequesterTask> tasks) {
         if(tasks == null) {
             return new ArrayList<>();
         }
         return tasks.stream().map(this::toVO)
-                .collect(Collectors.toList());
-    }
-
-    public UnderwayTaskVO toUnderwayVO(UnderwayTask task) {
-        if(task.getTagRate() == null) {
-            String errMsg = "Cannot generate tagRate: the task has no picture.";
-            throw new NullPointerException(errMsg);
-        }
-        UnderwayTaskVO result = mapper.map(task, UnderwayTaskVO.class);
-        return result;
-    }
-
-    public List<UnderwayTaskVO> toUnderwayVOList(List<UnderwayTask> tasks) {
-        if(tasks == null) {
-            return new ArrayList<>();
-        }
-        return tasks.stream().map(this::toUnderwayVO)
-                .collect(Collectors.toList());
-    }
-
-    public EndedTaskVO toEndedVO(EndedTask task) {
-        return mapper.map(task, EndedTaskVO.class);
-    }
-
-    public List<EndedTaskVO> toEndedVOList(List<EndedTask> tasks) {
-        if(tasks == null) {
-            return new ArrayList<>();
-        }
-        return tasks.stream().map(this::toEndedVO)
                 .collect(Collectors.toList());
     }
 
