@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/admin")
@@ -41,10 +42,22 @@ public class AdminController {
 	public Object getAll() {
 		try{
 			List<AdminVO> admins = adminService.getAll();
-			return admins;
+			return admins.stream()
+					.filter((admin)->admin.getAuth() != 0)
+					.collect(Collectors.toList());
 		} catch(Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("抱歉，由于未知原因，无法获取管理员列表。");
+		}
+	}
+
+	@GetMapping("/{id}")
+	public Object get(@PathVariable("id") int id) {
+		try{
+			return adminService.get(id);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("抱歉，由于未知原因，无法删除该管理员账户。");
 		}
 	}
 
