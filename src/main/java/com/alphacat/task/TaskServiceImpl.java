@@ -75,10 +75,8 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public int add(TaskVO taskVO) {
         // set up new task id
-        Integer id = taskMapper.getNewId();
-        if(id == null) {
-            throw new NullPointerException("Cannot allocate new id for a task.");
-        }
+        Integer tid = taskMapper.getNewId();
+        int id = tid == null ? 1 : tid;
         taskVO.setId(id);
         Task task = taskConverter.toPOJO(taskVO);
         // check start time and end time
