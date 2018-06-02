@@ -28,7 +28,7 @@ public class AvatarMapperTest {
         avatarMapper.add(new Avatar("billy", 1,test1));
         avatarMapper.add(new Avatar("banana", 2,test1));
         Assert.assertEquals("van", avatarMapper.get("van",0).getName());
-        Assert.assertEquals(test1, avatarMapper.get("billy",1).getBlob());
+        Assert.assertEquals(test1.toString(), avatarMapper.get("billy",1).getBlob().toString());
         Assert.assertEquals(2, avatarMapper.get("banana",2).getType());
 
 
@@ -39,7 +39,7 @@ public class AvatarMapperTest {
         byte[] test2 = {1,1,1,1,1,1,1,1,1};
         avatarMapper.update(new Avatar("van", 0, test2));
         Assert.assertEquals("van", avatarMapper.get("van",0).getName());
-        Assert.assertEquals(test2, avatarMapper.get("van",0).getBlob());
+        Assert.assertEquals(test2.toString(), avatarMapper.get("van",0).getBlob().toString());
         Assert.assertEquals(0, avatarMapper.get("van",0).getType());
     }
 
