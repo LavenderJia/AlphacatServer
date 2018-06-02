@@ -89,7 +89,7 @@ public class AdminController {
 		}
 	}
 
-	@RequestMapping(value="/{id}/setauth", method=RequestMethod.PUT)
+	@RequestMapping(value="/{id}/setAuth", method=RequestMethod.PUT)
 	public void setAuth(@PathVariable("id") int id, @RequestBody JSONObject jo) {
 		try{
 			int auth = jo.getIntValue("auth");
