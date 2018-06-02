@@ -77,7 +77,7 @@ public class WorkerServiceImpl implements WorkerService {
         Worker worker = workerConverter.toPOJO(workerVO);
         int id = workerMapper.getNewId() == null ? 1 : workerMapper.getNewId();
         worker.setId(id);
-        worker.setState(0);
+        worker.setState(2);
         workerMapper.add(worker);
     }
 

@@ -20,7 +20,7 @@ public class NoticeConverter {
     @Autowired
     private Mapper mapper;
 
-    public static final String FOREVER = "9999-12-31 23:59:59";
+    public static final String FOREVER = "9999-12-31 11:59:59";
 
     public List<UserNoticeBriefVO> toUserNoticeList(List<UserNoticeBrief> noticeBriefs) {
         return noticeBriefs.stream().map(this::toVO).collect(Collectors.toList());

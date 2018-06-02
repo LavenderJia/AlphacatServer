@@ -23,7 +23,7 @@ public class NoticeController {
     @ResponseBody
     public Object getNoticeList() {
         try{
-            Session session = SecurityUtils.getSubject().getSession();
+            Session session = SecurityUtils.getSubject().getSession(false);
             String role = String.valueOf(session.getAttribute("role"));
             if("worker".equals(role)) {
                 int id = (Integer) session.getAttribute("id");

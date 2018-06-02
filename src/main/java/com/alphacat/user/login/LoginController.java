@@ -6,7 +6,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.session.Session;
 import org.springframework.web.bind.annotation.*;
 import com.alibaba.fastjson.JSONObject;
-
+@CrossOrigin
 @RestController
 public class LoginController {
 
@@ -28,7 +28,7 @@ public class LoginController {
 	 * }
      */
     @ResponseBody
-    @RequestMapping("/loginAction")
+    @RequestMapping("/login")
     public JSONObject loginAction(@RequestBody JSONObject jo) {
 		JSONObject result = new JSONObject();
         String type = jo.getString("type");

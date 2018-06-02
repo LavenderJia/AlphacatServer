@@ -1,6 +1,5 @@
 package com.alphacat.user.avatar;
 
-import com.alibaba.fastjson.JSONObject;
 import com.alphacat.service.AvatarService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.session.Session;
@@ -20,11 +19,8 @@ public class AvatarController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public void upload(@RequestBody JSONObject jo) {
+    public void upload(@RequestParam("file")MultipartFile file, @RequestParam("name")String name, @RequestParam("type")String type) {
         try{
-            String name = jo.getString("name");
-            String type = jo.getString("type");
-            MultipartFile file = (MultipartFile) jo.get("blob");
             int typeInt;
             if("requester".equals(type)) {
                 typeInt = 0;

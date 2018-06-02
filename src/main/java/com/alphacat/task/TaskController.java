@@ -2,7 +2,9 @@ package com.alphacat.task;
 
 import com.alphacat.service.PictureService;
 import com.alphacat.service.TaskService;
+import com.alphacat.service.WorkerService;
 import com.alphacat.vo.TaskVO;
+import com.alphacat.vo.WorkerVO;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,8 @@ public class TaskController {
     private TaskService taskService;
     @Autowired
     private PictureService pictureService;
+    @Autowired
+    private WorkerService workerService;
 
     @RequestMapping(value="", method= RequestMethod.POST)
     public void add(@RequestBody TaskVO taskVO) {
@@ -52,7 +56,7 @@ public class TaskController {
     @ResponseBody
     public Object get(@RequestParam(value = "requesterId", required = false) Integer requesterId,
                       @RequestParam(value = "workerId", required = false) Integer workerId,
-                      @RequestParam("type") String type) {
+                      @RequestParam(value = "type", required = false) String type) {
         if(requesterId != null) {
             return getR(requesterId, type);
         }
@@ -82,7 +86,12 @@ public class TaskController {
 
     public Object getW(int id, String type) {
         try{
+            WorkerVO worker = workerService.get(id);
+            if (worker.getState() == 2)  {
+                //TODO 如果工人还未通过测试只返回发起者ID为0的任务（即测试任务
+            }
             if("available".equals(type)) {
+                //TODO 通过测试的工人要将测试任务排除在外
                 return taskService.getAvailable(id);
             } else if("doing".equals(type)) {
                 return taskService.getPartaking(id);
