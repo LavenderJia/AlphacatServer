@@ -67,11 +67,11 @@
         <class-a>com.alphacat.pojo.Notice</class-a>
         <class-b>com.alphacat.vo.NoticeVO</class-b>
         <field>
-            <a date-format="yyyy-MM-dd hh:mm:ss">startDate</a>
+            <a date-format="yyyy-MM-dd HH:mm:ss">startDate</a>
             <b>startDate</b>
         </field>
         <field>
-            <a date-format="yyyy-MM-dd hh:mm:ss">endDate</a>
+            <a date-format="yyyy-MM-dd HH:mm:ss">endDate</a>
             <b>endDate</b>
         </field>
     </mapping>
@@ -79,7 +79,7 @@
         <class-a>com.alphacat.pojo.Notice</class-a>
         <class-b>com.alphacat.vo.NoticeDetailVO</class-b>
         <field>
-            <a date-format="yyyy-MM-dd hh:mm:ss">startDate</a>
+            <a date-format="yyyy-MM-dd HH:mm:ss">startDate</a>
             <b>date</b>
         </field>
     </mapping>
@@ -87,7 +87,7 @@
         <class-a>com.alphacat.pojo.UserNoticeBrief</class-a>
         <class-b>com.alphacat.vo.UserNoticeBriefVO</class-b>
         <field>
-            <a date-format="yyyy-MM-dd hh:mm:ss">date</a>
+            <a date-format="yyyy-MM-dd HH:mm:ss">date</a>
             <b>date</b>
         </field>
     </mapping>
