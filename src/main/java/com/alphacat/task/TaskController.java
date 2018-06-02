@@ -88,10 +88,9 @@ public class TaskController {
         try{
             WorkerVO worker = workerService.get(id);
             if (worker.getState() == 2)  {
-                //TODO 如果工人还未通过测试只返回发起者ID为0的任务（即测试任务
+                return taskService.getTestTasks();
             }
             if("available".equals(type)) {
-                //TODO 通过测试的工人要将测试任务排除在外
                 return taskService.getAvailable(id);
             } else if("doing".equals(type)) {
                 return taskService.getPartaking(id);

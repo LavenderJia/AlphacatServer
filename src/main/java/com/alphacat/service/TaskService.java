@@ -1,6 +1,5 @@
 package com.alphacat.service;
 
-import com.alphacat.pojo.AvailableTask;
 import com.alphacat.vo.*;
 
 import java.util.List;
@@ -14,6 +13,11 @@ public interface TaskService {
     List<RequesterTaskVO> getEnded(int requesterId);
 
     List<RequesterTaskVO> getRequesterTasks(int requesterId);
+
+    /**
+     * A test for worker's accuracy. New workers will do them.
+     */
+    List<AvailableTaskVO> getTestTasks();
 
     /**
      * Get tasks that's available but the worker DOES NOT take part in.

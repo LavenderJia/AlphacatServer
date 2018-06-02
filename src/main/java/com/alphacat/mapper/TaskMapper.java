@@ -70,6 +70,14 @@ public interface TaskMapper {
     List<AvailableTask> getAvailableTask(@Param("workerId") int workerId);
 
     /**
+     * Tasks for testing purpose, test for workers' accuracy.
+     * They are tasks that are published by 0-id requester(system requester).
+     */
+    @Select("SELECT id, name, creditPerPic, creditFinished, method, endTime " +
+            "FROM task WHERE requesterId = 0")
+    List<AvailableTask> getTestTask();
+
+    /**
      * Retrieve tasks that the worker DOES take part in.
      * @see #getAvailableTask(int)
      */

@@ -20,10 +20,5 @@ public class AvailableTaskVO {
     private int creditFinished;
     private int method;
     private String endTime;
-    /**
-     * Value set: 1 for not participating,
-     * 2 for not finished, 3 for completed
-     */
-    private int state;
 
 }
