@@ -11,7 +11,10 @@ public interface RequesterMapper {
 	@Select("SELECT * FROM requester WHERE state=#{state}")
 	List<Requester> getByState(@Param("state") int state);
 
-	@Select("SELECT * FROM requester")
+	/**
+     * Filter off 0-id requester, because it's system requester.
+     */
+	@Select("SELECT * FROM requester WHERE id > 0")
 	List<Requester> getAll();
 
 	@Select("SELECT * FROM requester WHERE name=#{name}")
