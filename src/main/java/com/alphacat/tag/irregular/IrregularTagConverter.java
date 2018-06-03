@@ -38,7 +38,7 @@ public class IrregularTagConverter {
         IrregularTagVO result = new IrregularTagVO();
         result.setPaths(Arrays.stream(tag.getFigure().split(";"))
                             .map(this::toPath).collect(Collectors.toList()));
-        return null;
+        return result;
     }
 
     public List<IrregularTagVO> toVOList(List<IrregularTag> tags) {
