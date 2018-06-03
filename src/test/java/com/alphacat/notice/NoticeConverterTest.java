@@ -31,16 +31,16 @@ public class NoticeConverterTest {
     private MockMvc mvc;
     private RequestBuilder request = null;
 
-    NoticeVO noticeVO0 = new NoticeVO(0, "2018-05-30 19:36:35.00", "2018-05-30 19:36:35.00", "AlphaCat项目即将上线", "这是你从未体验的船新版本，快来加入我们，只需体验三分钟，你介会爱上这个平台", 0);
-    NoticeVO noticeVO1 = new NoticeVO(1, "2018-05-26 21:04:56.80", "2018-07-20 00:00:00.00", "a", "aaa", 0);
-    NoticeVO noticeVO2 = new NoticeVO(2, "2018-05-27 08:15:50.80", "2018-05-27 18:00:00.00", "b", "bbb",1);
+    NoticeVO noticeVO0 = new NoticeVO(0, "2018-05-30 19:36:35", "2018-05-30 19:36:35", "AlphaCat项目即将上线", "这是你从未体验的船新版本，快来加入我们，只需体验三分钟，你介会爱上这个平台", 0);
+    NoticeVO noticeVO1 = new NoticeVO(1, "2018-05-26 21:04:56", "2018-07-20 00:00:00", "a", "aaa", 0);
+    NoticeVO noticeVO2 = new NoticeVO(2, "2018-05-27 08:15:50", "2018-05-27 18:00:00", "b", "bbb",1);
 
-    Timestamp start0 = Timestamp.valueOf("2018-05-30 19:36:35.00");
-    Timestamp end0 = Timestamp.valueOf("2018-05-30 19:36:35.00");
-    Timestamp start1 = Timestamp.valueOf("2018-05-26 21:04:56.80");
-    Timestamp end1 = Timestamp.valueOf("2018-07-20 00:00:00.00");
-    Timestamp start2 = Timestamp.valueOf("2018-05-27 08:15:50.80");
-    Timestamp end2 = Timestamp.valueOf("2018-05-27 18:00:00.00");
+    Timestamp start0 = Timestamp.valueOf("2018-05-30 19:36:35");
+    Timestamp end0 = Timestamp.valueOf("2018-05-30 19:36:35");
+    Timestamp start1 = Timestamp.valueOf("2018-05-26 21:04:56");
+    Timestamp end1 = Timestamp.valueOf("2018-07-20 00:00:00");
+    Timestamp start2 = Timestamp.valueOf("2018-05-27 08:15:50");
+    Timestamp end2 = Timestamp.valueOf("2018-05-27 18:00:00");
 
     Notice notice0 = new Notice(0, "AlphaCat项目即将上线", "这是你从未体验的船新版本，快来加入我们，只需体验三分钟，你介会爱上这个平台", start0, end0, 0);
     Notice notice1 = new Notice(1, "a", "aaa", start1, end1, 0);
@@ -48,17 +48,17 @@ public class NoticeConverterTest {
     @Test
     public void toUserNoticeList() {
         List <UserNoticeBriefVO> expected = new ArrayList<>();
-        UserNoticeBriefVO u0 = new UserNoticeBriefVO(0, "AlphaCat项目即将上线","2018-05-30 19:36:35.00", 0 );
-        UserNoticeBriefVO u1 = new UserNoticeBriefVO(1, "a", "2018-05-26 21:04:56.80", 1);
-        UserNoticeBriefVO u2 = new UserNoticeBriefVO(2, "b", "2018-05-27 08:15:50.80",0);
+        UserNoticeBriefVO u0 = new UserNoticeBriefVO(0, "AlphaCat项目即将上线","这是你从未体验的船新版本，快来加入我们，只需体验三分钟，你介会爱上这个平台","2018-05-30 19:36:35", 0 );
+        UserNoticeBriefVO u1 = new UserNoticeBriefVO(1, "a","aaa", "2018-05-26 21:04:56", 1);
+        UserNoticeBriefVO u2 = new UserNoticeBriefVO(2, "b", "bbb", "2018-05-27 08:15:50",0);
         expected.add(u0);
         expected.add(u1);
         expected.add(u2);
 
         List<UserNoticeBrief> unb = new ArrayList<>();
-        UserNoticeBrief  unb0 = new UserNoticeBrief(0, "AlphaCat项目即将上线", start0, 0);
-        UserNoticeBrief  unb1 = new UserNoticeBrief(1, "a", start0, 1);
-        UserNoticeBrief  unb2 = new UserNoticeBrief(2, "b", start0, 0);
+        UserNoticeBrief  unb0 = new UserNoticeBrief(0, "AlphaCat项目即将上线","这是你从未体验的船新版本，快来加入我们，只需体验三分钟，你介会爱上这个平台", start0, 0);
+        UserNoticeBrief  unb1 = new UserNoticeBrief(1, "a","aaa", start1, 1);
+        UserNoticeBrief  unb2 = new UserNoticeBrief(2, "b", "bbb",start2, 0);
         unb.add(unb0);
         unb.add(unb1);
         unb.add(unb2);
@@ -100,9 +100,9 @@ public class NoticeConverterTest {
 
     @Test
     public void toDetailVO() {
-        NoticeDetailVO expected0 = new NoticeDetailVO(0, "AlphaCat项目即将上线", "这是你从未体验的船新版本，快来加入我们，只需体验三分钟，你介会爱上这个平台", "2018-05-30 19:36:35.00");
-        NoticeDetailVO expected1 = new NoticeDetailVO(1, "a", "aaa", "2018-05-26 21:04:56.80");
-        NoticeDetailVO expected2 = new NoticeDetailVO(2, "b", "bbb", "2018-05-27 08:15:50.80");
+        NoticeDetailVO expected0 = new NoticeDetailVO(0, "AlphaCat项目即将上线", "这是你从未体验的船新版本，快来加入我们，只需体验三分钟，你介会爱上这个平台", "2018-05-30 19:36:35");
+        NoticeDetailVO expected1 = new NoticeDetailVO(1, "a", "aaa", "2018-05-26 21:04:56");
+        NoticeDetailVO expected2 = new NoticeDetailVO(2, "b", "bbb", "2018-05-27 08:15:50");
 
         NoticeDetailVO actual0 = noticeConverter.toDetailVO(notice0);
         NoticeDetailVO actual1 = noticeConverter.toDetailVO(notice1);

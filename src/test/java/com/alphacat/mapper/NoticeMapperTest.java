@@ -87,8 +87,8 @@ public class NoticeMapperTest {
     public void E_getWorkerEmails(){
         Timestamp start2 = Timestamp.valueOf("2018-05-26 21:04:56.80");
         Timestamp start3 = Timestamp.valueOf("2019-09-09 09:09:09.09");
-        UserNoticeBrief u0 = new UserNoticeBrief(1, "a",start2,0 );
-        UserNoticeBrief u1 = new UserNoticeBrief(5, "n5",start3,1 );
+        UserNoticeBrief u0 = new UserNoticeBrief(1, "a","aaa",start2,0 );
+        UserNoticeBrief u1 = new UserNoticeBrief(5, "n5","奥义很爽", start3,1 );
         Assert.assertEquals(false, noticeMapper.checkWorkerRead(1,5));
         noticeMapper.addWorkerReadRecord(1,5);
         Assert.assertEquals(u0, noticeMapper.getWorkerEmails(1).get(1));
@@ -99,8 +99,8 @@ public class NoticeMapperTest {
     public void F_getRequesterEmails(){
         Timestamp start1 = Timestamp.valueOf("2018-05-26 21:04:56.80");
         Timestamp start2 = Timestamp.valueOf("2018-06-01 00:00:00.00");
-        UserNoticeBrief u0 = new UserNoticeBrief(1, "a",start1,1 );
-        UserNoticeBrief u1 = new UserNoticeBrief(4, "n4",start2,1 );
+        UserNoticeBrief u0 = new UserNoticeBrief(1, "a","aaa", start1,1 );
+        UserNoticeBrief u1 = new UserNoticeBrief(4, "n4","deep dark fantasy", start2,1 );
         Assert.assertEquals(true, noticeMapper.checkRequesterRead(1,1));
         Assert.assertEquals(false, noticeMapper.checkRequesterRead(1,4));
         noticeMapper.addRequesterReadRecord(1,4);
