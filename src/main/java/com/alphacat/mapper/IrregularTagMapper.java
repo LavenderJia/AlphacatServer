@@ -18,11 +18,11 @@ public interface IrregularTagMapper {
     @Select("SELECT * FROM irregulartag WHERE taskId=#{taskId} AND picIndex=#{picIndex}")
     List<IrregularTag> getAll(@Param("taskId") int taskId, @Param("picIndex") int picIndex);
 
-    @Insert("INSERT INTO irregulartag(workerId, taskId, picIndex, figure) " +
-            "VALUES(#{workerId},#{taskId},#{picIndex},#{figure})")
+    @Insert("INSERT INTO irregulartag(workerId, taskId, picIndex, figure, time) " +
+            "VALUES(#{workerId},#{taskId},#{picIndex},#{figure}, CURDATE())")
     void add(IrregularTag tag);
 
-    @Update("UPDATE irregulartag SET figure=#{figure} " +
+    @Update("UPDATE irregulartag SET figure=#{figure}, time = CURDATE() " +
             "WHERE workerId=#{workerId} AND taskId=#{taskId} AND picIndex=#{picIndex}")
     void update(IrregularTag tag);
 

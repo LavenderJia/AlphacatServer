@@ -18,9 +18,9 @@ public interface SquareTagMapper {
     SquareTag[] getAll(@Param("taskId") int taskId, @Param("picIndex") int picIndex);
 
     @Insert("INSERT INTO squaretag(workerId, taskId, picIndex, squareIndex, " +
-                "x, y, h, w, labelData, description) " +
+                "x, y, h, w, labelData, description, time) " +
             "VALUES (#{workerId},#{taskId},#{picIndex},#{squareIndex}," +
-                "#{x},#{y},#{h},#{w},#{labelData},#{description})")
+                "#{x},#{y},#{h},#{w},#{labelData},#{description}, CURDATE())")
     void add(SquareTag tag);
 
     /**
