@@ -56,10 +56,10 @@ public class NoticeController {
             String content = jo.getString("content");
             int type = jo.getIntValue("type");
             String endDate = jo.getString("endDate");
-            try{
+            try{ // 0 means forever
                 Integer.parseInt(endDate);
-            } catch(NumberFormatException e) {
                 endDate = NoticeVO.FOREVER;
+            } catch(NumberFormatException e) {
             }
             NoticeVO email = new NoticeVO();
             email.setTitle(title);
