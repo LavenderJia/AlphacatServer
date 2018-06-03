@@ -49,7 +49,7 @@ public interface NoticeMapper {
      * Get notices that are shown to workers.
      * It will not retrieve those that have ended.
      */
-    @Select("SELECT id, title, startDate date, COUNT(workerId) state " +
+    @Select("SELECT id, title, content, startDate date, COUNT(workerId) state " +
             "FROM (" +
                 "SELECT * FROM notice " +
                 "WHERE endDate > DATE_SUB(CURDATE(), INTERVAL 1 DAY)" +
@@ -65,7 +65,7 @@ public interface NoticeMapper {
      * Get notices that are shown to requesters.
      * It will not retrieve those that have ended.
      */
-    @Select("SELECT id, title, startDate date, COUNT(requesterId) state " +
+    @Select("SELECT id, title, content, startDate date, COUNT(requesterId) state " +
             "FROM (" +
                 "SELECT * FROM notice " +
                 "WHERE endDate > DATE_SUB(CURDATE(), INTERVAL 1 DAY)" +

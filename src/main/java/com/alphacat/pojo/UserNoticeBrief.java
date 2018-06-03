@@ -16,6 +16,7 @@ public class UserNoticeBrief {
 
     private int id;
     private String title;
+    private String content;
     /**
      * The date when this notice has been published.
      */
