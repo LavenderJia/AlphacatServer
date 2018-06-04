@@ -1,5 +1,7 @@
 package com.alphacat.task;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alphacat.service.PictureService;
 import com.alphacat.service.TaskService;
 import com.alphacat.service.WorkerService;
@@ -8,6 +10,10 @@ import com.alphacat.vo.WorkerVO;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.util.List;
 
 @RequestMapping("/task")
 @RestController
@@ -21,9 +27,14 @@ public class TaskController {
     private WorkerService workerService;
 
     @RequestMapping(value="", method= RequestMethod.POST)
-    public void add(@RequestBody TaskVO taskVO) {
+    public void add(@RequestBody JSONObject request) {
         try{
-            taskService.add(taskVO);
+            TaskVO taskVO = JSON.parseObject(request.get("newTask").toString(), TaskVO.class);
+            int id = taskService.add(taskVO);
+            List<MultipartFile> files = JSON.parseArray(request.get("formData").toString(), MultipartFile.class);
+            for(int i = 0; i < files.size(); i++) {
+                pictureService.uploadPic(files.get(i), id, i);
+            }
         } catch(Exception e) {
             e.printStackTrace();
             throw new RuntimeException("抱歉，由于未知原因，无法新建该任务。");
@@ -31,10 +42,15 @@ public class TaskController {
     }
 
     @RequestMapping(value="/{id}", method=RequestMethod.PUT)
-    public void update(@RequestBody TaskVO taskVO, @PathVariable("id") int id) {
+    public void update(@RequestBody JSONObject request, @PathVariable("id") int id) {
         try{
-            taskVO.setId(id);
+            TaskVO taskVO = JSON.parseObject(request.get("taskContent").toString(), TaskVO.class);
             taskService.update(taskVO);
+            pictureService.delete(id);
+            List<MultipartFile> files = JSON.parseArray(request.get("formData").toString(), MultipartFile.class);
+            for(int i = 0; i < files.size(); i++) {
+                pictureService.uploadPic(files.get(i), id, i);
+            }
         } catch(Exception e) {
             e.printStackTrace();
             throw new RuntimeException("抱歉，由于未知原因，无法更新该任务。");

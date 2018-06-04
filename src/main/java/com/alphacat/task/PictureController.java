@@ -22,19 +22,26 @@ public class PictureController {
             File baseDir = new File("C:\\AlphaCatPic\\" + taskId);
             File[] files = baseDir.listFiles();
             String tempName = "";
-            for (int i = 0; i < files.length; i++) {
-                File tempFile = files[i];
-                tempName = tempFile.getName();
+            String suffix = "png";
+            for (File f: files) {
+                tempName = f.getName();
                 int dot = tempName.indexOf('.');
-                if (tempName.substring(0, dot).equals(String.valueOf(picIndex))) break;
+                if(dot < 0) {
+                    continue;
+                }
+                if (tempName.substring(0, dot).equals(String.valueOf(picIndex))) {
+                    suffix = tempName.substring(dot + 1);
+                    break;
+                }
             }
 
             File file = new File(baseDir + "\\" + tempName);
             FileInputStream inputStream = new FileInputStream(file);
             byte[] data = new byte[(int)file.length()];
+            inputStream.read(data);
             inputStream.close();
 
-            response.setContentType("image/png");
+            response.setContentType("image/" + suffix);
 
             OutputStream stream = response.getOutputStream();
             stream.write(data);
