@@ -40,10 +40,18 @@ public interface TaskService {
 
     /**
      * Allocate a new task id and add this task, along with its labels.
+     * Should be equal to {@code add(TaskVO, true)}
      * @return task id
-     * @throws  NullPointerException new id allocation failed
+     *
+     * @deprecated use {@code add(TaskVO, true)} instead
      */
     int add(TaskVO taskVO);
+
+    /**
+     * @param normal whether this task is normal, not draft nor garbage.
+     * @return task id
+     */
+    int add(TaskVO taskVO, boolean normal);
 
     /**
      * If this task has not started:
@@ -52,8 +60,25 @@ public interface TaskService {
      *      only name, description and endTime can be changed.
      * If it has ended:
      *      nothing can be changed.
+     * Should be equal to {@code update(TaskVO, true)}
+     *
+     * @deprecated use {@code update(TaskVO, true)} instead
      */
     void update(TaskVO taskVO);
 
+    /**
+     * @param normal whether this task is normal, not draft nor garbage.
+     */
+    void update(TaskVO taskVO, boolean normal);
+
     void delete(int taskId);
+
+    void setToGarbage(int taskId);
+
+    void setToDraft(int taskId);
+
+    List<TaskBriefVO> getDraft(int requesterId);
+
+    List<TaskBriefVO> getGarbage(int requesterId);
+
 }

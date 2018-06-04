@@ -88,4 +88,12 @@ public class TaskConverter {
                 .collect(Collectors.toList());
     }
 
+    public List<TaskBriefVO> toBriefVOList(List<TaskBrief> taskBriefs) {
+        if(taskBriefs == null) {
+            return new ArrayList<>();
+        }
+        return taskBriefs.stream().map(t -> mapper.map(t, TaskBriefVO.class))
+                .collect(Collectors.toList());
+    }
+
 }

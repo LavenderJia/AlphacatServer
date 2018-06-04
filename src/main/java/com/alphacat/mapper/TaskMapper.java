@@ -27,25 +27,26 @@ public interface TaskMapper {
                 "END" +
             ") state, COUNT(workerId) workerCount " +
             "FROM task LEFT JOIN task_record ON id = taskId " +
-            "WHERE requesterId = #{requesterId}" +
+            "WHERE requesterId = #{requesterId} AND state = 1 " +
             "GROUP BY id")
     List<RequesterTask> getByRequester(@Param("requesterId") int requesterId);
 
     @Select("SELECT id, name, 0 state, 0 workerCount FROM task " +
-            "WHERE requesterId = #{requesterId} AND NOW() < startTime")
+            "WHERE requesterId = #{requesterId} AND NOW() < startTime AND state = 1")
     List<RequesterTask> getIdleTasks(@Param("requesterId") int requesterId);
 
     @Select("SELECT id, name, (100 * DATEDIFF(CURDATE(), startTime) / DATEDIFF(endTime, startTime)) state, " +
                 "COUNT(workerId) workerCount " +
             "FROM task LEFT JOIN task_record ON id = taskId " +
             "WHERE requesterId = #{requesterId} AND NOW() > startTime " +
-                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY) " +
+                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND state = 1 " +
             "GROUP BY id")
     List<RequesterTask> getUnderwayTasks(@Param("requesterId") int requesterId);
 
     @Select("SELECT id, name, 100 state, COUNT(workerId) workerCount " +
             "FROM task LEFT JOIN task_record ON id = taskId " +
             "WHERE requesterId = #{requesterId} AND endTime < DATE_SUB(CURDATE(), INTERVAL 1 DAY) " +
+                "AND state = 1" +
             "GROUP BY id")
     List<RequesterTask> getEndedTask(@Param("requesterId") int requesterId);
 
@@ -53,7 +54,7 @@ public interface TaskMapper {
      * This method is not requester-related. It retrieves all data.
      * It is meant to get used to add schedule jobs.
      */
-    @Select("SELECT * FROM task WHERE endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)")
+    @Select("SELECT * FROM task WHERE endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND state = 1")
     List<Task> getNotEnded();
 
     /**
@@ -63,7 +64,7 @@ public interface TaskMapper {
     @Select("SELECT id, name, creditPerPic, creditFinished, method, endTime " +
             "FROM (" +
                 "SELECT * FROM task WHERE NOW() > startTime " +
-                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)" +
+                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND state = 1" +
             ") a WHERE id NOT IN(" +
                 "SELECT taskId FROM task_record WHERE workerId=#{workerId}" +
             ")")
@@ -86,14 +87,14 @@ public interface TaskMapper {
                 "SELECT taskId FROM task_record WHERE workerId=#{workerId}" +
             ") a JOIN (" +
                 "SELECT * FROM task WHERE NOW() > startTime " +
-                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)" +
+                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND state = 1" +
             ") b ON taskId = id")
     List<AvailableTask> getPartakingTask(@Param("workerId") int workerId);
 
     @Select("SELECT id, name, endTime, earnedCredit, correctRate " +
             "FROM (" +
                 "SELECT * FROM (" +
-                    "SELECT * FROM task WHERE CURDATE() > endTime" +
+                    "SELECT * FROM task WHERE CURDATE() > endTime AND state = 1" +
                 ") a JOIN (" +
                     "SELECT taskId, correctRate FROM task_record " +
                     "WHERE workerId = #{workerId} AND correctRate IS NOT NULL" +
@@ -125,5 +126,23 @@ public interface TaskMapper {
 
     @Delete("DELETE FROM task WHERE id=#{taskId}")
     void delete(@Param("taskId") int taskId);
+
+    /**
+     * @param state 0: draft, 1: normal, 2: garbage
+     */
+    @Update("UPDATE task SET state = #{state} WHERE id = #{id}")
+    void setState(@Param("id") int id, @Param("state") int state);
+
+    @Select("SELECT state FROM task WHERE id = #{id}")
+    int getState(@Param("id") int id);
+
+    /**
+     * To retrieve drafts or garbage. No need to retrieve normal task briefs.
+     * @param state 0: draft, 2: garbage.
+     */
+    @Select("SELECT id, name FROM task " +
+            "WHERE requesterId = #{requesterId} AND state = #{state}")
+    List<TaskBrief> getBrief(@Param("requesterId") int requesterId,
+                             @Param("state") int state);
 
 }
