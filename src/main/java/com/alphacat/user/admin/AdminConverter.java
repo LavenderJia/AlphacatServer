@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class AdminConverter {
 
     @Autowired
-    private static Mapper mapper;
+    private Mapper mapper;
 
 	public AdminVO toVO(Admin admin) {
 		return mapper.map(admin, AdminVO.class);
