@@ -59,6 +59,9 @@ public class AdminControllerTest {
     public void A_addAdmin() throws Exception {
         testSingleAdd(adminVO2, "4444");
         testSingleAdd(adminVO3, "55555");
+        assertTrue(adminMapper.checkPwd("godpi", "4444"));
+        assertTrue(adminMapper.checkPwd("55kai", "55555"));
+
     }
 
     /**
@@ -101,7 +104,7 @@ public class AdminControllerTest {
 
     @Test
     public void D_update(){
-        AdminVO adminVO = new AdminVO(3 , "55guan", "lubenwei", 0, 2);
+        AdminVO adminVO = new AdminVO(3 , "55kai", "lubenwei", 0, 2);
         JSONObject r = (JSONObject) JSON.parse(JSON.toJSONString(adminVO));
         r.fluentPut("key", "12345");
         request = put("/admin/3")
@@ -112,16 +115,24 @@ public class AdminControllerTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        request = get("/admin/3");
+        try {
+            mvc.perform(request).andExpect(status().isOk())
+                    .andDo(print());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // check for its function
         Admin actual = adminMapper.get(3);
         Admin expected = adminConverter.toPOJO(adminVO);
         assertEquals(expected, actual);
-        assertTrue(adminMapper.checkPwd("55guan", "12345"));
+        assertTrue(adminMapper.checkPwd("55kai", "12345"));
     }
 
     @Test
     public void E_setAuth() throws Exception{
-        AdminVO adminVO = new AdminVO(3 , "55guan", "lubenwei", 0, 1);
+        AdminVO adminVO = new AdminVO(3 , "55kai", "lubenwei", 0, 1);
         JSONObject r = (JSONObject) JSON.parse(JSON.toJSONString(adminVO));
         request = put("/admin/3/setAuth")
                 .contentType(MediaType.APPLICATION_JSON)
