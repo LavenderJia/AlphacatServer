@@ -76,13 +76,13 @@ public class AdminController {
 		try{
 			String name = jo.getString("name");
 			String pwd = jo.getString("key");
-			securityService.setAdminPassword(name, pwd);
 			AdminVO admin = adminService.get(id);
 			admin.setId(id);
 			admin.setName(name);
 			admin.setActualName(jo.getString("actualName"));
 			admin.setSex(jo.getIntValue("sex"));
 			adminService.update(admin);
+			securityService.setAdminPassword(name, pwd);
 		} catch(Exception e) {
 			e.printStackTrace();
 			throw new RuntimeException("抱歉，由于未知原因，无法更新该管理员账户。");
