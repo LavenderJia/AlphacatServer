@@ -1,13 +1,7 @@
 package com.alphacat.task;
 
-import com.alphacat.pojo.Label;
-import com.alphacat.pojo.Requester;
-import com.alphacat.pojo.RequesterTask;
-import com.alphacat.pojo.Task;
-import com.alphacat.vo.LabelVO;
-import com.alphacat.vo.RequesterTaskVO;
-import com.alphacat.vo.RequesterVO;
-import com.alphacat.vo.TaskVO;
+import com.alphacat.pojo.*;
+import com.alphacat.vo.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +40,12 @@ public class TaskConverterTest {
 
     private RequesterTask requesterTask1 = new RequesterTask(1, "requesterTask1", 1, 10);
     private RequesterTask requesterTask2 = new RequesterTask(2, "requesterTask2", 2, 20);
+
+    private AvailableTask a1 = new AvailableTask(1, "a1", 10, 50, 1, Date.valueOf("2018-06-29"));
+    private AvailableTask a2 = new AvailableTask(2, "a2", 0, 100, 2, Date.valueOf("2018-04-29"));
+
+    private HistoryTask h1 = new HistoryTask(1, "h1", Date.valueOf("2018-12-31"), 250, 0.9234);
+    private HistoryTask h2 = new HistoryTask(2, "h2", Date.valueOf("2017-12-31"), 0, 0.0000);
 
 
 
@@ -158,21 +158,87 @@ public class TaskConverterTest {
 
     @Test
     public void toAvailableVO() {
+        AvailableTaskVO expected1 = new AvailableTaskVO(1, "a1", 10, 50, 1, "2018-06-29");
+        AvailableTaskVO expected2 = new AvailableTaskVO(2, "a2", 0, 100, 2, "2018-04-29");
+
+        AvailableTaskVO actual1 = taskConverter.toAvailableVO(a1);
+        AvailableTaskVO actual2 = taskConverter.toAvailableVO(a2);
+
+        assertEquals(expected1, actual1);
+        assertEquals(expected2, actual2);
+
     }
 
     @Test
     public void toAvailableVOList() {
+        AvailableTaskVO expected1 = new AvailableTaskVO(1, "a1", 10, 50, 1, "2018-06-29");
+        AvailableTaskVO expected2 = new AvailableTaskVO(2, "a2", 0, 100, 2, "2018-04-29");
+
+        List<AvailableTaskVO> expected = new ArrayList<>();
+        expected.add(expected1);
+        expected.add(expected2);
+
+        List<AvailableTask> list = new ArrayList<>();
+        list.add(a1);
+        list.add(a2);
+
+        List<AvailableTaskVO> actual = taskConverter.toAvailableVOList(list);
+
+        assertEquals(expected,actual);
     }
 
     @Test
     public void toHistoryVO() {
+        HistoryTaskVO expected1 = new HistoryTaskVO(1, "h1",  "2018-12-31", 250, 0.9234);
+        HistoryTaskVO expected2 = new HistoryTaskVO(2, "h2", "2017-12-31", 0, 0.0000);
+
+        HistoryTaskVO actual1 = taskConverter.toHistoryVO(h1);
+        HistoryTaskVO actual2 = taskConverter.toHistoryVO(h2);
+
+        assertEquals(expected1, actual1);
+        assertEquals(expected2, actual2);
     }
 
     @Test
     public void toHistoryVOList() {
+        HistoryTaskVO expected1 = new HistoryTaskVO(1, "h1",  "2018-12-31", 250, 0.9234);
+        HistoryTaskVO expected2 = new HistoryTaskVO(2, "h2", "2017-12-31", 0, 0.0000);
+
+        List<HistoryTaskVO> expected = new ArrayList<>();
+        expected.add(expected1);
+        expected.add(expected2);
+
+        List<HistoryTask> list = new ArrayList<>();
+        list.add(h1);
+        list.add(h2);
+
+        List<HistoryTaskVO> actual = taskConverter.toHistoryVOList(list);
+
+        assertEquals(expected, actual);
     }
 
     @Test
     public void toBriefVOList() {
+        TaskBriefVO expected1 = new TaskBriefVO(1,"t1");
+        TaskBriefVO expected2 = new TaskBriefVO(2,"t2");
+        TaskBriefVO expected3 = new TaskBriefVO(0,"t1");
+
+        List<TaskBriefVO> expected = new ArrayList<>();
+        expected.add(expected1);
+        expected.add(expected2);
+        expected.add(expected3);
+
+        TaskBrief t1 = new TaskBrief(1, "t1");
+        TaskBrief t2 = new TaskBrief(2, "t2");
+        TaskBrief t3 = new TaskBrief(0, "t1");
+
+        List<TaskBrief> list = new ArrayList<>();
+        list.add(t1);
+        list.add(t2);
+        list.add(t3);
+
+        List<TaskBriefVO> actual = taskConverter.toBriefVOList(list);
+
+        assertEquals(expected,actual);
     }
 }
