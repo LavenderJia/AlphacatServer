@@ -31,6 +31,7 @@ import static org.junit.Assert.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -48,12 +49,12 @@ public class WorkerControllerTest {
     private WorkerMapper workerMapper;
     private MockMvc mvc;
     private RequestBuilder request = null;
-    private WorkerVO workerA = new WorkerVO(1, "w1", "1996-01-01", 1, "www1", "www", 10, 10, 0);
-    private WorkerVO workerB = new WorkerVO(2, "w2", "1996-01-02", 0, "www2", "www", 20, 20, 1);
+    private WorkerVO workerA = new WorkerVO(1, "w1", "1996-01-01", 1, "www1", "www", 0, 10, 0);
+    private WorkerVO workerB = new WorkerVO(2, "w2", "1996-01-02", 0, "www2", "www", 20, 20, 0);
     private WorkerVO workerC = new WorkerVO(3, "w3", "1996-01-03", 1, "www3", "www", 30, 30, 0);
-    private WorkerVO workerD = new WorkerVO(4, "w4", "1993-04-01", 1, "www4", "www", 0, 0, 0);
-    private WorkerVO workerE = new WorkerVO(5, "w5", "1996-10-12", 0, "www5", "www", 0, 30, 0);
-    private WorkerVO workerF = new WorkerVO(6, "w6", "1996-03-03", 1, "www6", "www", 0, 40, 0);
+	private WorkerVO workerD = new WorkerVO(4, "w4", "1993-06-06", 1, "huaqhuaq", "www", 10, 0,0);
+    private WorkerVO workerE = new WorkerVO(5, "w5", "1996-10-12", 0, "www5", "www", 0, 0, 2);
+    private WorkerVO workerF = new WorkerVO(6, "w6", "1996-03-03", 1, "www6", "www", 0, 0, 2);
 
 
     @Before
@@ -63,9 +64,9 @@ public class WorkerControllerTest {
 
     @Test
     public void A_addWorker() throws Exception {
-        testSingleAdd(workerD, "4444");
         testSingleAdd(workerE, "55555");
-        testSingleAdd(workerF,"666");
+        testSingleAdd(workerF, "2333");
+
     }
 
     /**
@@ -74,7 +75,7 @@ public class WorkerControllerTest {
     private void testSingleAdd(WorkerVO worker, String pwd) throws Exception {
         String name = worker.getName();
         JSONObject w = (JSONObject) JSON.parse(JSON.toJSONString(worker));
-        w.fluentRemove("id").fluentPut("key", pwd).fluentPut("state", 1);
+        w.fluentRemove("id").fluentPut("key", pwd).fluentPut("state", 2);
         request = post("/worker")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(w.toJSONString());
@@ -100,15 +101,18 @@ public class WorkerControllerTest {
         JSONObject w = (JSONObject) JSON.parse(JSON.toJSONString(workerA));
         w.fluentRemove("state");
         ws.add(w);
+        w = (JSONObject) JSON.parse(JSON.toJSONString(workerB));
+        w.fluentRemove("state");
+        ws.add(w);
         w = (JSONObject) JSON.parse(JSON.toJSONString(workerC));
         w.fluentRemove("state");
         ws.add(w);
         w = (JSONObject) JSON.parse(JSON.toJSONString(workerD));
         w.fluentRemove("state");
         ws.add(w);
-        w = (JSONObject) JSON.parse(JSON.toJSONString(workerF));
-        w.fluentRemove("state");
-        ws.add(w);
+  //      w = (JSONObject) JSON.parse(JSON.toJSONString(workerF));
+   //     w.fluentRemove("state");
+  //      ws.add(w);
         request = get("/worker?type=active");
         mvc.perform(request).andExpect(status().isOk())
                 .andExpect(content().json(ws.toJSONString()));
@@ -117,10 +121,7 @@ public class WorkerControllerTest {
     @Test
     public void C_getBannedWorkers() throws Exception{
         JSONArray rs = new JSONArray();
-        JSONObject r = (JSONObject) JSON.parse(JSON.toJSONString(workerB));
-        r.fluentRemove("state");
-        rs.add(r);
-        r = (JSONObject) JSON.parse(JSON.toJSONString(workerE));
+        JSONObject r = (JSONObject) JSON.parse(JSON.toJSONString(workerE));
         r.fluentRemove("state");
         rs.add(r);
         request = get("/worker?type=locked");
@@ -130,25 +131,10 @@ public class WorkerControllerTest {
 
     @Test
     public void C_getWorker() throws Exception{
-        request = get("/worker/4");
+        WorkerVO worker6 = new WorkerVO(6, "w6", "1996-03-03", 1, "www6", "www", 0, 0, 2);
+        request = get("/worker/6");
         mvc.perform(request).andExpect(status().isOk())
-                .andExpect(content().json(JSON.toJSONString(workerD)));
-    }
-
-    @Test
-    public void C_updateWorker() throws Exception {
-        WorkerVO worker = new WorkerVO(4, "w4", "1993-04-01", 1, "huaq", "www", 0, 0,0);
-        JSONObject w = (JSONObject) JSON.parse(JSON.toJSONString(worker));
-        w.fluentPut("key", "new-key").fluentRemove("state").fluentRemove("id");
-        request = put("/worker/4")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(w.toJSONString());
-        mvc.perform(request).andExpect(status().isOk());
-        // check for its function
-        Worker actual = workerMapper.get(4);
-        Worker expected = workerConverter.toPOJO(worker);
-        assertEquals(expected, actual);
-        assertTrue(workerMapper.checkPwd("w4", "new-key"));
+                .andExpect(content().json(JSON.toJSONString(worker6)));
     }
 
     @Test
@@ -156,7 +142,40 @@ public class WorkerControllerTest {
         request = post("/worker/unlock/5")
                 .param("id", "5");
         mvc.perform(request).andExpect(status().isOk());
-        assertEquals(0,workerMapper.get(5).getState());
+        request = post("/worker/unlock/6")
+                .param("id", "6");
+        mvc.perform(request).andExpect(status().isOk());
+        assertEquals(0, workerMapper.get(5).getState());
+    }
+
+    @Test
+    public void E_updateWorker() throws Exception {
+        WorkerVO worker5 = new WorkerVO(5, "w5", "1993-06-06", 1, "huaqhuaq", "www", 0, 0,0);
+
+/*        //测过了，成功提示“该工人账户已被管理员封禁，无法更新。”
+        JSONObject w = (JSONObject) JSON.parse(JSON.toJSONString(worker5));
+        w.fluentPut("key", "four").fluentRemove("state").fluentRemove("id");
+        request = put("/worker/5")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(w.toJSONString());
+        mvc.perform(request).andExpect(status().isOk());
+        // check for its function
+        Worker actual1 = workerMapper.get(4);
+        Worker expected1 = workerConverter.toPOJO(worker5);
+        assertEquals(expected1, actual1);
+        assertTrue(workerMapper.checkPwd("w5", "four"));
+*/
+        JSONObject w = (JSONObject) JSON.parse(JSON.toJSONString(worker5));
+        w.fluentPut("key", "four").fluentRemove("state").fluentRemove("id");
+        request = put("/worker/5")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(w.toJSONString());
+        mvc.perform(request).andExpect(status().isOk());
+        // check for its function
+        Worker actual2 = workerMapper.get(5);
+        Worker expected2 = workerConverter.toPOJO(worker5);
+        assertEquals(expected2, actual2);
+        assertTrue(workerMapper.checkPwd("w5", "four"));
     }
 
     @Test
@@ -188,9 +207,29 @@ public class WorkerControllerTest {
         //todo
     }
 
+
+    @Test
+    public void H_getSortedWorkers() throws Exception{
+        request = post("/worker/lock/5")
+                .param("id", "5");
+        mvc.perform(request).andExpect(status().isOk());
+        request = get("/worker/data/rank").param("sorted", "exp");
+        mvc.perform(request).andExpect(status().isOk())
+        .andDo(print());
+        request = get("/worker/data/rank").param("sorted", "credit");
+        mvc.perform(request).andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    public void H_getRank() throws Exception{
+        request = get("/worker/4/rankData");
+        mvc.perform(request).andExpect(status().isOk())
+                .andDo(print());
+    }
+
     @Test
     public void Z_testEnd() {
-        workerMapper.delete(4);
         workerMapper.delete(5);
         workerMapper.delete(6);
     }

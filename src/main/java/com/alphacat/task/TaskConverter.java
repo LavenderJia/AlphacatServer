@@ -10,6 +10,7 @@ import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,9 +19,8 @@ public class TaskConverter {
 
     @Autowired
     private LabelMapper labelMapper;
-
-    private Mapper mapper = DozerBeanMapperBuilder.create()
-            .withMappingFiles("config/dozer-mapping.xml").build();
+    @Autowired
+    private Mapper mapper;
 
     public Task toPOJO(TaskVO taskVO) {
         return mapper.map(taskVO, Task.class);
@@ -34,35 +34,15 @@ public class TaskConverter {
         return result;
     }
 
-    public IdleTaskVO toVO(IdleTask task) {
-        return mapper.map(task, IdleTaskVO.class);
+    public RequesterTaskVO toVO(RequesterTask task) {
+        return mapper.map(task, RequesterTaskVO.class);
     }
 
-    public List<IdleTaskVO> toIdleVOList(List<IdleTask> tasks) {
-        return tasks.stream().map(this::toVO)
-                .collect(Collectors.toList());
-    }
-
-    public UnderwayTaskVO toUnderwayVO(UnderwayTask task) {
-        if(task.getTagRate() == null) {
-            String errMsg = "Cannot generate tagRate: the task has no picture.";
-            throw new NullPointerException(errMsg);
+    public List<RequesterTaskVO> toRequesterVOList(List<RequesterTask> tasks) {
+        if(tasks == null) {
+            return new ArrayList<>();
         }
-        UnderwayTaskVO result = mapper.map(task, UnderwayTaskVO.class);
-        return result;
-    }
-
-    public List<UnderwayTaskVO> toUnderwayVOList(List<UnderwayTask> tasks) {
-        return tasks.stream().map(this::toUnderwayVO)
-                .collect(Collectors.toList());
-    }
-
-    public EndedTaskVO toEndedVO(EndedTask task) {
-        return mapper.map(task, EndedTaskVO.class);
-    }
-
-    public List<EndedTaskVO> toEndedVOList(List<EndedTask> tasks) {
-        return tasks.stream().map(this::toEndedVO)
+        return tasks.stream().map(this::toVO)
                 .collect(Collectors.toList());
     }
 
@@ -77,6 +57,9 @@ public class TaskConverter {
     }
 
     public List<LabelVO> toLabelVOList(List<Label> labels) {
+        if(labels == null) {
+            return new ArrayList<>();
+        }
         return labels.stream().map(this::toVO)
                 .collect(Collectors.toList());
     }
@@ -86,6 +69,9 @@ public class TaskConverter {
     }
 
     public List<AvailableTaskVO> toAvailableVOList(List<AvailableTask> tasks) {
+        if(tasks == null) {
+            return new ArrayList<>();
+        }
         return tasks.stream().map(this::toAvailableVO)
                 .collect(Collectors.toList());
     }
@@ -95,7 +81,18 @@ public class TaskConverter {
     }
 
     public List<HistoryTaskVO> toHistoryVOList(List<HistoryTask> historyTasks) {
+        if(historyTasks == null) {
+            return new ArrayList<>();
+        }
         return historyTasks.stream().map(this::toHistoryVO)
+                .collect(Collectors.toList());
+    }
+
+    public List<TaskBriefVO> toBriefVOList(List<TaskBrief> taskBriefs) {
+        if(taskBriefs == null) {
+            return new ArrayList<>();
+        }
+        return taskBriefs.stream().map(t -> mapper.map(t, TaskBriefVO.class))
                 .collect(Collectors.toList());
     }
 

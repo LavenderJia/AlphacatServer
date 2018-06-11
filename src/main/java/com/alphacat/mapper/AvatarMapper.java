@@ -15,7 +15,7 @@ public interface AvatarMapper {
             "WHERE name = #{name} AND type = #{type}")
     void update(Avatar avatar);
 
-    @Select("SELECT name, type, stream FROM avatar WHERE name = #{name} AND type = #{type}")
+    @Select("SELECT name, type, stream `blob` FROM avatar WHERE name = #{name} AND type = #{type}")
     Avatar get(@Param("name") String name, @Param("type") int type);
 
     @Delete("DELETE FROM avatar WHERE name = #{name} AND type = #{type}")

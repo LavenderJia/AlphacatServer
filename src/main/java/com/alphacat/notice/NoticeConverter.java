@@ -7,6 +7,7 @@ import com.alphacat.vo.NoticeVO;
 import com.alphacat.vo.UserNoticeBriefVO;
 import org.dozer.DozerBeanMapperBuilder;
 import org.dozer.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -16,10 +17,8 @@ import java.util.stream.Collectors;
 @Component
 public class NoticeConverter {
 
-    private static Mapper mapper = DozerBeanMapperBuilder.create()
-            .withMappingFiles("config/dozer-mapping.xml").build();
-
-    public static final String FOREVER = "9999-12-31 11:59:59";
+    @Autowired
+    private Mapper mapper;
 
     public List<UserNoticeBriefVO> toUserNoticeList(List<UserNoticeBrief> noticeBriefs) {
         return noticeBriefs.stream().map(this::toVO).collect(Collectors.toList());
@@ -39,7 +38,7 @@ public class NoticeConverter {
 
     private NoticeVO toVO(Notice notice) {
         NoticeVO result = mapper.map(notice, NoticeVO.class);
-        if(result.getEndDate().equals(FOREVER)) {
+        if(result.getEndDate().equals(NoticeVO.FOREVER)) {
             result.setEndDate("永久");
         }
         return result;

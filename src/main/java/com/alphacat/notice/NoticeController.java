@@ -50,19 +50,16 @@ public class NoticeController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.POST)
-    public void add(@RequestBody  JSONObject jo) {
+    public void add(@RequestBody JSONObject jo) {
         try {
             String title = jo.getString("title");
             String content = jo.getString("content");
             int type = jo.getIntValue("type");
-            String endDate;
-            Integer test = jo.getInteger("endDate");
-            if(test == null) {
-                endDate = jo.getString("endDate");
-            } else if(test == 0) {
-                endDate = NoticeConverter.FOREVER;
-            } else {
-                throw new NullPointerException("End date of notice not specified.");
+            String endDate = jo.getString("endDate");
+            try{ // 0 means forever
+                Integer.parseInt(endDate);
+                endDate = NoticeVO.FOREVER;
+            } catch(NumberFormatException e) {
             }
             NoticeVO email = new NoticeVO();
             email.setTitle(title);

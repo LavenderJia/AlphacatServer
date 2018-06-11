@@ -3,18 +3,21 @@ package com.alphacat.user.worker;
 import com.alphacat.pojo.Worker;
 import com.alphacat.vo.WorkerVO;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.sql.Date;
 
 import static org.junit.Assert.*;
 
+@SpringBootTest
+@RunWith(SpringRunner.class)
 public class WorkerConverterTest {
 
+    @Autowired
     private WorkerConverter workerConverter;
-
-    public WorkerConverterTest() {
-        workerConverter = new WorkerConverter();
-    }
 
     @Test
     public void toWorkerVO() {

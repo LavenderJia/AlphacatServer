@@ -30,8 +30,9 @@ public class NoticeServiceImpl implements NoticeService {
     public void add(NoticeVO email) {
         Integer id = mapper.getNewId();
         if(id == null) {
-            throw new NullPointerException("Cannot generate new notice id.");
+            id = 1;
         }
+        email.setId(id);
         email.setStartDate(new Timestamp(Calendar.getInstance().getTimeInMillis()).toString());
         Notice e = converter.toPOJO(email);
         mapper.add(e);

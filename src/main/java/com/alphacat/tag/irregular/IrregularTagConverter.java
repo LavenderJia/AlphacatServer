@@ -5,6 +5,7 @@ import com.alphacat.vo.IrregularTagVO;
 import com.alphacat.vo.PointVO;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -37,15 +38,21 @@ public class IrregularTagConverter {
         IrregularTagVO result = new IrregularTagVO();
         result.setPaths(Arrays.stream(tag.getFigure().split(";"))
                             .map(this::toPath).collect(Collectors.toList()));
-        return null;
+        return result;
     }
 
     public List<IrregularTagVO> toVOList(List<IrregularTag> tags) {
+        if(tags == null) {
+            return new ArrayList<>();
+        }
         return tags.stream().map(this::toVO)
                 .collect(Collectors.toList());
     }
 
     private List<PointVO> toPath(String pathStr) {
+        if(pathStr == null) {
+            return new ArrayList<>();
+        }
         return Arrays.stream(pathStr.split(":"))
                 .map(s -> {
                     String[] xy = s.split(",");

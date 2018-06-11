@@ -28,8 +28,7 @@ public class RequesterServiceImpl implements RequesterService{
 		} else {
 			return null;
 		}
-        return rs.stream().map(r -> requesterConverter.toVO(r))
-                .collect(Collectors.toList());
+        return requesterConverter.toVOList(rs);
     }
 
     @Override

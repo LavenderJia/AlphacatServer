@@ -39,42 +39,6 @@
         </field>
     </mapping>
     <mapping>
-        <class-a>com.alphacat.pojo.IdleTask</class-a>
-        <class-b>com.alphacat.vo.IdleTaskVO</class-b>
-        <field>
-            <a date-format="yyyy-MM-dd">startTime</a>
-            <b>startTime</b>
-        </field>
-        <field>
-            <a date-format="yyyy-MM-dd">endTime</a>
-            <b>endTime</b>
-        </field>
-    </mapping>
-    <mapping>
-        <class-a>com.alphacat.pojo.UnderwayTask</class-a>
-        <class-b>com.alphacat.vo.UnderwayTaskVO</class-b>
-        <field>
-            <a date-format="yyyy-MM-dd">startTime</a>
-            <b>startTime</b>
-        </field>
-        <field>
-            <a date-format="yyyy-MM-dd">endTime</a>
-            <b>endTime</b>
-        </field>
-    </mapping>
-    <mapping>
-        <class-a>com.alphacat.pojo.EndedTask</class-a>
-        <class-b>com.alphacat.vo.EndedTaskVO</class-b>
-        <field>
-            <a date-format="yyyy-MM-dd">startTime</a>
-            <b>startTime</b>
-        </field>
-        <field>
-            <a date-format="yyyy-MM-dd">endTime</a>
-            <b>endTime</b>
-        </field>
-    </mapping>
-    <mapping>
         <class-a>com.alphacat.pojo.AvailableTask</class-a>
         <class-b>com.alphacat.vo.AvailableTaskVO</class-b>
         <field>
@@ -103,11 +67,11 @@
         <class-a>com.alphacat.pojo.Notice</class-a>
         <class-b>com.alphacat.vo.NoticeVO</class-b>
         <field>
-            <a date-format="yyyy-MM-dd hh:mm:ss">startDate</a>
+            <a date-format="yyyy-MM-dd HH:mm:ss">startDate</a>
             <b>startDate</b>
         </field>
         <field>
-            <a date-format="yyyy-MM-dd hh:mm:ss">endDate</a>
+            <a date-format="yyyy-MM-dd HH:mm:ss">endDate</a>
             <b>endDate</b>
         </field>
     </mapping>
@@ -115,7 +79,7 @@
         <class-a>com.alphacat.pojo.Notice</class-a>
         <class-b>com.alphacat.vo.NoticeDetailVO</class-b>
         <field>
-            <a date-format="yyyy-MM-dd hh:mm:ss">startDate</a>
+            <a date-format="yyyy-MM-dd HH:mm:ss">startDate</a>
             <b>date</b>
         </field>
     </mapping>
@@ -123,7 +87,7 @@
         <class-a>com.alphacat.pojo.UserNoticeBrief</class-a>
         <class-b>com.alphacat.vo.UserNoticeBriefVO</class-b>
         <field>
-            <a date-format="yyyy-MM-dd hh:mm:ss">date</a>
+            <a date-format="yyyy-MM-dd HH:mm:ss">date</a>
             <b>date</b>
         </field>
     </mapping>

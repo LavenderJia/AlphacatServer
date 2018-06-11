@@ -18,50 +18,43 @@ public interface TaskMapper {
     /**
      * Get all tasks published by a given requester.
      */
-    @Select("SELECT * FROM task WHERE requesterId=#{requesterId}")
-    List<Task> getByRequester(@Param("requesterId") int requesterId);
-
-    @Select("SELECT id, name, creditPerPic, creditFinished, method, startTime, endTime " +
-            "FROM task WHERE requesterId = #{requesterId} AND NOW() < startTime")
-    List<IdleTask> getIdleTasks(@Param("requesterId") int requesterId);
-
-    @Select("SELECT id, name, startTime, endTime, workerCount, a.tagCount/count(p.pidx) tagRate " +
-            "FROM (" +
-                "SELECT id, name, startTime, endTime, COUNT(workerId) workerCount, " +
-                    "IFNULL(SUM(picDoneNum), 0) tagCount " +
-                "FROM ( " +
-                    "SELECT * FROM task WHERE requesterId = #{requesterId} AND " +
-                        "NOW() > startTime AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)" +
-                ") t LEFT JOIN task_record ON id = taskId " +
-                "GROUP BY id" +
-            ") a LEFT JOIN picture p ON id = taskId " +
+    @Select("SELECT id, name, (" +
+                "CASE " +
+                "WHEN NOW() < startTime THEN 0 " +
+                "WHEN NOW() > startTime AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY) " +
+                    "THEN 100 * DATEDIFF(CURDATE(), startTime) / DATEDIFF(endTime, startTime) " +
+                "WHEN endTime < DATE_SUB(CURDATE(), INTERVAL 1 DAY) THEN 100 " +
+                "END" +
+            ") state, COUNT(workerId) workerCount " +
+            "FROM task LEFT JOIN task_record ON id = taskId " +
+            "WHERE requesterId = #{requesterId} AND state = 1 " +
             "GROUP BY id")
-    List<UnderwayTask> getUnderwayTasks(@Param("requesterId") int requesterId);
+    List<RequesterTask> getByRequester(@Param("requesterId") int requesterId);
 
-    @Select("SELECT id, name, startTime, endTime, workerCount, tagRate, costCredit " +
-            "FROM (" +
-                "SELECT id, name, startTime, endTime, workerCount, a.tagCount/COUNT(p.pidx) tagRate " +
-                "FROM (" +
-                    "SELECT id, name, startTime, endTime, COUNT(workerId) workerCount, " +
-                        "IFNULL(SUM(picDoneNum), 0) tagCount " +
-                    "FROM (" +
-                        "SELECT * FROM task WHERE requesterId = #{requesterId} AND " +
-                            "CURDATE() > endTime" +
-                    ") t LEFT JOIN task_record ON id = taskId" +
-                ") a LEFT JOIN picture p ON id = taskId " +
-                "GROUP BY id" +
-            ") b LEFT JOIN (" +
-                "SELECT taskId, IFNULL(SUM(`change`), 0) costCredit " +
-                "FROM credit_transaction " +
-                "GROUP BY taskId" +
-            ") c ON id = taskId")
-    List<EndedTask> getEndedTask(@Param("requesterId") int requesterId);
+    @Select("SELECT id, name, 0 state, 0 workerCount FROM task " +
+            "WHERE requesterId = #{requesterId} AND NOW() < startTime AND state = 1")
+    List<RequesterTask> getIdleTasks(@Param("requesterId") int requesterId);
+
+    @Select("SELECT id, name, (100 * DATEDIFF(CURDATE(), startTime) / DATEDIFF(endTime, startTime)) state, " +
+                "COUNT(workerId) workerCount " +
+            "FROM task LEFT JOIN task_record ON id = taskId " +
+            "WHERE requesterId = #{requesterId} AND NOW() > startTime " +
+                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND state = 1 " +
+            "GROUP BY id")
+    List<RequesterTask> getUnderwayTasks(@Param("requesterId") int requesterId);
+
+    @Select("SELECT id, name, 100 state, COUNT(workerId) workerCount " +
+            "FROM task LEFT JOIN task_record ON id = taskId " +
+            "WHERE requesterId = #{requesterId} AND endTime < DATE_SUB(CURDATE(), INTERVAL 1 DAY) " +
+                "AND state = 1" +
+            "GROUP BY id")
+    List<RequesterTask> getEndedTask(@Param("requesterId") int requesterId);
 
     /**
      * This method is not requester-related. It retrieves all data.
      * It is meant to get used to add schedule jobs.
      */
-    @Select("SELECT * FROM task WHERE endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)")
+    @Select("SELECT * FROM task WHERE endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND state = 1")
     List<Task> getNotEnded();
 
     /**
@@ -71,11 +64,19 @@ public interface TaskMapper {
     @Select("SELECT id, name, creditPerPic, creditFinished, method, endTime " +
             "FROM (" +
                 "SELECT * FROM task WHERE NOW() > startTime " +
-                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)" +
+                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND state = 1" +
             ") a WHERE id NOT IN(" +
                 "SELECT taskId FROM task_record WHERE workerId=#{workerId}" +
             ")")
     List<AvailableTask> getAvailableTask(@Param("workerId") int workerId);
+
+    /**
+     * Tasks for testing purpose, test for workers' accuracy.
+     * They are tasks that are published by 0-id requester(system requester).
+     */
+    @Select("SELECT id, name, creditPerPic, creditFinished, method, endTime " +
+            "FROM task WHERE requesterId = 0")
+    List<AvailableTask> getTestTask();
 
     /**
      * Retrieve tasks that the worker DOES take part in.
@@ -86,14 +87,14 @@ public interface TaskMapper {
                 "SELECT taskId FROM task_record WHERE workerId=#{workerId}" +
             ") a JOIN (" +
                 "SELECT * FROM task WHERE NOW() > startTime " +
-                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY)" +
+                "AND endTime > DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND state = 1" +
             ") b ON taskId = id")
     List<AvailableTask> getPartakingTask(@Param("workerId") int workerId);
 
     @Select("SELECT id, name, endTime, earnedCredit, correctRate " +
             "FROM (" +
                 "SELECT * FROM (" +
-                    "SELECT * FROM task WHERE CURDATE() > endTime" +
+                    "SELECT * FROM task WHERE CURDATE() > endTime AND state = 1" +
                 ") a JOIN (" +
                     "SELECT taskId, correctRate FROM task_record " +
                     "WHERE workerId = #{workerId} AND correctRate IS NOT NULL" +
@@ -125,5 +126,23 @@ public interface TaskMapper {
 
     @Delete("DELETE FROM task WHERE id=#{taskId}")
     void delete(@Param("taskId") int taskId);
+
+    /**
+     * @param state 0: draft, 1: normal, 2: garbage
+     */
+    @Update("UPDATE task SET state = #{state} WHERE id = #{id}")
+    void setState(@Param("id") int id, @Param("state") int state);
+
+    @Select("SELECT state FROM task WHERE id = #{id}")
+    int getState(@Param("id") int id);
+
+    /**
+     * To retrieve drafts or garbage. No need to retrieve normal task briefs.
+     * @param state 0: draft, 2: garbage.
+     */
+    @Select("SELECT id, name FROM task " +
+            "WHERE requesterId = #{requesterId} AND state = #{state}")
+    List<TaskBrief> getBrief(@Param("requesterId") int requesterId,
+                             @Param("state") int state);
 
 }

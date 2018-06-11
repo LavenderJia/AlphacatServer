@@ -11,6 +11,8 @@ import java.util.Date;
 @AllArgsConstructor
 public class NoticeVO {
 
+    public static final String FOREVER = "9999-12-31 23:59:59";
+
     private int id;
     /**
      * the date when this notice has been published

@@ -1,17 +1,23 @@
 package com.alphacat.service;
 
-import com.alphacat.pojo.AvailableTask;
 import com.alphacat.vo.*;
 
 import java.util.List;
 
 public interface TaskService {
 
-    List<IdleTaskVO> getIdle(int requesterId);
+    List<RequesterTaskVO> getIdle(int requesterId);
 
-    List<UnderwayTaskVO> getUnderway(int requesterId);
+    List<RequesterTaskVO> getUnderway(int requesterId);
 
-    List<EndedTaskVO> getEnded(int requesterId);
+    List<RequesterTaskVO> getEnded(int requesterId);
+
+    List<RequesterTaskVO> getRequesterTasks(int requesterId);
+
+    /**
+     * A test for worker's accuracy. New workers will do them.
+     */
+    List<AvailableTaskVO> getTestTasks();
 
     /**
      * Get tasks that's available but the worker DOES NOT take part in.
@@ -34,10 +40,18 @@ public interface TaskService {
 
     /**
      * Allocate a new task id and add this task, along with its labels.
+     * Should be equal to {@code add(TaskVO, true)}
      * @return task id
-     * @throws  NullPointerException new id allocation failed
+     *
+     * @deprecated use {@code add(TaskVO, true)} instead
      */
     int add(TaskVO taskVO);
+
+    /**
+     * @param normal whether this task is normal, not draft nor garbage.
+     * @return task id
+     */
+    int add(TaskVO taskVO, boolean normal);
 
     /**
      * If this task has not started:
@@ -46,8 +60,25 @@ public interface TaskService {
      *      only name, description and endTime can be changed.
      * If it has ended:
      *      nothing can be changed.
+     * Should be equal to {@code update(TaskVO, true)}
+     *
+     * @deprecated use {@code update(TaskVO, true)} instead
      */
     void update(TaskVO taskVO);
 
+    /**
+     * @param normal whether this task is normal, not draft nor garbage.
+     */
+    void update(TaskVO taskVO, boolean normal);
+
     void delete(int taskId);
+
+    void setToGarbage(int taskId);
+
+    void setToDraft(int taskId);
+
+    List<TaskBriefVO> getDraft(int requesterId);
+
+    List<TaskBriefVO> getGarbage(int requesterId);
+
 }

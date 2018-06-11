@@ -71,7 +71,7 @@ public interface WorkerMapper {
      */
     @Select("SELECT COUNT(*)+1 FROM worker w1 CROSS JOIN (" +
                 "SELECT * FROM worker WHERE id = #{id}" +
-            ") w2 WHERE w1.credit > w2.credit w1.state = 0")
+            ") w2 WHERE w1.credit > w2.credit AND w1.state = 0")
     int getCreditRank(@Param("id") int id);
 
     /**

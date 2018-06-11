@@ -26,10 +26,5 @@ public class AvailableTask {
     private int creditFinished;
     private int method; // the same rule as Task
     private Date endTime;
-    /**
-     * The worker's progress on this task.
-     * From 0 ~ 1, null means not participating.
-     */
-    private Double progress;
 
 }

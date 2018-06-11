@@ -19,8 +19,8 @@ public class HistoryTaskVO {
 
     private int id;
     private String name;
-    private String startTime;
     private String endTime;
     private int earnedCredit;
+    private double correctRate;
 
 }

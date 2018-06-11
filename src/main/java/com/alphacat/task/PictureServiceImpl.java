@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -36,24 +37,24 @@ public class PictureServiceImpl implements PictureService {
         return convertPicOrder(picOrder);
     }
 
-
     @Override
     public boolean uploadPic(MultipartFile file, int taskId, int picIndex) {
-        if (picIndex > 11) return false;
+//        if (picIndex > 11) return false;
         if (!file.isEmpty()) {
             try {
+                File dir = new File("C:\\AlphaCatPic\\" + taskId + '\\');
+                if(!dir.exists() || !dir.isDirectory()) {
+                    dir.mkdirs();
+                }
                 String uploadFileName = file.getOriginalFilename();
                 String suffix = uploadFileName.substring(uploadFileName.indexOf("."));
-                String path = "C:\\AppServ\\www\\image";
-                Files.copy(file.getInputStream(), Paths.get(path,
-                        taskId + "-" + picIndex + suffix));
+                file.transferTo(new File(dir, picIndex + suffix));
                 pictureMapper.add(new Picture(picIndex, taskId));
                 return true;
             } catch (IOException |RuntimeException e) {
                 e.printStackTrace();
                 return false;
             }
-
         }
         return false;
     }
@@ -61,7 +62,7 @@ public class PictureServiceImpl implements PictureService {
     @Override
     public boolean delete(int taskId) {
         try {
-            Files.delete(Paths.get("/pic", taskId+""));
+            Files.delete(Paths.get("C:\\AlphaCatPic\\", taskId+""));
             pictureMapper.multiDelete(taskId);
             return true;
         } catch (IOException e) {

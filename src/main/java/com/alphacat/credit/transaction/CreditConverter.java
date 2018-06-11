@@ -6,6 +6,7 @@ import com.alphacat.vo.RequesterCreditVO;
 import com.alphacat.vo.WorkerCreditVO;
 import org.dozer.DozerBeanMapperBuilder;
 import org.dozer.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,8 +15,8 @@ import java.util.stream.Collectors;
 @Component
 public class CreditConverter {
 
-    private Mapper mapper = DozerBeanMapperBuilder.create()
-            .withMappingFiles("config/dozer-mapping.xml").build();
+    @Autowired
+    private Mapper mapper;
 
     public WorkerCredit toPOJO(WorkerCreditVO credit, int workerId, int taskId) {
         WorkerCredit result = mapper.map(credit, WorkerCredit.class);
