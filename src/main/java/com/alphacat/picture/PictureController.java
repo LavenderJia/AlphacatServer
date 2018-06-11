@@ -11,7 +11,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-@RequestMapping("/pic")
+@RequestMapping("/api/pic")
 @RestController
 public class PictureController {
 
@@ -32,6 +32,7 @@ public class PictureController {
             File file = new File(baseDir + "\\" + tempName);
             FileInputStream inputStream = new FileInputStream(file);
             byte[] data = new byte[(int)file.length()];
+            inputStream.read(data);
             inputStream.close();
 
             response.setContentType("image/png");
