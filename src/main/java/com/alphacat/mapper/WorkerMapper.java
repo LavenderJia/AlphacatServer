@@ -83,4 +83,15 @@ public interface WorkerMapper {
             "WHERE w1.exp > w2.exp AND w2.id = #{id} AND w1.state = 0")
     int getExpRank(@Param("id") int id);
 
+    @Select("SELECT rectAccuracy FROM worker WHERE id = #{id}")
+    double getRectAccuracy(@Param("id") int id);
+
+    @Select("SELECT labelAccuracy FROM worker WHERE id = #{id}")
+    double getLabelAccuracy(@Param("id") int id);
+
+    @Update("UPDATE worker SET rectAccuracy = #{ra}, labelAccuracy = #{la} " +
+            "WHERE id = #{id}")
+    void updateAccuracy(@Param("id") int id, @Param("ra") double rectAccuracy,
+                        @Param("la") double labelAccuracy);
+
 }

@@ -24,9 +24,14 @@ public class HistoryTask {
     private Date endTime;
     private int earnedCredit;
     /**
-     * Accuracy of a worker in this task.
+     * Accuracy of a worker's rectangles in this task.
      * Value ranges from 0 to 1.
      */
-    private double correctRate;
+    private double rectAccuracy;
+    /**
+     * Accuracy of a worker's labels in this task.
+     * Value ranges from 0 to 1.
+     */
+    private double labelAccuracy;
 
 }

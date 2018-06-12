@@ -25,9 +25,9 @@ public class WorkerMapperTest {
     @Test
     public void A_test_add() {
         Date date = Date.valueOf("1985-01-01");
-        workerMapper.add(new Worker(4, "w4", date, 1, "www4", "www", 0, 0, 0));
-        workerMapper.add(new Worker(5, "w5", date, 1, "www5", "www", 0, 0, 0));
-        Assert.assertEquals(5,workerMapper.getAll().size());
+        workerMapper.add(new Worker(5, "w5", date, 1, "www4", "www", 0, 0, 0));
+        workerMapper.add(new Worker(6, "w6", date, 1, "www5", "www", 0, 0, 0));
+        Assert.assertEquals(6,workerMapper.getAll().size());
     }
 
     @Test
@@ -37,7 +37,7 @@ public class WorkerMapperTest {
 
     @Test
     public void C_test_getWorkerByState() {
-        Assert.assertEquals(5, workerMapper.getByState(0).size());
+        Assert.assertEquals(6, workerMapper.getByState(0).size());
     }
 
     @Test
@@ -47,12 +47,12 @@ public class WorkerMapperTest {
 
     @Test
     public void E_test_getNewId() {
-        Assert.assertTrue("6".equals(workerMapper.getNewId().toString()));
+        Assert.assertTrue("7".equals(workerMapper.getNewId().toString()));
     }
 
     @Test
     public void F_test_getAll() {
-        Assert.assertEquals(5, workerMapper.getAll().size());
+        Assert.assertEquals(6, workerMapper.getAll().size());
     }
 
     @Test
@@ -61,17 +61,17 @@ public class WorkerMapperTest {
         workerMapper.addExp(5,3);
         workerMapper.changeState(5,1);
         workerMapper.setPwd("w5","555");
-        workerMapper.update(new Worker(4, "w4", date, 1, "www4", "sss", 0, 0, 0));
-        Assert.assertEquals(3, workerMapper.getByName("w5").getExp());
-        Assert.assertEquals(4, workerMapper.getByState(0).size());
+        workerMapper.update(new Worker(6, "w4", date, 1, "www4", "sss", 0, 0, 0));
+        Assert.assertEquals(20, workerMapper.getByName("w2").getExp());
+        Assert.assertEquals(5, workerMapper.getByState(0).size());
         Assert.assertTrue(workerMapper.checkPwd("w5", "555"));
 
     }
 
     @Test
     public void H_test_delete() {
-        workerMapper.delete(4);
         workerMapper.delete(5);
-        Assert.assertEquals(3,workerMapper.getAll().size());
+        workerMapper.delete(6);
+        Assert.assertEquals(4,workerMapper.getAll().size());
     }
 }

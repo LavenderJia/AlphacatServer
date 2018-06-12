@@ -7,6 +7,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface PictureMapper {
 
@@ -21,4 +23,8 @@ public interface PictureMapper {
 
     @Select("SELECT COUNT(*) FROM picture WHERE taskId=#{taskId}")
     int count(int taskId);
+
+    @Select("SELECT pidx FROM picture WHERE taskId = #{taskId}")
+    List<Integer> get(@Param("taskId") int taskId);
+
 }

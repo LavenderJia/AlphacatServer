@@ -110,9 +110,9 @@ public class WorkerControllerTest {
         w = (JSONObject) JSON.parse(JSON.toJSONString(workerD));
         w.fluentRemove("state");
         ws.add(w);
-  //      w = (JSONObject) JSON.parse(JSON.toJSONString(workerF));
-   //     w.fluentRemove("state");
-  //      ws.add(w);
+  //      c = (JSONObject) JSON.parse(JSON.toJSONString(workerF));
+   //     c.fluentRemove("state");
+  //      ws.add(c);
         request = get("/worker?type=active");
         mvc.perform(request).andExpect(status().isOk())
                 .andExpect(content().json(ws.toJSONString()));
@@ -153,11 +153,11 @@ public class WorkerControllerTest {
         WorkerVO worker5 = new WorkerVO(5, "w5", "1993-06-06", 1, "huaqhuaq", "www", 0, 0,0);
 
 /*        //测过了，成功提示“该工人账户已被管理员封禁，无法更新。”
-        JSONObject w = (JSONObject) JSON.parse(JSON.toJSONString(worker5));
-        w.fluentPut("key", "four").fluentRemove("state").fluentRemove("id");
+        JSONObject c = (JSONObject) JSON.parse(JSON.toJSONString(worker5));
+        c.fluentPut("key", "four").fluentRemove("state").fluentRemove("id");
         request = put("/worker/5")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(w.toJSONString());
+                .content(c.toJSONString());
         mvc.perform(request).andExpect(status().isOk());
         // check for its function
         Worker actual1 = workerMapper.get(4);
