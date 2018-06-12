@@ -44,8 +44,8 @@ public class TaskConverterTest {
     private AvailableTask a1 = new AvailableTask(1, "a1", 10, 50, 1, Date.valueOf("2018-06-29"));
     private AvailableTask a2 = new AvailableTask(2, "a2", 0, 100, 2, Date.valueOf("2018-04-29"));
 
-    private HistoryTask h1 = new HistoryTask(1, "h1", Date.valueOf("2018-12-31"), 250, 0.9234, 0.3);
-    private HistoryTask h2 = new HistoryTask(2, "h2", Date.valueOf("2017-12-31"), 0, 0.0000, 0.4);
+    private HistoryTask h1 = new HistoryTask(1, "h1", Date.valueOf("2018-12-31"), 250, 0.9234, 0.1234);
+    private HistoryTask h2 = new HistoryTask(2, "h2", Date.valueOf("2017-12-31"), 0, 0.0000, 0.0000);
 
 
 
@@ -189,8 +189,8 @@ public class TaskConverterTest {
 
     @Test
     public void toHistoryVO() {
-        HistoryTaskVO expected1 = new HistoryTaskVO(1, "h1",  "2018-12-31", 250, 0.9234, 0.3);
-        HistoryTaskVO expected2 = new HistoryTaskVO(2, "h2", "2017-12-31", 0, 0.0000, 0.400);
+        HistoryTaskVO expected1 = new HistoryTaskVO(1, "h1",  "2018-12-31", 250, 0.9234, 0.1234);
+        HistoryTaskVO expected2 = new HistoryTaskVO(2, "h2", "2017-12-31", 0, 0.0000, 0.0000);
 
         HistoryTaskVO actual1 = taskConverter.toHistoryVO(h1);
         HistoryTaskVO actual2 = taskConverter.toHistoryVO(h2);
@@ -201,8 +201,8 @@ public class TaskConverterTest {
 
     @Test
     public void toHistoryVOList() {
-        HistoryTaskVO expected1 = new HistoryTaskVO(1, "h1",  "2018-12-31", 250, 0.9234, 0.3);
-        HistoryTaskVO expected2 = new HistoryTaskVO(2, "h2", "2017-12-31", 0, 0.0000, 0.4000);
+        HistoryTaskVO expected1 = new HistoryTaskVO(1, "h1",  "2018-12-31", 250, 0.9234, 0.1234);
+        HistoryTaskVO expected2 = new HistoryTaskVO(2, "h2", "2017-12-31", 0, 0.0000, 0.0000);
 
         List<HistoryTaskVO> expected = new ArrayList<>();
         expected.add(expected1);
