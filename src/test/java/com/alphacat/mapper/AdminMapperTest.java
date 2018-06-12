@@ -26,14 +26,16 @@ public class AdminMapperTest {
     @Test
     public void A_test_add() {
         Date date = Date.valueOf("1985-01-01");
-        adminMapper.add(new Admin(1, "a1", "van", 1, 1));
-        adminMapper.add(new Admin(2, "a2", "billy", 1, 2));
-        Assert.assertEquals(2, adminMapper.getAll().size());
+        adminMapper.add(new Admin(2, "a1", "van", 1, 1));
+        adminMapper.add(new Admin(3, "a2", "billy", 1, 2));
+        Assert.assertEquals(4, adminMapper.getAll().size());
+        Assert.assertEquals("van", adminMapper.get(2).getActualName());
+        Assert.assertEquals("billy", adminMapper.get(3).getActualName());
     }
 
     @Test
     public void B_test_get() {
-        Assert.assertEquals("a1", adminMapper.get(1).getName());
+        Assert.assertEquals("Radmin", adminMapper.get(1).getName());
     }
 
     @Test
@@ -44,21 +46,21 @@ public class AdminMapperTest {
     @Test
     public void D_test_getByAuth() {
         List<Admin> admins = adminMapper.getByAuth(1);
-        Assert.assertEquals("a1", admins.get(0).getName());
+        Assert.assertEquals("a1", admins.get(1).getName());
     }
 
     @Test
     public void E_test_getAll() {
         List<Admin> admins = adminMapper.getAll();
-        Assert.assertEquals("van", admins.get(0).getActualName());
-        Assert.assertEquals(2, admins.size());
+        Assert.assertEquals("van", admins.get(2).getActualName());
+        Assert.assertEquals(4, admins.size());
     }
 
     @Test
     public void F_test_update() {
-        adminMapper.setAuth(1,2);
+        adminMapper.setAuth(2,2);
         adminMapper.setPwd("a1","a1");
-        adminMapper.update(new Admin(2, "a2", "banana", 0, 2));
+        adminMapper.update(new Admin(3, "a2", "banana", 0, 2));
         Assert.assertEquals(2, adminMapper.getByName("a1").getAuth());
         Assert.assertTrue(adminMapper.checkPwd("a1", "a1"));
         Assert.assertEquals("banana", adminMapper.getByName("a2").getActualName());
@@ -66,8 +68,8 @@ public class AdminMapperTest {
 
     @Test
     public void G_test_delete() {
-        adminMapper.delete(1);
         adminMapper.delete(2);
-        Assert.assertEquals(0,adminMapper.getAll().size());
+        adminMapper.delete(3);
+        Assert.assertEquals(2,adminMapper.getAll().size());
     }
 }
