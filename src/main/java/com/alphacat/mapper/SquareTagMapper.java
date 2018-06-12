@@ -18,15 +18,15 @@ public interface SquareTagMapper {
     SquareTag[] getAll(@Param("taskId") int taskId, @Param("picIndex") int picIndex);
 
     @Insert("INSERT INTO squaretag(workerId, taskId, picIndex, squareIndex, " +
-                "a, b, d, c, labelData, description, time) " +
+                "x, y, w, h, labelData, description, time) " +
             "VALUES (#{workerId},#{taskId},#{picIndex},#{squareIndex}," +
-                "#{a},#{b},#{d},#{c},#{labelData},#{description}, CURDATE())")
+                "#{x},#{y},#{w},#{h},#{labelData},#{description}, CURDATE())")
     void add(SquareTag tag);
 
     /**
      * @deprecated To update a tag, first delete all relative tags, then add the new one.
      */
-    @Update("UPDATE  squaretag SET a=#{a}, b=#{b}, d=#{d}, c=#{c}, " +
+    @Update("UPDATE  squaretag SET x=#{x}, y=#{y}, w=#{w}, h=#{h}, " +
                 "labelData=#{labelData}, description=#{description} " +
             "WHERE workerId=#{workerId} AND taskId=#{taskId} " +
                 "AND picIndex=#{picIndex} AND squareIndex=#{squareIndex}")
