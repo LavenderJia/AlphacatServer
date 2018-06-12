@@ -63,4 +63,9 @@ public interface TaskRecordMapper {
             "WHERE workerId=#{workerId} AND taskId=#{taskId}")
     void decPicDoneNum(@Param("workerId") int workerId, @Param("taskId") int taskId);
 
+    @Update("UPDATE task_record SET rectAccuracy = #{ra}, labelAccuracy = #{la}" +
+            "WHERE taskId = #{taskId} AND workerId = #{workerId}")
+    void setAccuracy(@Param("taskId") int taskId, @Param("workerId") int workerId,
+                     @Param("ra") double rectAccuracy, @Param("la") double labelAccuracy);
+
 }

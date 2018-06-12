@@ -21,6 +21,7 @@ public class HistoryTaskVO {
     private String name;
     private String endTime;
     private int earnedCredit;
-    private double correctRate;
+    private double rectAccuracy;
+    private double labelAccuracy;
 
 }

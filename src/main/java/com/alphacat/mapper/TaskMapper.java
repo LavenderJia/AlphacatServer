@@ -91,13 +91,13 @@ public interface TaskMapper {
             ") b ON taskId = id")
     List<AvailableTask> getPartakingTask(@Param("workerId") int workerId);
 
-    @Select("SELECT id, name, endTime, earnedCredit, correctRate " +
+    @Select("SELECT id, name, endTime, earnedCredit, rectAccuracy, labelAccuracy " +
             "FROM (" +
                 "SELECT * FROM (" +
                     "SELECT * FROM task WHERE CURDATE() > endTime AND state = 1" +
                 ") a JOIN (" +
-                    "SELECT taskId, correctRate FROM task_record " +
-                    "WHERE workerId = #{workerId} AND correctRate IS NOT NULL" +
+                    "SELECT taskId, rectAccuracy, labelAccuracy FROM task_record " +
+                    "WHERE workerId = #{workerId} AND rectAccuracy IS NOT NULL AND labelAccuracy IS NOT NULL" +
                 ") b ON id = taskId" +
             ") c JOIN (" +
                 "SELECT taskId, SUM(`change`) earnedCredit " +
