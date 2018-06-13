@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alphacat.service.PictureService;
 import com.alphacat.service.TaskService;
 import com.alphacat.service.WorkerService;
+import com.alphacat.vo.LabelVO;
 import com.alphacat.vo.TaskVO;
 import com.alphacat.vo.WorkerVO;
 import org.apache.shiro.SecurityUtils;
@@ -26,44 +27,47 @@ public class TaskController {
     @Autowired
     private WorkerService workerService;
 
-    @RequestMapping(value="", method= RequestMethod.POST)
-    public void add(@RequestBody JSONObject request) {
+    @PostMapping("")
+    public String add(@RequestBody JSONObject request) {
         try{
-            JSONObject info = request.getJSONObject("newTask");
-            boolean normal = "draft".equals(info.getString("state"));
-            info.fluentRemove("state");
-            TaskVO taskVO = JSON.parseObject(info.toString(), TaskVO.class);
+            //JSONObject info = request.getJSONObject("newTask");
+            boolean normal = !"draft".equals(request.getString("state"));
+            request.fluentRemove("state");
+            //TaskVO taskVO = new TaskVO();
+            //taskVO.setRequesterId(request.getInteger("requesterId"));
+            //taskVO.setLabels(request.getJSONArray("labels").toJavaList(LabelVO.class));
+            TaskVO taskVO = JSON.parseObject(request.toString(), TaskVO.class);
             int id = taskService.add(taskVO, normal);
-            List<MultipartFile> files = JSON.parseArray(request.get("formData").toString(), MultipartFile.class);
-            for(int i = 0; i < files.size(); i++) {
-                pictureService.uploadPic(files.get(i), id, i);
-            }
+            //List<MultipartFile> files = JSON.parseArray(request.get("formData").toString(), MultipartFile.class);
+            //for(int i = 0; i < files.size(); i++) {
+            //    pictureService.uploadPic(files.get(i), id, i);
+            //}
+            return "{\"taskId\":"+ id + "}";
         } catch(Exception e) {
             e.printStackTrace();
             throw new RuntimeException("抱歉，由于未知原因，无法新建该任务。");
         }
     }
 
-    @RequestMapping(value="/{id}", method=RequestMethod.PUT)
-    public void update(@RequestBody JSONObject request, @PathVariable("id") int id) {
+    @PutMapping("")
+    public void update(@RequestBody JSONObject info) {
         try{
-            JSONObject info = request.getJSONObject("taskContent");
-            boolean normal = "draft".equals(info.getString("state"));
+            boolean normal = !"draft".equals(info.getString("state"));
             info.fluentRemove("state");
             TaskVO taskVO = JSON.parseObject(info.toString(), TaskVO.class);
             taskService.update(taskVO, normal);
-            pictureService.delete(id);
-            List<MultipartFile> files = JSON.parseArray(request.get("formData").toString(), MultipartFile.class);
-            for(int i = 0; i < files.size(); i++) {
-                pictureService.uploadPic(files.get(i), id, i);
-            }
+            pictureService.delete(taskVO.getId());
+            //List<MultipartFile> files = JSON.parseArray(request.get("formData").toString(), MultipartFile.class);
+            //for(int i = 0; i < files.size(); i++) {
+            //    pictureService.uploadPic(files.get(i), id, i);
+            //}
         } catch(Exception e) {
             e.printStackTrace();
             throw new RuntimeException("抱歉，由于未知原因，无法更新该任务。");
         }
     }
 
-    @RequestMapping(value = "/{id}/draft", method = RequestMethod.PUT)
+    @PostMapping("/{id}/draft")
     public void toDraft(@PathVariable("id") int id) {
         try{
             taskService.setToDraft(id);
@@ -73,7 +77,7 @@ public class TaskController {
         }
     }
 
-    @RequestMapping(value = "/{id}/garbage", method = RequestMethod.PUT)
+    @PostMapping("/{id}/garbage")
     public void toGarbage(@PathVariable("id") int id) {
         try{
             taskService.setToGarbage(id);
@@ -92,7 +96,7 @@ public class TaskController {
             throw new RuntimeException("抱歉，由于未知原因，无法删除该任务。");
         }
     }
-    @RequestMapping(value="/{id}", method=RequestMethod.GET)
+    @GetMapping("/{id}")
     @ResponseBody
     public Object get(@PathVariable("id") int id) {
         try{

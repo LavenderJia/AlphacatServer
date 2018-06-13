@@ -97,14 +97,24 @@ public class TaskServiceImpl implements TaskService {
             taskMapper.add(task);
             taskMapper.setState(id, 1);
             // add labels
-            taskVO.getLabels().forEach(l -> labelMapper.add(taskConverter.toPOJO(l, id)));
+            taskVO.getLabels().forEach(l -> {
+                if (l.getChoices().size() == 0)
+                    labelMapper.addLabel(id, l.getTitle());
+                else
+                    labelMapper.add(taskConverter.toPOJO(l, id));
+            });
             // add a new task end job
             scheduler.scheduleSingleJob(task);
         } else {
             // save as draft
             taskMapper.add(task);
             taskMapper.setState(id, 0);
-            taskVO.getLabels().forEach(l -> labelMapper.add(taskConverter.toPOJO(l, id)));
+            taskVO.getLabels().forEach(l -> {
+                if (l.getChoices().size() == 0)
+                    labelMapper.addLabel(id, l.getTitle());
+                else
+                    labelMapper.add(taskConverter.toPOJO(l, id));
+            });
         }
         return id;
     }
