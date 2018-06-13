@@ -1,19 +1,29 @@
 package com.alphacat.task;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.alibaba.fastjson.JSON;
+import com.alphacat.service.PictureService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
-@RequestMapping("/api/pic")
+@RequestMapping("/pic")
 @RestController
 public class PictureController {
+
+    @Autowired
+    private PictureService pictureService;
+
+    @PostMapping("/{taskId}")
+    public void save(@PathVariable("taskId") int taskId, @RequestParam("file")MultipartFile file, @RequestParam("picIndex")int picIndex) {
+        pictureService.uploadPic(file, taskId, picIndex);
+    }
 
     @GetMapping("/{taskId}/{picIndex}")
     public void get(@PathVariable("taskId") int taskId, @PathVariable("picIndex") int picIndex, HttpServletResponse response) {
