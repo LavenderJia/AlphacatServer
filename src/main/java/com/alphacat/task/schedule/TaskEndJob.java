@@ -36,7 +36,6 @@ public class TaskEndJob implements Job{
      * @param id the task id
      */
     private void doTaskEnd(int id) {
-        // TODO analyze worker's data and update their accuracy
         System.out.println("Task: " + id);
         service.transact(id);
         estimator.estimate(id);

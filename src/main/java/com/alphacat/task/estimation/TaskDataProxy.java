@@ -59,7 +59,7 @@ public class TaskDataProxy {
         workerIds.forEach(w -> {
             List<Integer> pics = squareTagMapper.getPicsByTaskAndWorker(id, w);
             Map<Integer, SquareVO> answers = new HashMap<>(pics.size());
-            pics.forEach(p -> answers.put(p, tagConverter.toVO(squareTagMapper.get(w, id, 0).get(0))));
+            pics.forEach(p -> answers.put(p, tagConverter.toVO(squareTagMapper.get(w, id, p).get(0))));
             double historyRectAccuracy = workerMapper.getRectAccuracy(w);
             double historyLabelAccuracy = workerMapper.getLabelAccuracy(w);
             long historyPicNum = squareTagMapper.getHistoryPicNum(w);
