@@ -30,6 +30,10 @@ public class TaskConverter {
         TaskVO result = mapper.map(task, TaskVO.class);
         int id = task.getId();
         List<Label> labels = labelMapper.get(id);
+        for (Label label : labels) {
+            if (label.getChoices().size() == 1 && "".equals(label.getChoices().get(0)))
+                label.setChoices(new ArrayList<>());
+        }
         result.setLabels(toLabelVOList(labels));
         return result;
     }
