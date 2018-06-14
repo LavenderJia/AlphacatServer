@@ -56,7 +56,7 @@ public class TaskController {
             info.fluentRemove("state");
             TaskVO taskVO = JSON.parseObject(info.toString(), TaskVO.class);
             taskService.update(taskVO, normal);
-            pictureService.delete(taskVO.getId());
+            //pictureService.delete(taskVO.getId());
             //List<MultipartFile> files = JSON.parseArray(request.get("formData").toString(), MultipartFile.class);
             //for(int i = 0; i < files.size(); i++) {
             //    pictureService.uploadPic(files.get(i), id, i);

@@ -133,7 +133,12 @@ public class TaskServiceImpl implements TaskService {
             taskMapper.setState(id, 0);
             labelMapper.delete(id);
             taskVO.getLabels().
-                    forEach(l -> labelMapper.add(taskConverter.toPOJO(l, id)));
+                    forEach(l -> {
+                        if (l.getChoices().size() == 0)
+                            labelMapper.addLabel(id, l.getTitle());
+                        else
+                            labelMapper.add(taskConverter.toPOJO(l, id));
+                    });
             return;
         }
         Task origin = taskMapper.get(id);
@@ -148,7 +153,12 @@ public class TaskServiceImpl implements TaskService {
             taskMapper.setState(id, 1);
             labelMapper.delete(id);
             taskVO.getLabels().
-                    forEach(l -> labelMapper.add(taskConverter.toPOJO(l, id)));
+                    forEach(l -> {
+                        if (l.getChoices().size() == 0)
+                            labelMapper.addLabel(id, l.getTitle());
+                        else
+                            labelMapper.add(taskConverter.toPOJO(l, id));
+                    });
             // then update the task end job
             scheduler.scheduleSingleJob(task);
             return;

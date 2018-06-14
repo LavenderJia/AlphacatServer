@@ -38,8 +38,7 @@ public class PictureServiceImpl implements PictureService {
     }
 
     @Override
-    public boolean uploadPic(MultipartFile file, int taskId, int picIndex) {
-//        if (picIndex > 11) return false;
+    public boolean uploadPic(MultipartFile file, int taskId) {
         if (!file.isEmpty()) {
             try {
                 File dir = new File("C:\\AlphaCatPic\\" + taskId + '\\');
@@ -48,6 +47,8 @@ public class PictureServiceImpl implements PictureService {
                 }
                 String uploadFileName = file.getOriginalFilename();
                 String suffix = uploadFileName.substring(uploadFileName.indexOf("."));
+                Integer picIndex = pictureMapper.nextIndex(taskId);
+                picIndex = picIndex == null ? 1 : picIndex;
                 file.transferTo(new File(dir, picIndex + suffix));
                 pictureMapper.add(new Picture(picIndex, taskId));
                 return true;
@@ -60,12 +61,21 @@ public class PictureServiceImpl implements PictureService {
     }
 
     @Override
-    public boolean delete(int taskId) {
+    public boolean delete(int taskId, int picIndex) {
         try {
-            Files.delete(Paths.get("C:\\AlphaCatPic\\", taskId+""));
-            pictureMapper.multiDelete(taskId);
+            File dir = new File("C:\\AlphaCatPic\\" + taskId + '\\');
+            File[] files = dir.listFiles();
+            for (File file : files) {
+                String fileName = file.getName();
+                int dot = fileName.indexOf('.');
+                if (fileName.substring(0, dot).equals(""+picIndex)) {
+                    file.delete();
+                    break;
+                }
+            }
+            pictureMapper.delete(taskId, picIndex);
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

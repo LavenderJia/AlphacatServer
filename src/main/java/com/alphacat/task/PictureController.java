@@ -1,6 +1,5 @@
 package com.alphacat.task;
 
-import com.alibaba.fastjson.JSON;
 import com.alphacat.service.PictureService;
 import com.alphacat.vo.PictureVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.List;
 
 @RequestMapping("/pic")
 @RestController
@@ -21,9 +19,19 @@ public class PictureController {
     @Autowired
     private PictureService pictureService;
 
+    @PutMapping("/{taskId}")
+    public void update(@PathVariable("taskId") int taskId, @RequestParam("file")MultipartFile file) {
+
+    }
+
     @PostMapping("/{taskId}")
-    public void save(@PathVariable("taskId") int taskId, @RequestParam("file")MultipartFile file, @RequestParam("picIndex")int picIndex) {
-        pictureService.uploadPic(file, taskId, picIndex);
+    public void save(@PathVariable("taskId") int taskId, @RequestParam("file")MultipartFile file) {
+        try {
+            System.out.println(file.isEmpty());
+            pictureService.uploadPic(file, taskId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @GetMapping("/{taskId}")
@@ -77,5 +85,10 @@ public class PictureController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @DeleteMapping("/{taskId}/{picIndex}")
+    public void delete(@PathVariable("taskId") int taskId, @PathVariable("picIndex") int picIndex) {
+        pictureService.delete(taskId, picIndex);
     }
 }
