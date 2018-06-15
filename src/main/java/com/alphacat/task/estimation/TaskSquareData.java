@@ -8,18 +8,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Data
-class TaskData {
+public class TaskSquareData {
 
     private int id;
     private int labelNum;
-    private Map<Integer, PictureData> pictureMap;
+    private Map<SquarePictureKey, PictureData> pictureMap;
     private Map<Integer, WorkerSquareData> workerMap;
 
-    private Map<Integer, SquareVO> gold;
+    private Map<SquarePictureKey, SquareVO> gold;
     private List<Integer> effectiveRects;
     private List<Integer> effectiveLabels;
 
-    TaskData(int id, int labelNum, Map<Integer, PictureData> pics, Map<Integer, WorkerSquareData> workers) {
+    TaskSquareData(int id, int labelNum, Map<SquarePictureKey, PictureData> pics, Map<Integer, WorkerSquareData> workers) {
         this.id = id;
         this.labelNum = labelNum;
         this.pictureMap = pics;

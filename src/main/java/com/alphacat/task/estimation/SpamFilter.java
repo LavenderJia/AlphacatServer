@@ -13,41 +13,41 @@ import java.util.stream.Collectors;
 public class SpamFilter {
 
     /**
-     * Filter off rect spams and label spams from #taskData.
+     * Filter off rect spams and label spams from #taskSquareData.
      */
-    public void filterSpams(TaskData taskData) {
+    public void filterSpams(TaskSquareData taskSquareData) {
         final double rrsThreshold = 240.0,
                 rusThreshold = 90.0,
                 lrsThreshold = 0.7,
-                lusThreshold = taskData.getPictureMap().size() > 10 ? 0.2 : 0.1;
-        List<Integer> rectSpams = taskData.getWorkerMap().keySet().stream()
-                .filter(id -> rectRandomSpam(taskData, id) > rrsThreshold
-                        && rectUniformSpam(taskData, id) > rusThreshold)
+                lusThreshold = taskSquareData.getPictureMap().size() > 10 ? 0.2 : 0.1;
+        List<Integer> rectSpams = taskSquareData.getWorkerMap().keySet().stream()
+                .filter(id -> rectRandomSpam(taskSquareData, id) > rrsThreshold
+                        && rectUniformSpam(taskSquareData, id) > rusThreshold)
                 .collect(Collectors.toList());
-        List<Integer> labelSpams = taskData.getWorkerMap().keySet().stream()
-                .filter(id -> labelRandomSpam(taskData, id) <= lrsThreshold
-                        && labelUniformSpam(taskData, id) <= lusThreshold)
+        List<Integer> labelSpams = taskSquareData.getWorkerMap().keySet().stream()
+                .filter(id -> labelRandomSpam(taskSquareData, id) <= lrsThreshold
+                        && labelUniformSpam(taskSquareData, id) <= lusThreshold)
                 .collect(Collectors.toList());
-        taskData.processRectSpams(rectSpams);
-        taskData.processLabelSpams(labelSpams);
+        taskSquareData.processRectSpams(rectSpams);
+        taskSquareData.processLabelSpams(labelSpams);
     }
 
    /**
      * @param id the worker's id
      */
-    private double rectRandomSpam(TaskData taskData, int id) {
+    private double rectRandomSpam(TaskSquareData taskSquareData, int id) {
         double nominator, denominator;
         // calculate nominator
-        WorkerSquareData w = taskData.getWorkerMap().get(id);
+        WorkerSquareData w = taskSquareData.getWorkerMap().get(id);
         nominator = w.getAnswers().entrySet().stream()
-                .mapToDouble(e -> taskData.getPictureMap().get(e.getKey()).getWorkers().stream()
-                    .mapToDouble(i -> rectDiff(e.getValue(), taskData.getWorkerMap().get(i)
+                .mapToDouble(e -> taskSquareData.getPictureMap().get(e.getKey()).getWorkers().stream()
+                    .mapToDouble(i -> rectDiff(e.getValue(), taskSquareData.getWorkerMap().get(i)
                             .getAnswers().get(e.getKey())))
                     .sum())
                 .sum();
         // calculate denominator
         denominator = w.getAnswers().entrySet().stream()
-                .mapToDouble(e -> taskData.getPictureMap().get(e.getKey()).getWorkers().size() - 1)
+                .mapToDouble(e -> taskSquareData.getPictureMap().get(e.getKey()).getWorkers().size() - 1)
                 .sum();
         return denominator == 0.0 ? Double.NaN : nominator / denominator;
     }
@@ -55,10 +55,10 @@ public class SpamFilter {
     /**
      * @param id the worker's id
      */
-    private double rectUniformSpam(TaskData taskData, int id) {
-        WorkerSquareData w = taskData.getWorkerMap().get(id);
-        Map<Integer, PictureData> pictures = taskData.getPictureMap();
-        Map<Integer, WorkerSquareData> workers = taskData.getWorkerMap();
+    private double rectUniformSpam(TaskSquareData taskSquareData, int id) {
+        WorkerSquareData w = taskSquareData.getWorkerMap().get(id);
+        Map<SquarePictureKey, PictureData> pictures = taskSquareData.getPictureMap();
+        Map<Integer, WorkerSquareData> workers = taskSquareData.getWorkerMap();
         double nominator = w.getAnswers().entrySet().stream()
                 .mapToDouble(e -> w.getAnswers().entrySet().stream()
                     .mapToDouble(en -> cosRelation(e.getValue(), en.getValue()) - 0.5)
@@ -75,32 +75,32 @@ public class SpamFilter {
     /**
      * @param id the worker's id
      */
-    private double labelRandomSpam(TaskData taskData, int id) {
-        Map<Integer, PictureData> pics = taskData.getPictureMap();
-        WorkerSquareData w = taskData.getWorkerMap().get(id);
+    private double labelRandomSpam(TaskSquareData taskSquareData, int id) {
+        Map<SquarePictureKey, PictureData> pics = taskSquareData.getPictureMap();
+        WorkerSquareData w = taskSquareData.getWorkerMap().get(id);
         double nominator = w.getAnswers().entrySet().stream()
-                .mapToDouble(e -> labelDiff(taskData, id, e.getKey()))
+                .mapToDouble(e -> labelDiff(taskSquareData, id, e.getKey()))
                 .sum();
         double denominator = w.getAnswers().entrySet().stream()
                 .mapToDouble(e -> pics.get(e.getKey()).getWorkers().size() - 1)
-                .sum() * taskData.getLabelNum();
+                .sum() * taskSquareData.getLabelNum();
         return denominator == 0.0 ? Double.NaN : nominator / denominator;
     }
 
     /**
      * @param id the worker's id
      */
-    private double labelUniformSpam(TaskData taskData, int id) {
-        Map<Integer, WorkerSquareData> workers = taskData.getWorkerMap();
-        Map<Integer, PictureData> pics = taskData.getPictureMap();
+    private double labelUniformSpam(TaskSquareData taskSquareData, int id) {
+        Map<Integer, WorkerSquareData> workers = taskSquareData.getWorkerMap();
+        Map<SquarePictureKey, PictureData> pics = taskSquareData.getPictureMap();
         WorkerSquareData w = workers.get(id);
         double nominator = w.getAnswers().entrySet().stream()
-                .mapToDouble(e -> labelSelfCoincidence(taskData, id, e.getKey())
-                        * labelDiff(taskData, id, e.getKey()))
+                .mapToDouble(e -> labelSelfCoincidence(taskSquareData, id, e.getKey())
+                        * labelDiff(taskSquareData, id, e.getKey()))
                 .sum();
         double denominator = w.getAnswers().entrySet().stream()
                 .mapToDouble(e -> pics.get(e.getKey()).getWorkers().size() - 1)
-                .sum() - w.getNum() - taskData.getLabelNum() * taskData.getLabelNum();
+                .sum() - w.getNum() - taskSquareData.getLabelNum() * taskSquareData.getLabelNum();
         return denominator == 0.0 ? Double.NaN : nominator / denominator;
     }
 
@@ -117,10 +117,10 @@ public class SpamFilter {
     /**
      * @return the sum of label differences on picture p between the worker w and other workers.
      */
-    private int labelDiff(TaskData taskData, int w, int p) {
-        Map<String, String> base = taskData.getWorkerMap().get(w).getAnswers().get(p).getLabelData();
-        return taskData.getPictureMap().get(p).getWorkers().stream()
-                .mapToInt(i -> taskData.getWorkerMap().get(i).getAnswers()
+    private int labelDiff(TaskSquareData taskSquareData, int w, SquarePictureKey p) {
+        Map<String, String> base = taskSquareData.getWorkerMap().get(w).getAnswers().get(p).getLabelData();
+        return taskSquareData.getPictureMap().get(p).getWorkers().stream()
+                .mapToInt(i -> taskSquareData.getWorkerMap().get(i).getAnswers()
                         .get(p).getLabelData().entrySet().stream()
                         .mapToInt(e -> e.getValue().equals(base.get(e.getKey())) ? 0 : 1)
                         .sum())
@@ -130,34 +130,13 @@ public class SpamFilter {
     /**
      * @return the sum of label coincidence on the worker w between picture p and other pictures tagged by the worker w.
      */
-    private int labelSelfCoincidence(TaskData taskData, int w, int p) {
-        Map<Integer, SquareVO> answers = taskData.getWorkerMap().get(w).getAnswers();
+    private int labelSelfCoincidence(TaskSquareData taskSquareData, int w, SquarePictureKey p) {
+        Map<SquarePictureKey, SquareVO> answers = taskSquareData.getWorkerMap().get(w).getAnswers();
         Map<String, String> base = answers.get(p).getLabelData();
         return answers.entrySet().stream().mapToInt(e -> {
             Map<String, String> comparison = answers.get(e.getKey()).getLabelData();
             return base.entrySet().stream().mapToInt(en -> en.getValue().equals(comparison.get(en.getKey())) ? 1 : 0).sum();
-        }).sum() - 2 * taskData.getLabelNum();
-    }
-
-    @Data
-    @AllArgsConstructor
-    private class Vector4D {
-        int a, b, c, d;
-        Vector4D(SquareVO s) {
-            this(s.getX(), s.getY(), s.getW(), s.getH());
-        }
-        Vector4D diff(Vector4D v) {
-            return new Vector4D(a - v.a, b - v.b, c - v.c, d - v.d);
-        }
-        double product(Vector4D v) {
-            return a * v.a + b * v.b + c * v.c + d * v.d;
-        }
-        double msq() {
-            return this.product(this);
-        }
-        double mag() {
-            return Math.sqrt(this.msq());
-        }
+        }).sum() - 2 * taskSquareData.getLabelNum();
     }
 
 }
