@@ -19,15 +19,14 @@ public interface PictureService {
      * 保存上传的文件对象
      * @param file 文件
      * @param taskId 任务Id
-     * @param picIndex 图片序号
      * @return 是否上传成功
      */
-    boolean uploadPic(MultipartFile file, int taskId, int picIndex);
+    boolean uploadPic(MultipartFile file, int taskId);
 
     /**
      * 删除一个任务所有的图片
      * @param taskId 任务Id
      * @return 是否删除成功
      */
-    boolean delete(int taskId);
+    boolean delete(int taskId, int picIndex);
 }

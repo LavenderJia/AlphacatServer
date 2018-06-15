@@ -1,9 +1,10 @@
 package com.alphacat.task;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.alphacat.service.PictureService;
+import com.alphacat.vo.PictureVO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
@@ -14,6 +15,40 @@ import java.io.OutputStream;
 @RequestMapping("/pic")
 @RestController
 public class PictureController {
+
+    @Autowired
+    private PictureService pictureService;
+
+    @PutMapping("/{taskId}")
+    public void update(@PathVariable("taskId") int taskId, @RequestParam("file")MultipartFile file) {
+
+    }
+
+    @PostMapping("/{taskId}")
+    public void save(@PathVariable("taskId") int taskId, @RequestParam("file")MultipartFile file) {
+        try {
+            System.out.println(file.isEmpty());
+            pictureService.uploadPic(file, taskId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @GetMapping("/{taskId}")
+    public Object getPicURL(@PathVariable("taskId") int taskId) {
+        File baseDir = new File("C:\\AlphaCatPic\\" + taskId);
+        File[] files = baseDir.listFiles();
+        PictureVO[] pictures = new PictureVO[files.length];
+        for (int i = 0; i < pictures.length; i++) {
+            String fileName = files[i].getName();
+            int dot = fileName.indexOf('.');
+            PictureVO picture = new PictureVO();
+            picture.setName(fileName);
+            picture.setUrl("http://localhost:8080/pic/"+taskId+"/"+fileName.substring(0, dot));
+            pictures[i] = picture;
+        }
+        return pictures;
+    }
 
     @GetMapping("/{taskId}/{picIndex}")
     public void get(@PathVariable("taskId") int taskId, @PathVariable("picIndex") int picIndex, HttpServletResponse response) {
@@ -50,5 +85,10 @@ public class PictureController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @DeleteMapping("/{taskId}/{picIndex}")
+    public void delete(@PathVariable("taskId") int taskId, @PathVariable("picIndex") int picIndex) {
+        pictureService.delete(taskId, picIndex);
     }
 }

@@ -24,6 +24,9 @@ public interface PictureMapper {
     @Select("SELECT COUNT(*) FROM picture WHERE taskId=#{taskId}")
     int count(int taskId);
 
+    @Select("SELECT MAX(pidx)+1 FROM picture WHERE taskId=#{taskId}")
+    Integer nextIndex(int taskId);
+
     @Select("SELECT pidx FROM picture WHERE taskId = #{taskId}")
     List<Integer> get(@Param("taskId") int taskId);
 
