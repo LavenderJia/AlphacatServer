@@ -37,8 +37,8 @@ public class TaskEndJob implements Job{
      */
     private void doTaskEnd(int id) {
         System.out.println("Task: " + id);
-        service.transact(id);
         estimator.estimate(id);
+        service.transact(id);
     }
 
 }

@@ -53,7 +53,11 @@ public class WorkerServiceImpl implements WorkerService {
 
 	@Override
 	public WorkerVO get(int id) {
-		return workerConverter.toVO(workerMapper.get(id));
+        if(id > 0) {
+            return workerConverter.toVO(workerMapper.get(id));
+        } else {
+            throw new IllegalArgumentException("Worker id should be larger than 0.");
+        }
 	}
 
 	@Override
@@ -66,6 +70,9 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     public int getExpRank(int id) {
+        if(id <= 0) {
+            throw new IllegalArgumentException("Worker id should be larger than 0.");
+        }
         Worker worker = workerMapper.get(id);
         if(worker == null) return -1;
         if(worker.getState() == 1) return 0;
@@ -83,11 +90,17 @@ public class WorkerServiceImpl implements WorkerService {
 
     @Override
     public void updateWorker(WorkerVO worker) {
+        if(worker.getId() <= 0) {
+            throw new IllegalArgumentException("Worker id should be larger than 0.");
+        }
         workerMapper.update(workerConverter.toPOJO(worker));
     }
 
     @Override
     public void setWorkerState(int id, boolean isLocked) {
+        if(id <= 0) {
+            throw new IllegalArgumentException("Worker id should be larger than 0.");
+        }
         if (isLocked) workerMapper.changeState(id, 1);
         else workerMapper.changeState(id, 0);
     }

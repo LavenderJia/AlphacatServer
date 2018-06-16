@@ -9,7 +9,7 @@ import java.util.List;
 @Repository
 public interface WorkerMapper {
 
-    @Select("SELECT * FROM worker WHERE state=#{state}")
+    @Select("SELECT * FROM worker WHERE state=#{state} AND id > 0")
     List<Worker> getByState(@Param("state") int state);
 
     @Insert("INSERT INTO worker(id, name, birth, sex, email, signature, exp, credit, state) " +
@@ -44,7 +44,7 @@ public interface WorkerMapper {
     @Select("SELECT MAX(id)+1 FROM worker")
     Integer getNewId();
 
-    @Select("SELECT * FROM worker")
+    @Select("SELECT * FROM worker WHERE id > 0")
     List<Worker> getAll();
 
     @Select("SELECT * FROM worker WHERE name=#{name}")
@@ -56,11 +56,11 @@ public interface WorkerMapper {
     @Delete("DELETE FROM worker WHERE id=#{workerId}")
     void delete(int workerId);
 
-    @Select("SELECT DISTINCT * FROM worker WHERE state = 0 " +
+    @Select("SELECT DISTINCT * FROM worker WHERE state = 0 AND id > 0 " +
             "ORDER BY credit DESC LIMIT #{num}")
     List<Worker> getSortedByCredit(@Param("num") int num);
 
-    @Select("SELECT DISTINCT * FROM worker WHERE state = 0 " +
+    @Select("SELECT DISTINCT * FROM worker WHERE state = 0  AND id > 0 " +
             "ORDER BY exp DESC LIMIT #{num}")
     List<Worker> getSortedByExp(@Param("num") int num);
 

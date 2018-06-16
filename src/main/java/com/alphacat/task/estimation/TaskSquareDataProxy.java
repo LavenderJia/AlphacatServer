@@ -51,10 +51,15 @@ public class TaskSquareDataProxy {
     }
 
     public void storeTaskData(TaskSquareData taskSquareData) {
-        // TODO add new gold answers.
         taskSquareData.getWorkerMap().forEach((id, w) -> {
             workerMapper.updateAccuracy(id, w.getFinalRectAccuracy(), w.getFinalLabelAccuracy());
             recordMapper.setAccuracy(taskSquareData.getId(), id, w.getRectAccuracy(), w.getLabelAccuracy());
+        });
+        int taskId = taskSquareData.getId();
+        taskSquareData.getGold().forEach((k, v) -> {
+            v.setSquareIndex(k.getRid());
+            SquareTag s = tagConverter.toPOJO(v, taskId, 0, k.getPid());
+            squareTagMapper.add(s);
         });
     }
 

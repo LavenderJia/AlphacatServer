@@ -47,6 +47,13 @@ public class CreditServiceImpl implements CreditService{
                 change += creditFinished;
             }
             int workerId = r.getWorkerId();
+            Double rectAccuracy = recordMapper.getRectAccuracy(taskId, workerId);
+            Double labelAccuracy = recordMapper.getLabelAccuracy(taskId, workerId);
+            if(rectAccuracy == null || labelAccuracy == null) {
+                throw new NullPointerException("Answer hasn't been estimated for worker: " + workerId + " in task: " + taskId);
+            }
+            // final credit earned = credit to be earned * average of accuracy
+            change *= (rectAccuracy + labelAccuracy) / 2;
             Worker worker = workerMapper.get(workerId);
             int credit = worker.getCredit() + change;
             Date now = new Date(Calendar.getInstance().getTimeInMillis());
