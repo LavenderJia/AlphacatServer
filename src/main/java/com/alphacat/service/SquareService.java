@@ -22,4 +22,6 @@ public interface SquareService {
      */
     void deleteSquares(int workerId, int taskId, int picIndex);
 
+    boolean testAnswer(int taskId, int workerId);
+
 }

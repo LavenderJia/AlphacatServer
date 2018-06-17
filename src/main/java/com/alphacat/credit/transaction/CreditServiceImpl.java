@@ -37,33 +37,43 @@ public class CreditServiceImpl implements CreditService{
 
     @Override
     public void transact(int taskId) {
-        List<TaskRecord> records = recordMapper.getByTask(taskId);
+        recordMapper.getByTask(taskId).forEach(this::transact);
+    }
+
+    @Override
+    public void transact(int taskId, int workerId) {
+        this.transact(recordMapper.get(workerId, taskId));
+    }
+
+    /**
+     * Single transact according to the record of a worker in a task.
+     */
+    private void transact(TaskRecord record) {
+        int taskId = record.getTaskId();
         Task task = taskMapper.get(taskId);
         int creditPerPic = task.getCreditPerPic();
         int creditFinished = task.getCreditFinished();
-        records.forEach(r -> {
-            int change = r.getPicDoneNum() * creditPerPic;
-            if(r.getPicDoneNum() == r.getPicOrder().length() / 2) {
-                change += creditFinished;
-            }
-            int workerId = r.getWorkerId();
-            Double rectAccuracy = recordMapper.getRectAccuracy(taskId, workerId);
-            Double labelAccuracy = recordMapper.getLabelAccuracy(taskId, workerId);
-            if(rectAccuracy == null || labelAccuracy == null) {
-                throw new NullPointerException("Answer hasn't been estimated for worker: " + workerId + " in task: " + taskId);
-            }
-            // final credit earned = credit to be earned * average of accuracy
-            change *= (rectAccuracy + labelAccuracy) / 2;
-            Worker worker = workerMapper.get(workerId);
-            int credit = worker.getCredit() + change;
-            Date now = new Date(Calendar.getInstance().getTimeInMillis());
-            WorkerCredit c = new WorkerCredit(workerId, taskId,
-                    // The #taskName below does NOT make any sense.
-                    // Credit mapper doesn't count it when adding a new record.
-                    "", change, now, credit);
-            creditMapper.add(c);
-            workerMapper.addCredit(workerId, change);
-        });
+        int change = record.getPicDoneNum() * creditPerPic;
+        if(record.getPicDoneNum() == record.getPicOrder().length() / 2) {
+            change += creditFinished;
+        }
+        int workerId = record.getWorkerId();
+        Double rectAccuracy = recordMapper.getRectAccuracy(taskId, workerId);
+        Double labelAccuracy = recordMapper.getLabelAccuracy(taskId, workerId);
+        if(rectAccuracy == null || labelAccuracy == null) {
+            throw new NullPointerException("Answer hasn't been estimated for worker: " + workerId + " in task: " + taskId);
+        }
+        // final credit earned = credit to be earned * average of accuracy
+        change *= (rectAccuracy + labelAccuracy) / 2;
+        Worker worker = workerMapper.get(workerId);
+        int credit = worker.getCredit() + change;
+        Date now = new Date(Calendar.getInstance().getTimeInMillis());
+        WorkerCredit c = new WorkerCredit(workerId, taskId,
+                // The #taskName below does NOT make any sense.
+                // Credit mapper doesn't count it when adding a new record.
+                "", change, now, credit);
+        creditMapper.add(c);
+        workerMapper.addCredit(workerId, change);
     }
 
     @Override
