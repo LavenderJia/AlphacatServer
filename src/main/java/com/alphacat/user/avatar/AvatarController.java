@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.OutputStream;
+
 @RestController
 @RequestMapping("/avatar")
 public class AvatarController {
@@ -39,8 +42,7 @@ public class AvatarController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public Object get(@PathVariable("id") int id) {
+    public void get(@PathVariable("id") int id, HttpServletResponse response) {
         try{
             Session session = SecurityUtils.getSubject().getSession();
             if(id != (Integer) session.getAttribute("id")) {
@@ -54,7 +56,13 @@ public class AvatarController {
             else if("requesterAdmin".equals(role) || "workerAdmin".equals(role)
                     || "superAdmin".equals(role)) type = 2;
             else throw new IllegalArgumentException("Cannot resolve user type: " + role);
-            return service.get(name, type);
+
+            byte[] data = service.get(name, type);
+            response.setContentType("image/png");
+            OutputStream stream = response.getOutputStream();
+            stream.write(data);
+            stream.flush();
+            stream.close();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("抱歉，由于未知原因，无法获取头像。");
