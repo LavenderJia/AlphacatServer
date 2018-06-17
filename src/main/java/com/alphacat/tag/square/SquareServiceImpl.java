@@ -2,12 +2,14 @@ package com.alphacat.tag.square;
 
 import com.alphacat.mapper.*;
 import com.alphacat.pojo.SquareTag;
+import com.alphacat.pojo.Task;
 import com.alphacat.pojo.TaskRecord;
 import com.alphacat.service.SquareService;
 import com.alphacat.vo.SquareVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -15,6 +17,8 @@ public class SquareServiceImpl implements SquareService {
 
     @Autowired
     private SquareTagMapper squareTagMapper;
+    @Autowired
+    private TaskMapper taskMapper;
     @Autowired
     private TaskRecordMapper taskRecordMapper;
     @Autowired
@@ -28,6 +32,11 @@ public class SquareServiceImpl implements SquareService {
 
     @Override
     public void saveSquares(List<SquareVO> squares, int workerId, int taskId, int picIndex) {
+        // case 0: if task ended, no action
+        if(taskEnded(taskId)) {
+            System.out.println("Task " + taskId + " has ended. Tags will not be saved.");
+            return;
+        }
         boolean exist = squareTagMapper.isExist(workerId, taskId, picIndex);
         // case 1: 'squares' has data to store
         if(squares != null && !squares.isEmpty()) {
@@ -45,9 +54,8 @@ public class SquareServiceImpl implements SquareService {
             return;
         }
         // case 2: no data means to delete
-        if((squares == null || squares.isEmpty()) && exist) {
+        if(exist) {
             deleteSquares(workerId, taskId, picIndex);
-            return;
         }
     }
 
@@ -58,8 +66,15 @@ public class SquareServiceImpl implements SquareService {
             return;
         }
         squareTagMapper.delete(workerId, taskId, picIndex);
-        TaskRecord record = taskRecordMapper.get(workerId, taskId);
         taskRecordMapper.decPicDoneNum(workerId, taskId);
+    }
+
+    private boolean taskEnded(int taskId) {
+        Task task = taskMapper.get(taskId);
+        Calendar endTime = Calendar.getInstance();
+        endTime.setTime(task.getEndTime());
+        endTime.add(Calendar.DAY_OF_MONTH, 1);
+        return endTime.getTime().before(Calendar.getInstance().getTime());
     }
 
 }

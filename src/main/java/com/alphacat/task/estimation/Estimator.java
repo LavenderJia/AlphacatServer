@@ -12,12 +12,12 @@ import java.util.Map;
 public class Estimator {
 
     private SpamFilter filter;
-    private TaskDataProxy taskDataProxy;
+    private TaskSquareDataProxy taskSquareDataProxy;
 
     @Autowired
-    public Estimator(SpamFilter filter, TaskDataProxy proxy) {
+    public Estimator(SpamFilter filter, TaskSquareDataProxy proxy) {
         this.filter = filter;
-        this.taskDataProxy = proxy;
+        this.taskSquareDataProxy = proxy;
     }
 
     /**
@@ -25,25 +25,25 @@ public class Estimator {
      * @param id the task id
      */
     public void estimate(int id) {
-        TaskData taskData = taskDataProxy.createTaskData(id);
-        filter.filterSpams(taskData);
-        Map<Integer, Integer[]> rects = estimateRects(taskData);
-        Map<Integer, Map<String, String>> labelData = estimateLabels(taskData);
-        Map<Integer, SquareVO> gold = new HashMap<>(rects.size());
+        TaskSquareData taskSquareData = taskSquareDataProxy.createTaskData(id);
+        filter.filterSpams(taskSquareData);
+        Map<SquarePictureKey, Integer[]> rects = estimateRects(taskSquareData);
+        Map<SquarePictureKey, Map<String, String>> labelData = estimateLabels(taskSquareData);
+        Map<SquarePictureKey, SquareVO> gold = new HashMap<>(rects.size());
         rects.forEach((p, r) -> gold.put(p, new SquareVO(0, r[0], r[1], r[2], r[3], labelData.get(p), null)));
-        taskData.setGold(gold);
-        taskDataProxy.storeTaskData(taskData);
+        taskSquareData.setGold(gold);
+        taskSquareDataProxy.storeTaskData(taskSquareData);
     }
 
-    private Map<Integer, Integer[]> estimateRects(TaskData taskData) {
-        int picNum = taskData.getPictureMap().size();
-        Map<Integer, Integer[]> goldRects = new HashMap<>(picNum);
+    private Map<SquarePictureKey, Integer[]> estimateRects(TaskSquareData taskSquareData) {
+        int picNum = taskSquareData.getPictureMap().size();
+        Map<SquarePictureKey, Integer[]> goldRects = new HashMap<>(picNum);
         boolean coveraged = false;
-        taskData.getPictureMap().keySet().forEach(p -> goldRects.put(p, getMiddleRect(taskData, p)));
+        taskSquareData.getPictureMap().keySet().forEach(p -> goldRects.put(p, getMiddleRect(taskSquareData, p)));
         while(!coveraged) {
-            taskData.getWorkerMap().forEach((i, w) -> updateWorkerRectAccuracy(w, goldRects));
-            coveraged = taskData.getPictureMap().keySet().stream().map(p -> {
-                Integer[] rects = getMiddleRect(taskData, p);
+            taskSquareData.getWorkerMap().forEach((i, w) -> updateWorkerRectAccuracy(w, goldRects));
+            coveraged = taskSquareData.getPictureMap().keySet().stream().map(p -> {
+                Integer[] rects = getMiddleRect(taskSquareData, p);
                 if(rects == null) {
                     return true;
                 }
@@ -52,7 +52,7 @@ public class Estimator {
                 return similar;
             }).allMatch(s -> s);
         }
-        taskData.getWorkerMap().forEach((i, w) -> updateWorkerRectAccuracy(w, goldRects));
+        taskSquareData.getWorkerMap().forEach((i, w) -> updateWorkerRectAccuracy(w, goldRects));
         return goldRects;
     }
 
@@ -64,9 +64,9 @@ public class Estimator {
                 && Math.abs(a[3] - b[3]) <= d;
     }
 
-    private Integer[] getMiddleRect(TaskData taskData, int p) {
-        Map<Integer, WorkerSquareData> workerMap = taskData.getWorkerMap();
-        List<Integer> workers = taskData.getPictureMap().get(p).getWorkers();
+    private Integer[] getMiddleRect(TaskSquareData taskSquareData, SquarePictureKey p) {
+        Map<Integer, WorkerSquareData> workerMap = taskSquareData.getWorkerMap();
+        List<Integer> workers = taskSquareData.getPictureMap().get(p).getWorkers();
         if(workers.isEmpty()) {
             return null;
         }
@@ -86,7 +86,7 @@ public class Estimator {
         return new Integer[]{x, y, w, h};
     }
 
-    private void updateWorkerRectAccuracy(WorkerSquareData w, Map<Integer, Integer[]> ans) {
+    private void updateWorkerRectAccuracy(WorkerSquareData w, Map<SquarePictureKey, Integer[]> ans) {
         double rectAccuracy = w.getAnswers().entrySet().stream()
                 .mapToDouble(e -> getRectCod(ans.get(e.getKey()), e.getValue()))
                 .sum() / w.getNum();
@@ -104,15 +104,15 @@ public class Estimator {
         return (rightX - leftX) * (downY - upY) / (base.getW() * base.getH() * 1.0);
     }
 
-    private Map<Integer, Map<String, String>> estimateLabels(TaskData taskData) {
-        int picNum = taskData.getPictureMap().size();
-        Map<Integer, Map<String, String>> goldLabels = new HashMap<>(picNum);
-        taskData.getPictureMap().keySet().forEach(p -> goldLabels.put(p, getMiddleLabels(taskData, p)));
+    private Map<SquarePictureKey, Map<String, String>> estimateLabels(TaskSquareData taskSquareData) {
+        int picNum = taskSquareData.getPictureMap().size();
+        Map<SquarePictureKey, Map<String, String>> goldLabels = new HashMap<>(picNum);
+        taskSquareData.getPictureMap().keySet().forEach(p -> goldLabels.put(p, getMiddleLabels(taskSquareData, p)));
         boolean coveraged = false;
         while(!coveraged) {
-            taskData.getWorkerMap().forEach((id, w) -> updateWorkerLabelAccuracy(w, goldLabels, taskData.getLabelNum()));
-            coveraged = taskData.getPictureMap().keySet().stream().map(p -> {
-                Map<String, String> labelData = getMiddleLabels(taskData, p);
+            taskSquareData.getWorkerMap().forEach((id, w) -> updateWorkerLabelAccuracy(w, goldLabels, taskSquareData.getLabelNum()));
+            coveraged = taskSquareData.getPictureMap().keySet().stream().map(p -> {
+                Map<String, String> labelData = getMiddleLabels(taskSquareData, p);
                 if(labelData == null) {
                     return true;
                 }
@@ -125,7 +125,7 @@ public class Estimator {
                 }
             }).allMatch(s -> s);
         }
-        taskData.getWorkerMap().forEach((id, w) -> updateWorkerLabelAccuracy(w, goldLabels, taskData.getLabelNum()));
+        taskSquareData.getWorkerMap().forEach((id, w) -> updateWorkerLabelAccuracy(w, goldLabels, taskSquareData.getLabelNum()));
         return goldLabels;
     }
 
@@ -133,16 +133,16 @@ public class Estimator {
         return a.entrySet().stream().mapToInt(e -> e.getValue().equals(b.get(e.getKey())) ? 0 : 1).sum() == 0;
     }
 
-    private Map<String, String> getMiddleLabels(TaskData taskData, int p) {
-        int labelNum = taskData.getLabelNum();
-        List<Integer> workers = taskData.getPictureMap().get(p).getWorkers();
+    private Map<String, String> getMiddleLabels(TaskSquareData taskSquareData, SquarePictureKey p) {
+        int labelNum = taskSquareData.getLabelNum();
+        List<Integer> workers = taskSquareData.getPictureMap().get(p).getWorkers();
         if(workers.isEmpty()) {
             return null;
         }
         Map<String, String> result = new HashMap<>(labelNum);
         Map<String, Map<String, Double>> data = new HashMap<>(labelNum);
-        workers.forEach(id -> taskData.getWorkerMap().get(id).getAnswers().get(p).getLabelData().forEach((k, v) -> {
-            double accuracy = taskData.getWorkerMap().get(id).getLabelAccuracy();
+        workers.forEach(id -> taskSquareData.getWorkerMap().get(id).getAnswers().get(p).getLabelData().forEach((k, v) -> {
+            double accuracy = taskSquareData.getWorkerMap().get(id).getLabelAccuracy();
             if(data.containsKey(k)) {
                 if(data.get(k).containsKey(v)) {
                     data.get(k).put(v, data.get(k).get(v) + accuracy);
@@ -157,13 +157,13 @@ public class Estimator {
         }));
         data.forEach((k, vw) -> result.put(k, vw.entrySet().stream().max((a, b) -> {
             if(a.getValue() < b.getValue()) return -1;
-            if(a.getValue() == b.getValue()) return 0;
+            if(a.getValue().equals(b.getValue())) return 0;
             return 1;
         }).get().getKey()));
         return result;
     }
 
-    private void updateWorkerLabelAccuracy(WorkerSquareData w, Map<Integer, Map<String, String>> ans, int labelNum) {
+    private void updateWorkerLabelAccuracy(WorkerSquareData w, Map<SquarePictureKey, Map<String, String>> ans, int labelNum) {
         double accuracy = w.getAnswers().entrySet().stream()
                 .mapToInt(e -> ans.get(e.getKey()).entrySet().stream()
                         .mapToInt(en -> en.getValue().equals(e.getValue().getLabelData().get(en.getKey())) ? 1 : 0).sum())

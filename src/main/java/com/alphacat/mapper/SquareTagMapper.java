@@ -62,4 +62,7 @@ public interface SquareTagMapper {
             ") r ON s.taskId = r.taskId")
     Long getHistoryPicNum(@Param("workerId") int workerId);
 
+    @Select("SELECT * FROM squaretag WHERE taskId = #{taskId}")
+    List<SquareTag> getByTask(@Param("taskId") int taskId);
+
 }

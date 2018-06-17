@@ -1,6 +1,8 @@
 package com.alphacat.credit.transaction;
 
+import com.alphacat.mapper.TaskMapper;
 import com.alphacat.pojo.RequesterCredit;
+import com.alphacat.pojo.Task;
 import com.alphacat.pojo.WorkerCredit;
 import com.alphacat.vo.RequesterCreditVO;
 import com.alphacat.vo.WorkerCreditVO;
@@ -17,9 +19,13 @@ public class CreditConverter {
 
     @Autowired
     private Mapper mapper;
+    @Autowired
+    private TaskMapper taskMapper;
 
     public WorkerCredit toPOJO(WorkerCreditVO credit, int workerId, int taskId) {
         WorkerCredit result = mapper.map(credit, WorkerCredit.class);
+        String taskName = taskMapper.get(taskId).getName();
+        result.setTaskName(taskName);
         result.setTaskId(taskId);
         result.setWorkerId(workerId);
         return result;

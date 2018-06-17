@@ -37,7 +37,7 @@ public class LoginController {
 			String pwd = jo.getString("key");
 			AuthenticationToken token = new UsernamePasswordToken(type.charAt(0) + name, pwd);
 			Subject subject = SecurityUtils.getSubject();
-			// this method can save user's id, name, and type as "id", 
+			// this method can save user's id, name, and type as "id",
 			// "name", and "role" into subject's session
 			subject.login(token);
 			result.put("result", "success");

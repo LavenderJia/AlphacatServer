@@ -68,4 +68,12 @@ public interface TaskRecordMapper {
     void setAccuracy(@Param("taskId") int taskId, @Param("workerId") int workerId,
                      @Param("ra") double rectAccuracy, @Param("la") double labelAccuracy);
 
+    @Select("SELECT rectAccuracy FROM task_record " +
+            "WHERE taskId = #{taskId} AND workerId = #{workerId}")
+    Double getRectAccuracy(@Param("taskId") int taskId, @Param("workerId") int workerId);
+
+    @Select("SELECT labelAccuracy FROM task_record " +
+            "WHERE taskId = #{taskId} AND workerId = #{workerId}")
+    Double getLabelAccuracy(@Param("taskId") int taskId, @Param("workerId") int workerId);
+
 }
