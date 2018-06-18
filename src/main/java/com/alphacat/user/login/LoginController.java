@@ -66,4 +66,15 @@ public class LoginController {
 			return result;
 		}
     }
+
+    @RequestMapping("/logout")
+    public void logout() {
+        try{
+            SecurityUtils.getSubject().logout();
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("由于未知原因，无法注销。");
+        }
+    }
+
 }
