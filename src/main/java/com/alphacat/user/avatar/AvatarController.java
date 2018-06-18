@@ -41,13 +41,10 @@ public class AvatarController {
         }
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public void get(@PathVariable("id") int id, HttpServletResponse response) {
+    @RequestMapping(value = "", method = RequestMethod.GET)
+    public void get(HttpServletResponse response) {
         try{
             Session session = SecurityUtils.getSubject().getSession();
-            if(id != (Integer) session.getAttribute("id")) {
-                throw new IllegalArgumentException("User id not valid: " + id);
-            }
             String name = String.valueOf(session.getAttribute("name"));
             String role = String.valueOf(session.getAttribute("role"));
             int type;
