@@ -81,4 +81,16 @@ public interface TaskService {
 
     List<TaskBriefVO> getGarbage(int requesterId);
 
+    String getState(int taskId);
+
+    double getProgress(int taskId);
+
+    int getWorkerCount(int taskId);
+
+    double getTagRate(int taskId);
+
+    int getPicUndone(int taskId);
+
+    int getCostCredit(int taskId);
+
 }

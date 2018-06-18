@@ -1,7 +1,6 @@
 package com.alphacat.task;
 
-import com.alphacat.mapper.LabelMapper;
-import com.alphacat.mapper.TaskMapper;
+import com.alphacat.mapper.*;
 import com.alphacat.pojo.*;
 import com.alphacat.service.TaskService;
 import com.alphacat.task.schedule.TaskEndScheduler;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -21,7 +21,17 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskMapper taskMapper;
     @Autowired
+    private TaskRecordMapper recordMapper;
+    @Autowired
     private LabelMapper labelMapper;
+    @Autowired
+    private PictureMapper pictureMapper;
+    @Autowired
+    private SquareTagMapper squareTagMapper;
+    @Autowired
+    private IrregularTagMapper irregularTagMapper;
+    @Autowired
+    private CreditMapper creditMapper;
     @Autowired
     private TaskEndScheduler scheduler;
 
@@ -233,6 +243,68 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public List<TaskBriefVO> getGarbage(int requesterId) {
         return getBrief(requesterId, 2);
+    }
+
+    @Override
+    public String getState(int taskId) {
+        int state = taskMapper.getState(taskId);
+        switch (state) {
+            case 0: return "draft";
+            case 1: return "published";
+            case 2: return "garbage";
+            default: return "";
+        }
+    }
+
+    @Override
+    public double getProgress(int taskId) {
+        Task task = taskMapper.get(taskId);
+        Calendar startTime = Calendar.getInstance();
+        startTime.setTime(task.getStartTime());
+        Calendar endTime = Calendar.getInstance();
+        endTime.setTime(task.getEndTime());
+        endTime.add(Calendar.DAY_OF_MONTH, 1);
+        Calendar now = Calendar.getInstance();
+        if(now.before(startTime)) {
+            return 0.0;
+        }
+        if(now.after(endTime)) {
+            return 100;
+        }
+        return (now.getTimeInMillis() - startTime.getTimeInMillis() + 0.0) * 100.0
+                / (endTime.getTimeInMillis() - startTime.getTimeInMillis());
+    }
+
+    @Override
+    public int getWorkerCount(int taskId) {
+        return recordMapper.getWorkerNum(taskId);
+    }
+
+    @Override
+    public double getTagRate(int taskId) {
+        return recordMapper.getByTask(taskId).stream().mapToInt(TaskRecord::getPicDoneNum).sum()
+                / (getWorkerCount(taskId) * pictureMapper.get(taskId).size() * 1.0);
+    }
+
+    @Override
+    public int getPicUndone(int taskId) {
+        Task task = taskMapper.get(taskId);
+        List<Integer> pics = pictureMapper.get(taskId);
+        switch (task.getMethod()) {
+            case 1:
+            case 2:
+                IntStream picsDoneSquare= squareTagMapper.getByTask(taskId).stream().mapToInt(SquareTag::getPicIndex);
+                return pics.stream().mapToInt(p -> picsDoneSquare.anyMatch(i -> i == p) ? 0 : 1).sum();
+            case 3:
+                IntStream picsDoneIrr = irregularTagMapper.getByTask(taskId).stream().mapToInt(IrregularTag::getPicIndex);
+                return pics.stream().mapToInt(p -> picsDoneIrr.anyMatch(i -> i == p) ? 0 : 1).sum();
+            default: return -1;
+        }
+    }
+
+    @Override
+    public int getCostCredit(int taskId) {
+        return creditMapper.getByTask(taskId);
     }
 
     private List<TaskBriefVO> getBrief(int requesterId, int state) {
