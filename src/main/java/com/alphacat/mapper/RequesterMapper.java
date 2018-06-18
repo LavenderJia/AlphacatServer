@@ -8,7 +8,7 @@ import java.util.List;
 @Repository
 public interface RequesterMapper {
 
-	@Select("SELECT * FROM requester WHERE state=#{state}")
+	@Select("SELECT * FROM requester WHERE state=#{state} WHERE id > 0")
 	List<Requester> getByState(@Param("state") int state);
 
 	/**
@@ -53,4 +53,6 @@ public interface RequesterMapper {
 	@Select("SELECT MAX(id)+1 FROM requester")
 	Integer getNewId();
 
+	@Select("SELECT COUNT(*) FROM requester WHERE id > 0")
+	Integer getAllNum();
 }

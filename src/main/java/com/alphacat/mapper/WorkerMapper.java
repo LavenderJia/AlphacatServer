@@ -12,8 +12,8 @@ public interface WorkerMapper {
     @Select("SELECT * FROM worker WHERE state=#{state} AND id > 0")
     List<Worker> getByState(@Param("state") int state);
 
-    @Insert("INSERT INTO worker(id, name, birth, sex, email, signature, exp, credit, state) " +
-            "VALUES(#{id},#{name},#{birth},#{sex},#{email},#{signature},#{exp},#{credit},#{state})")
+    @Insert("INSERT INTO worker(id, name, birth, sex, email, signature, exp, credit, state, time) " +
+            "VALUES(#{id},#{name},#{birth},#{sex},#{email},#{signature},#{exp},#{credit},#{state},CURDATE())")
     void add(Worker worker);
 
     /**
@@ -93,5 +93,21 @@ public interface WorkerMapper {
             "WHERE id = #{id}")
     void updateAccuracy(@Param("id") int id, @Param("ra") double rectAccuracy,
                         @Param("la") double labelAccuracy);
+
+    /** 0 represents male*/
+    @Select("SELECT COUNT(*) FROM worker WHERE sex = #{sex} AND id > 0")
+    Integer getNumBySex(@Param("sex") int sex);
+
+    @Select("SELECT COUNT(*) FROM worker WHERE TIMESTAMPDIFF(year,birth,CURDATE()) >= #{begin} AND " +
+            "TIMESTAMPDIFF(year,birth,CURDATE()) < #{end} AND id > 0")
+    Integer getNumByAge(@Param("begin") int begin, @Param("end") int end);
+
+    @Select("SELECT COUNT(*) FROM worker WHERE DATEDIFF(#{date}, time) >= 0 AND id > 0")
+    Integer getNumUntilDate(@Param("date") String date);
+
+    @Select("SELECT COUNT(*) FROM worker WHERE DATEDIFF(#{date}, time) >= 0 AND id > 0" +
+            "AND ((SELECT COUNT(*) FROM squareTag WHERE time=#{date})" +
+            "OR (SELECT COUNT(*) FROM irregulartag WHERE time=#{date}))")
+    Integer getActiveNum(@Param("date") String date);
 
 }

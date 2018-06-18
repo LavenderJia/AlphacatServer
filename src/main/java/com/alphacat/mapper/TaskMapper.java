@@ -145,4 +145,10 @@ public interface TaskMapper {
     List<TaskBrief> getBrief(@Param("requesterId") int requesterId,
                              @Param("state") int state);
 
+    @Select("SELECT COUNT(*) FROM task WHERE DATEDIFF(#{date}, startTime) >= 0 ")
+    Integer getNumUntilDate(@Param("date") String date);
+
+    @Select("SELECT COUNT(*) FROM task WHERE DATEDIFF(#{date}, endTime) >= 0 ")
+    Integer getEndUntilDate(@Param("date") String date);
+
 }
