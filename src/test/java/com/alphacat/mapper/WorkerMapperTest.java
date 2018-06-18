@@ -24,13 +24,13 @@ public class WorkerMapperTest {
 
     @Test
     public void A_test_add() {
-        Date date = Date.valueOf("1985-01-01");
+   /*     Date date = Date.valueOf("1985-01-01");
         workerMapper.add(new Worker(5, "w5", date, 1, "www4", "www", 0, 0, 0));
         workerMapper.add(new Worker(6, "w6", date, 1, "www5", "www", 0, 0, 0));
-        Assert.assertEquals(6,workerMapper.getAll().size());
+        Assert.assertEquals(6,workerMapper.getAll().size());*/
     }
 
-    @Test
+ /*   @Test
     public void B_test_getWorkerByName() {
         Assert.assertEquals("www", workerMapper.getByName("w5").getSignature());
     }
@@ -73,5 +73,5 @@ public class WorkerMapperTest {
         workerMapper.delete(5);
         workerMapper.delete(6);
         Assert.assertEquals(4,workerMapper.getAll().size());
-    }
+    }*/
 }

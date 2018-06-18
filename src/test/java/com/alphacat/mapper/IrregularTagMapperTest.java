@@ -28,41 +28,41 @@ public class IrregularTagMapperTest {
         Date start3=Date.valueOf("2018-03-29");
         Date end3=Date.valueOf("2018-04-15");
 
-        taskMapper.add(new Task(3,3,"t4","ttt",2,30,2,true,start3,end3));
+        taskMapper.add(new Task(456,3,"t4","ttt",2,30,2,true,start3,end3));
 
-        irregularTagMapper.add(new IrregularTag(1,3,3,"111111"));
-        irregularTagMapper.add(new IrregularTag(1,3,2,"111222"));
-        irregularTagMapper.add(new IrregularTag(2,3,3,"222222"));
-        irregularTagMapper.add(new IrregularTag(3,3,3,"333333"));
+        irregularTagMapper.add(new IrregularTag(1,456,3,"111111"));
+        irregularTagMapper.add(new IrregularTag(1,456,2,"111222"));
+        irregularTagMapper.add(new IrregularTag(2,456,3,"222222"));
+        irregularTagMapper.add(new IrregularTag(3,456,3,"333333"));
     }
 
     @Test
     public void B_get() {
-        Assert.assertTrue("111111".equals(irregularTagMapper.get(1,3,3).getFigure()));
-        Assert.assertTrue("111222".equals(irregularTagMapper.get(1,3,2).getFigure()));
-        Assert.assertTrue("222222".equals(irregularTagMapper.get(2,3,3).getFigure()));
-        Assert.assertTrue("333333".equals(irregularTagMapper.get(3,3,3).getFigure()));
+        Assert.assertTrue("111111".equals(irregularTagMapper.get(1,456,3).getFigure()));
+        Assert.assertTrue("111222".equals(irregularTagMapper.get(1,456,2).getFigure()));
+        Assert.assertTrue("222222".equals(irregularTagMapper.get(2,456,3).getFigure()));
+        Assert.assertTrue("333333".equals(irregularTagMapper.get(3,456,3).getFigure()));
 
     }
 
     @Test
     public void C_getAll() {
-        Assert.assertEquals(3,irregularTagMapper.getAll(3,3).size());
-        Assert.assertTrue("111111".equals(irregularTagMapper.getAll(3,3).get(0).getFigure()));
-        Assert.assertTrue("222222".equals(irregularTagMapper.getAll(3,3).get(1).getFigure()));
-        Assert.assertTrue("333333".equals(irregularTagMapper.getAll(3,3).get(2).getFigure()));
+        Assert.assertEquals(3,irregularTagMapper.getAll(456,3).size());
+        Assert.assertTrue("111111".equals(irregularTagMapper.getAll(456,3).get(0).getFigure()));
+        Assert.assertTrue("222222".equals(irregularTagMapper.getAll(456,3).get(1).getFigure()));
+        Assert.assertTrue("333333".equals(irregularTagMapper.getAll(456,3).get(2).getFigure()));
     }
 
     @Test
     public void D_isExist() {
-        Assert.assertTrue(irregularTagMapper.isExist(3,3,3));
-        Assert.assertFalse(irregularTagMapper.isExist(3,3,1));
+        Assert.assertTrue(irregularTagMapper.isExist(3,456,3));
+        Assert.assertFalse(irregularTagMapper.isExist(3,456,1));
     }
 
     @Test
     public void E_update() {
-        irregularTagMapper.update(new IrregularTag(3,3,3,"333444"));
-        Assert.assertTrue("333444".equals(irregularTagMapper.get(3,3,3).getFigure()));
+        irregularTagMapper.update(new IrregularTag(3,456,3,"333444"));
+        Assert.assertTrue("333444".equals(irregularTagMapper.get(3,456,3).getFigure()));
 
     }
 
@@ -72,7 +72,7 @@ public class IrregularTagMapperTest {
        // irregularTagMapper.delete(1,3,2);
         //irregularTagMapper.delete(2,3,3);
         //irregularTagMapper.delete(3,3,3);
-        taskMapper.delete(3);
+        taskMapper.delete(456);
     }
 
 }
