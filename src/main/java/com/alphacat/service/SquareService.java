@@ -25,6 +25,6 @@ public interface SquareService {
 
     boolean testAnswer(int taskId, int workerId);
 
-    Map<Integer, List<SquareVO>> getGoldAnswer(int taskId);
+    List<SquareVO> getGoldAnswer(int taskId, int picIndex);
 
 }

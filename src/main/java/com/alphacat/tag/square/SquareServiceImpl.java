@@ -108,11 +108,8 @@ public class SquareServiceImpl implements SquareService {
     }
 
     @Override
-    public Map<Integer, List<SquareVO>> getGoldAnswer(int taskId) {
-        List<Integer> pics = pictureMapper.get(taskId);
-        Map<Integer, List<SquareVO>> result = new HashMap<>(pics.size());
-        pics.forEach(p -> result.put(p, squareTagConverter.toVOList(squareTagMapper.get(0, taskId, p))));
-        return result;
+    public List<SquareVO> getGoldAnswer(int taskId, int picIndex) {
+        return squareTagConverter.toVOList(squareTagMapper.get(0, taskId, picIndex));
     }
 
     private boolean testSingleSquare(int taskId, int workerId, int picIndex, int squareIndex) {
