@@ -52,7 +52,7 @@ public class LoginControllerTest {
         JSONObject j = new JSONObject();
         j.fluentPut("name", name).fluentPut("key", pwd).fluentPut("type", "worker");
         request = post("/login")
-                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(j.toJSONString());
         mvc.perform(request).andExpect(status().isOk())
         .andDo(print());

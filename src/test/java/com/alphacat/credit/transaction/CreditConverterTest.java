@@ -23,10 +23,10 @@ public class CreditConverterTest {
     private CreditConverter creditConverter;
 
     private WorkerCredit workerCredit1 = new WorkerCredit(1, 1, "测试任务一", 20, Date.valueOf("2018-06-12"), 25);
-    private WorkerCredit workerCredit2 = new WorkerCredit(2, 3, "测试任务三", 20, Date.valueOf("2017-06-12"), 20);
+    private WorkerCredit workerCredit2 = new WorkerCredit(2, 3, "t24", 20, Date.valueOf("2017-06-12"), 20);
 
     private WorkerCreditVO workerCreditVO1 = new WorkerCreditVO("2018-06-12", "测试任务一任务结算", 20, 25);
-    private WorkerCreditVO workerCreditVO2 = new WorkerCreditVO("2017-06-12", "测试任务三任务结算", 20, 20);
+    private WorkerCreditVO workerCreditVO2 = new WorkerCreditVO("2017-06-12", "t24任务结算", 20, 20);
 
     private RequesterCredit requesterCredit1 = new RequesterCredit(1, "r1", Date.valueOf("2018-06-12"), 200);
     private RequesterCredit requesterCredit2 = new RequesterCredit(2, "r2", Date.valueOf("2017-06-12"), 0);

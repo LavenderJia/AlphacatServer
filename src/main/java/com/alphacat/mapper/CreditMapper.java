@@ -19,6 +19,10 @@ public interface CreditMapper {
             "VALUES(#{workerId}, #{taskId}, #{change}, #{date}, #{credit})")
     void add(WorkerCredit record);
 
+    @Select("SELECT IFNULL(SUM(`change`), 0) FROM credit_transaction " +
+            "WHERE taskId = #{taskId}")
+    Integer getByTask(@Param("taskId") int taskId);
+
     @Select("SELECT workerId, taskId, name taskName, `change`, date, credit " +
             "FROM (" +
                 "SELECT * FROM credit_transaction WHERE workerId=#{workerId} " +

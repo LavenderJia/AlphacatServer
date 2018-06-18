@@ -35,7 +35,7 @@ public class AdminMapperTest {
 
     @Test
     public void B_test_get() {
-        Assert.assertEquals("Radmin", adminMapper.get(1).getName());
+        Assert.assertEquals("Wadmin", adminMapper.get(1).getName());
     }
 
     @Test
@@ -46,7 +46,7 @@ public class AdminMapperTest {
     @Test
     public void D_test_getByAuth() {
         List<Admin> admins = adminMapper.getByAuth(1);
-        Assert.assertEquals("a1", admins.get(1).getName());
+        Assert.assertEquals("a1", admins.get(0).getName());
     }
 
     @Test

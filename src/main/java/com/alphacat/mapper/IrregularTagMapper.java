@@ -18,6 +18,9 @@ public interface IrregularTagMapper {
     @Select("SELECT * FROM irregulartag WHERE taskId=#{taskId} AND picIndex=#{picIndex}")
     List<IrregularTag> getAll(@Param("taskId") int taskId, @Param("picIndex") int picIndex);
 
+    @Select("SELECT * FROM irregulartag WHERE taskId = #{taskId}")
+    List<IrregularTag> getByTask(@Param("taskId") int taskId);
+
     @Insert("INSERT INTO irregulartag(workerId, taskId, picIndex, figure, time) " +
             "VALUES(#{workerId},#{taskId},#{picIndex},#{figure}, CURDATE())")
     void add(IrregularTag tag);

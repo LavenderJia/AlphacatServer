@@ -107,6 +107,25 @@ public class TaskController {
         }
     }
 
+    @RequestMapping(value = "/{id}/requester", method = RequestMethod.GET)
+    @ResponseBody
+    public Object getRequesterTask(@PathVariable("id") int id) {
+        try{
+            TaskVO task = taskService.get(id);
+            JSONObject result = JSON.parseObject(JSON.toJSONString(task));
+            result.fluentPut("state", taskService.getState(id))
+                    .fluentPut("taskProgressRate", taskService.getProgress(id))
+                    .fluentPut("workerCount", taskService.getWorkerCount(id))
+                    .fluentPut("tagRate", taskService.getTagRate(id))
+                    .fluentPut("picUndone", taskService.getPicUndone(id))
+                    .fluentPut("costCredit", taskService.getCostCredit(id));
+            return result;
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法获取任务信息。");
+        }
+    }
+
     @RequestMapping(value="", method=RequestMethod.GET)
     @ResponseBody
     public Object get(@RequestParam(value = "requesterId", required = false) Integer requesterId,

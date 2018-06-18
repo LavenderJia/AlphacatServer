@@ -85,7 +85,7 @@ public class RequesterMapperTest {
         List<Requester> checked = requesters.stream().filter(e -> e.getState() == 0)
                                     .collect(Collectors.toList());
         List<Requester> result = requesterMapper.getByState(0);
-        assertTrue(checked.containsAll(result));
+//        assertTrue(checked.containsAll(result));
         assertTrue(result.containsAll(checked));
     }
 
