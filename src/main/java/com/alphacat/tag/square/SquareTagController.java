@@ -65,7 +65,7 @@ public class SquareTagController {
         }
     }
 
-    @RequestMapping(value = "/{taskId}", method = RequestMethod.GET)
+    @RequestMapping(value = "/result/{taskId}", method = RequestMethod.GET)
     public Object getGoldAnswer(@PathVariable("taskId") int taskId) {
         try{
             return squareService.getGoldAnswer(taskId);
