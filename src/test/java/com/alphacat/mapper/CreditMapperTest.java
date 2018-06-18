@@ -31,9 +31,9 @@ public class CreditMapperTest {
     @BeforeClass
     public static void setUp() {
         Date date =Date.valueOf("2018-05-17");
-        credit1 = new WorkerCredit(1,1, "t4",5,date, 10);
+        credit1 = new WorkerCredit(1,123, "t4",5,date, 10);
         date = Date.valueOf("2018-05-27");
-        credit2 = new WorkerCredit(1,3,"t5",5,date, 20);
+        credit2 = new WorkerCredit(1,456,"t5",5,date, 20);
     }
 
     @Test
@@ -42,8 +42,8 @@ public class CreditMapperTest {
         Date e4=Date.valueOf("2018-04-15");
         Date s5=Date.valueOf("2018-06-15");
         Date e5=Date.valueOf("2018-06-27");
-        taskMapper.add(new Task(1,3,"t4","ttt",2,30,2,true,s4,e4));
-        taskMapper.add(new Task(3,3,"t5","ttt",2,30,2,true,s5,e5));
+        taskMapper.add(new Task(123,3,"t4","ttt",2,30,2,true,s4,e4));
+        taskMapper.add(new Task(456,3,"t5","ttt",2,30,2,true,s5,e5));
 
         creditMapper.add(credit1);
         creditMapper.add(credit2);
@@ -61,16 +61,17 @@ public class CreditMapperTest {
     public void B_getR() {
         List<RequesterCredit> credits = creditMapper.getRequesterCredits(3);
         Assert.assertEquals(2, credits.size());
-        RequesterCredit r_credit1 = new RequesterCredit(3, "t5", credit2.getDate(), 5);
+        RequesterCredit r_credit1 = new RequesterCredit(456, "t5", credit2.getDate(), 5);
         Assert.assertEquals(r_credit1, credits.get(0));
-        RequesterCredit r_credit2 = new RequesterCredit(1, "t4", credit1.getDate(), 5);
+        RequesterCredit r_credit2 = new RequesterCredit(123, "t4", credit1.getDate(), 5);
         Assert.assertEquals(r_credit2, credits.get(1));
     }
 
     @Test
     public void C_deleteRecord(){
-        taskMapper.delete(1);
-        taskMapper.delete(3);
+        //数据库中添加了新的task数据，因此采用手动删除的方法删除credit的测试数据
+        taskMapper.delete(123);
+        taskMapper.delete(456);
     }
 
 }
