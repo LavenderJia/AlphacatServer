@@ -65,4 +65,14 @@ public class SquareTagController {
         }
     }
 
+    @RequestMapping(value = "/result/{taskId}/{picIndex}", method = RequestMethod.GET)
+    public Object getGoldAnswer(@PathVariable("taskId") int taskId, @PathVariable("picIndex") int picIndex) {
+        try{
+            return squareService.getGoldAnswer(taskId, picIndex);
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抱歉，由于未知原因，无法获取答案。");
+        }
+    }
+
 }
