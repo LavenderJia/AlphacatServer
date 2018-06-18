@@ -3,6 +3,7 @@ package com.alphacat.service;
 import com.alphacat.vo.SquareVO;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SquareService {
 
@@ -23,5 +24,7 @@ public interface SquareService {
     void deleteSquares(int workerId, int taskId, int picIndex);
 
     boolean testAnswer(int taskId, int workerId);
+
+    Map<Integer, List<SquareVO>> getGoldAnswer(int taskId);
 
 }

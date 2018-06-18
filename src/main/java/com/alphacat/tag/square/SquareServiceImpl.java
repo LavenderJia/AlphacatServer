@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -104,6 +105,14 @@ public class SquareServiceImpl implements SquareService {
             taskRecordMapper.setAccuracy(taskId, workerId, 1.0, 1.0);
         }
         return passed;
+    }
+
+    @Override
+    public Map<Integer, List<SquareVO>> getGoldAnswer(int taskId) {
+        List<Integer> pics = pictureMapper.get(taskId);
+        Map<Integer, List<SquareVO>> result = new HashMap<>(pics.size());
+        pics.forEach(p -> result.put(p, squareTagConverter.toVOList(squareTagMapper.get(0, taskId, p))));
+        return result;
     }
 
     private boolean testSingleSquare(int taskId, int workerId, int picIndex, int squareIndex) {
