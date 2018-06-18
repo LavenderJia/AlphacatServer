@@ -55,8 +55,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<AvailableTaskVO> getTestTasks() {
-        List<AvailableTask> tasks = taskMapper.getTestTask();
+    public List<AvailableTaskVO> getTestTasks(int workerId) {
+        List<AvailableTask> tasks = taskMapper.getTestTask(workerId);
         return taskConverter.toAvailableVOList(tasks);
     }
 

@@ -13,6 +13,11 @@ public interface CreditService {
     void transact(int taskId);
 
     /**
+     * Transact credits to a worker of a task.
+     */
+    void transact(int taskId, int workerId);
+
+    /**
      * Get worker's credit transaction records.
      * In date-descending order.
      */

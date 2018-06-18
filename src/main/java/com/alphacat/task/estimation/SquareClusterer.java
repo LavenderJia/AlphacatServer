@@ -28,6 +28,7 @@ public class SquareClusterer {
     /**
      * @param tags Square tags on the same picture of the same task. Their identification is the (workerId, squareIndex)
      *             tuple.
+     * @return The clusters without duplicate tags(tags made by the same worker in one cluster).
      */
     private List<List<SquareTag>> singleKMeans(List<SquareTag> tags) {
         final int k = (int) tags.stream().collect(Collectors.groupingBy(SquareTag::getWorkerId, Collectors.counting()))
@@ -77,7 +78,22 @@ public class SquareClusterer {
                 centers.set(i, t);
             }
         }
+        // deduplication
+        for(int i = 0; i < k; i++) {
+            deduplication(clusters.get(i), centers.get(i));
+        }
         return clusters;
+    }
+
+    private void deduplication(List<SquareTag> cluster, SquareTag center) {
+        List<SquareTag> toBeRemoved = new ArrayList<>();
+        cluster.forEach(tag -> {
+            if(cluster.stream().anyMatch(t -> t.getWorkerId() == tag.getWorkerId()
+                    && this.distance(tag, center) >= this.distance(t, center))) {
+                toBeRemoved.add(tag);
+            }
+        });
+        toBeRemoved.forEach(cluster::remove);
     }
 
     private SquareTag getCenter(List<SquareTag> cluster) {

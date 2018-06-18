@@ -147,7 +147,7 @@ public class TaskController {
         try{
             WorkerVO worker = workerService.get(id);
             if (worker.getState() == 2)  {
-                return taskService.getTestTasks();
+                return taskService.getTestTasks(id);
             }
             if("available".equals(type)) {
                 return taskService.getAvailable(id);

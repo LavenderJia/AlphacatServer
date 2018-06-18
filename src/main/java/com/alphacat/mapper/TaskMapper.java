@@ -75,8 +75,13 @@ public interface TaskMapper {
      * They are tasks that are published by 0-id requester(system requester).
      */
     @Select("SELECT id, name, creditPerPic, creditFinished, method, endTime " +
-            "FROM task WHERE requesterId = 0")
-    List<AvailableTask> getTestTask();
+            "FROM (" +
+                "SELECT * FROM task WHERE requesterId = 0" +
+            ") t LEFT JOIN (" +
+                "SELECT taskId, rectAccuracy FROM task_record WHERE workerId = #{workerId}" +
+            ") r ON id = taskId " +
+            "WHERE rectAccuracy IS NULL")
+    List<AvailableTask> getTestTask(@Param("workerId") int workerId);
 
     /**
      * Retrieve tasks that the worker DOES take part in.

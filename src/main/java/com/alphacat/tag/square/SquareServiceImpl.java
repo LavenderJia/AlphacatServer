@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class SquareServiceImpl implements SquareService {
@@ -23,6 +24,8 @@ public class SquareServiceImpl implements SquareService {
     private TaskRecordMapper taskRecordMapper;
     @Autowired
     private SquareTagConverter squareTagConverter;
+    @Autowired
+    private PictureMapper pictureMapper;
 
     @Override
     public List<SquareVO> getSquares(int workerId, int taskId, int picIndex) {
@@ -67,6 +70,51 @@ public class SquareServiceImpl implements SquareService {
         }
         squareTagMapper.delete(workerId, taskId, picIndex);
         taskRecordMapper.decPicDoneNum(workerId, taskId);
+    }
+
+    @Override
+    public boolean testAnswer(int taskId, int workerId) {
+        if(taskId < 1 || taskId > 3) {
+            // it is not one of test tasks
+            return false;
+        }
+        TaskRecord record = taskRecordMapper.get(workerId, taskId);
+        if(record.getPicDoneNum() < record.getPicOrder().length() / 2) {
+            // the worker has not finished the task
+            return false;
+        }
+        boolean passed = false;
+        switch (taskId) {
+            case 1: {
+                passed = pictureMapper.get(taskId).stream()
+                        .allMatch(p -> this.testSingleSquare(taskId, workerId, p, 0));
+                break;
+            }
+            case 2: {
+                passed = pictureMapper.get(taskId).stream().allMatch(p -> squareTagMapper.get(0, taskId, p).stream()
+                    .mapToInt(SquareTag::getSquareIndex).allMatch(s -> this.testSingleSquare(taskId, workerId, p, s)));
+                break;
+            }
+            case 3: {
+                // cannot test at present...
+                break;
+            }
+        }
+        if(passed) {
+            taskRecordMapper.setAccuracy(taskId, workerId, 1.0, 1.0);
+        }
+        return passed;
+    }
+
+    private boolean testSingleSquare(int taskId, int workerId, int picIndex, int squareIndex) {
+        final int d = 10;
+        SquareVO answer = squareTagConverter.toVO(squareTagMapper.get(workerId, taskId, picIndex).get(squareIndex));
+        SquareVO gold = squareTagConverter.toVO(squareTagMapper.get(0, taskId, picIndex).get(squareIndex));
+        Map<String, String> workerLabels = answer.getLabelData();
+        Map<String, String> goldLabels = gold.getLabelData();
+        return Math.abs(answer.getX() - gold.getX()) <= d && Math.abs(answer.getY() - gold.getY()) <= d
+                && Math.abs(answer.getW() - gold.getW()) <= d && Math.abs(answer.getH() - gold.getH()) <= d
+                && goldLabels.entrySet().stream().allMatch(e -> e.getValue().equals(workerLabels.get(e.getKey())));
     }
 
     private boolean taskEnded(int taskId) {

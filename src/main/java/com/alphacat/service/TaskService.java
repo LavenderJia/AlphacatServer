@@ -17,7 +17,7 @@ public interface TaskService {
     /**
      * A test for worker's accuracy. New workers will do them.
      */
-    List<AvailableTaskVO> getTestTasks();
+    List<AvailableTaskVO> getTestTasks(int workerId);
 
     /**
      * Get tasks that's available but the worker DOES NOT take part in.
