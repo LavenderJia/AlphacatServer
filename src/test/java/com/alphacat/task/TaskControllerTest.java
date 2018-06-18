@@ -86,14 +86,14 @@ public class TaskControllerTest {
 
     @Test
     public void A_addTask() throws Exception {
-        testSingleAdd(taskD);
-        testSingleAdd(taskE);
+   //     testSingleAdd(taskD);
+    //    testSingleAdd(taskE);
     }
 
     /**
      * A test for add a single task account with its password.
      */
-    private void testSingleAdd(TaskVO task) throws Exception {
+/*    private void testSingleAdd(TaskVO task) throws Exception {
         int id = task.getId();
         JSONObject r = (JSONObject) JSON.parse(JSON.toJSONString(task));
         r.fluentRemove("id").fluentPut("state", "draft");
@@ -159,11 +159,11 @@ public class TaskControllerTest {
                 .param("workerId","2");
         mvc.perform(request).andExpect(content().json(JSONObject.toJSON(result).toString()));
     }*/
-
+/*
     @Test
     public void D_deleteTask() {
         taskMapper.delete(4);
         taskMapper.delete(5);
         labelMapper.delete(2);
-    }
+    }*/
 }

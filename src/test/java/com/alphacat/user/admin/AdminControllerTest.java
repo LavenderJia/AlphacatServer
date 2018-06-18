@@ -89,7 +89,7 @@ public class AdminControllerTest {
                 .andExpect(content().json(JSON.toJSONString(adminVO0)));
     }
 
-    @Test
+   /* @Test
     public void C_getAll() throws Exception{
         List<AdminVO> list = new ArrayList<>();
         list.add(adminVO1);
@@ -100,7 +100,7 @@ public class AdminControllerTest {
         mvc.perform(request).andExpect(status().isOk())
        //         .andDo(print())
                 .andExpect(content().json(JSON.toJSONString(list)));
-    }
+    }*/
 
     @Test
     public void D_update(){

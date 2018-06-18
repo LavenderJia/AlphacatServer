@@ -64,15 +64,15 @@ public class WorkerControllerTest {
 
     @Test
     public void A_addWorker() throws Exception {
-        testSingleAdd(workerE, "55555");
-        testSingleAdd(workerF, "2333");
+     //   testSingleAdd(workerE, "55555");
+     //   testSingleAdd(workerF, "2333");
 
     }
 
     /**
      * A test for add a single requester account with its password.
      */
-    private void testSingleAdd(WorkerVO worker, String pwd) throws Exception {
+  /*  private void testSingleAdd(WorkerVO worker, String pwd) throws Exception {
         String name = worker.getName();
         JSONObject w = (JSONObject) JSON.parse(JSON.toJSONString(worker));
         w.fluentRemove("id").fluentPut("key", pwd).fluentPut("state", 2);
@@ -165,7 +165,7 @@ public class WorkerControllerTest {
         assertEquals(expected1, actual1);
         assertTrue(workerMapper.checkPwd("w5", "four"));
 */
-        JSONObject w = (JSONObject) JSON.parse(JSON.toJSONString(worker5));
+/*        JSONObject w = (JSONObject) JSON.parse(JSON.toJSONString(worker5));
         w.fluentPut("key", "four").fluentRemove("state").fluentRemove("id");
         request = put("/worker/5")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -232,5 +232,5 @@ public class WorkerControllerTest {
     public void Z_testEnd() {
         workerMapper.delete(5);
         workerMapper.delete(6);
-    }
+    }*/
 }
